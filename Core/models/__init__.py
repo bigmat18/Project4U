@@ -11,8 +11,10 @@ from .Users.User import User
 
 from .Projects.Tag import Tag
 from .Projects.Project import Project
-from .Projects.SearchCard import SearchCard
 from .Projects.Role import Role, UserProject
+
+"""
+from .Projects.SearchCard import SearchCard
 
 from .Showcases.Showcase import Showcase
 from .Showcases.Message import Message
@@ -39,3 +41,4 @@ from .Social.News.NewsParagraphImage import NewsParagraphImage
 
 from .Social.QA.ProjectQuestion import ProjectQuestion
 from .Social.QA.ProjectAnswer import ProjectAnswer
+"""

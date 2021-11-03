@@ -1,8 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
-from Core.models import (User, Skill, UserSkill, SearchCard, Tag,
-                         Project, UserProject, Role)
+from Core.models import *
 
 @admin.register(User)
 class User(UserAdmin):
@@ -22,22 +21,5 @@ class User(UserAdmin):
     search_fields       = ['email', 'first_name', 'last_name']
     ordering            = ('-date_joined',)
     filter_horizontal   = ()
-
-
-admin.site.register(Skill)
-
-admin.site.register(UserSkill)
-
-
-admin.site.register(SearchCard)
-
-admin.site.register(Project)
-
-admin.site.register(Tag)
-
-admin.site.register(UserProject)
-
-admin.site.register(Role)
-
 
 admin.site.unregister(Group)
