@@ -56,6 +56,7 @@ class User(AbstractBaseUser, AbstractSlug):
     first_name = models.CharField(_('first name'), max_length=150, blank=True)
     last_name = models.CharField(_('last name'), max_length=150, blank=True)
     image = models.ImageField(_("image"), blank=True, null=True)
+    username = models.CharField(max_length=64,blank=True,null=True,default=None)
     
     date_birth = models.DateField(_('date birth'), null=True,blank=True)
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)

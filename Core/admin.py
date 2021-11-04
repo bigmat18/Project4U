@@ -2,6 +2,11 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
 from Core.models import *
+from django.contrib.sites.models import Site
+from Core.models import Email
+
+from import_export import resources
+from import_export.admin import ImportExportModelAdmin
 
 @admin.register(User)
 class User(UserAdmin):
@@ -21,5 +26,22 @@ class User(UserAdmin):
     search_fields       = ['email', 'first_name', 'last_name']
     ordering            = ('-date_joined',)
     filter_horizontal   = ()
+    
+
+# ------------ ADMIN IMPORT-EXPORT ---------
+class EmailResource(resources.ModelResource):
+    class Meta:
+        model = Email
+        exclude = ('id','added_at',)
+        import_id_fields = ('email', 'first_name', 'last_name',)
+
+class EmailImportExport(ImportExportModelAdmin):
+    resource_class = EmailResource
+# ------------ ADMIN IMPORT-EXPORT ---------
+
+
+admin.site.register(Email, EmailImportExport)
 
 admin.site.unregister(Group)
+
+admin.site.unregister(Site)
