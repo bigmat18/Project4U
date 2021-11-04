@@ -43,6 +43,7 @@ urlpatterns = [
    # -------- USER REGISTRATION UTILITES ------
 
    # -------- API ------
+   path('api/', include('Users.urls')),
    # -------- API ------
 ] 
 

@@ -1,1 +1,2 @@
 from .Authentication import UserRegistrationSerializer
+from .Email import EmailSerializer
