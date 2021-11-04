@@ -1,0 +1,26 @@
+{% load sass_tags %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- ----------- IMPORT FONT STYLE (MONTSERRAT) --------- -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- ----------- IMPORT FONT STYLE (MONTSERRAT) --------- -->    
+    
+    <link href="{% sass_src 'scss/main.scss' %}" rel="stylesheet" type="text/css" />
+    <title>Projec4U | Area admin</title>
+</head>
+<body>
+    <div class="container">
+        <h3 class="heading-tertiary heading-tertiary--blue">Project4U Admin</h3>
+        <a href="/admin/" class="button-round button-round--big button-round--blue">Pannello Admin</a>
+        <a href="/doc/"class="button-round button-round--big button-round--pink">Documentazione API</a>
+
+        <p class="paragraph u-center-text">Per accedere ai servizzi amministrativi di Project4U devi avere un account Admin!</p>
+    </div>
+</body>
+</html>

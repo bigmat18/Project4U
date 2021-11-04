@@ -1,0 +1,102 @@
+// ----------- BTN-TEXT ANIMATION AFTER CLICK ---------
+@keyframes pulsateBtn {
+    0% {
+        transform: scale(1);
+        box-shadow: none;
+    }
+
+    50% {
+        transform: scale(1.1);
+        box-shadow: $shadow-xsmall-black;
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: none;
+    }
+}
+// ----------- BTN-TEXT ANIMATION AFTER CLICK ---------
+
+
+
+// ----------- ARROW ANIMATION ---------
+@keyframes upBottomArrow {
+    0% {transform: translateY(-1rem);}
+
+    50% {transform: translateY(1rem);}
+
+    100% {transform: translateY(-1rem);}
+}
+// ----------- ARROW ANIMATION ---------
+
+
+
+// ----------- ANIMATION MOVE FROM RIGHT TO LEFT ---------
+@keyframes moveInLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-10rem);
+    }
+
+    50% {
+        transform: translateX(-5rem);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(0);
+        
+    }
+}
+
+.animated-left { 
+    animation: moveInLeft .5s ease-out .75s;
+    animation-fill-mode: backwards;
+}
+// ----------- ANIMATION MOVE FROM RIGHT TO LEFT ---------
+
+
+
+// ----------- ANIMATION MOVE FROM LEFT RO RIGHT ---------
+@keyframes moveInRight{
+    0% {
+        opacity: 0;
+        transform: translateX(10rem);
+    }
+
+    50% {
+        transform: translateX(5rem);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(0rem);
+    }
+}
+
+.animated-right { 
+    animation: moveInRight .5s ease-out .75s;
+    animation-fill-mode: backwards;
+}
+// ----------- ANIMATION MOVE FROM LEFT RO RIGHT ---------
+
+
+
+// ----------- ANIMATION MOVE FROM TOP TO BOTTOM ---------
+@keyframes moveInBottom{
+    0% {
+        opacity: 0;
+        transform: translateY(-5rem);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animated-bottom { 
+    animation: moveInBottom .75s ease-out .2s;
+    animation-fill-mode: backwards;
+}
+// ----------- ANIMATION MOVE FROM TOP TO BOTTOM ---------
