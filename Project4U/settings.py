@@ -52,7 +52,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'Project4U.wsgi.application'
 
 
-if 'RDS_DB_NAME' in os.environ:
+if not DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
