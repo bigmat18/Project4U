@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'asdasd')
 
-DEBUG = os.environ.get('DEBUG', True)
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
