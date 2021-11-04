@@ -3,7 +3,7 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'asdasd')
+SECRET_KEY = 'django-insecure-w(wmcbg^%nq0^1_vlrug_h*l5rjam!05tsnkbce3vpd#1mvf*#'
 
 DEBUG = False
 
@@ -56,11 +56,11 @@ if not DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': os.environ['RDS_DB_NAME'],
-            'USER': os.environ['RDS_USERNAME'],
-            'PASSWORD': os.environ['RDS_PASSWORD'],
-            'HOST': os.environ['RDS_HOSTNAME'],
-            'PORT': os.environ['RDS_PORT'],
+            'NAME': 'P4UDeployDB',
+            'USER': 'P4Uuser',
+            'PASSWORD': 'project4U_',
+            'HOST': 'p4u-deploy-db.cp9lir5aua7w.eu-west-3.rds.amazonaws.com',
+            'PORT': '5432',
         }
     }
 else:
