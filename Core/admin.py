@@ -4,6 +4,8 @@ from django.contrib.auth.admin import UserAdmin
 from Core.models import *
 from django.contrib.sites.models import Site
 from Core.models import Email
+from allauth.account.models import EmailAddress
+from allauth.socialaccount.models import SocialAccount, SocialApp, SocialToken
 
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
@@ -45,3 +47,11 @@ admin.site.register(Email, EmailImportExport)
 admin.site.unregister(Group)
 
 admin.site.unregister(Site)
+
+admin.site.unregister(EmailAddress)
+
+admin.site.unregister(SocialAccount)
+
+admin.site.unregister(SocialApp)
+
+admin.site.unregister(SocialToken)
