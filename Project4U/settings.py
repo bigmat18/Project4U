@@ -62,7 +62,7 @@ ROOT_URLCONF = 'Project4U.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, '_templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'Application/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -137,10 +137,10 @@ STATICFILES_FINDERS = [
 ]
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "_static"),
+    os.path.join(BASE_DIR, "Application"),
 ]
 
-SASS_PROCESSOR_ROOT = os.path.join(BASE_DIR,'_static')
+SASS_PROCESSOR_ROOT = os.path.join(BASE_DIR,'Application')
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
