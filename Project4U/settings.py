@@ -142,7 +142,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "Application"),
 ]
 
-SASS_PROCESSOR_ROOT = os.path.join(BASE_DIR,'Application/css')
+SASS_PROCESSOR_ROOT = os.path.join(BASE_DIR,'Application')
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
