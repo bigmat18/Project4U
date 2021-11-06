@@ -43,6 +43,6 @@ urlpatterns = [
    # -------- API ------
    
    # -------- WEB-APP ------
-   path('', include('Application.urls'))
+   path('', include('Core.urls'))
    # -------- WEB-APP ------
 ] 
