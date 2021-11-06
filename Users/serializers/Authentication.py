@@ -1,23 +1,17 @@
 from rest_framework import serializers
-
-from Core.models import User
-
 from allauth.account import app_settings as allauth_settings
 from allauth.account.adapter import get_adapter
 from allauth.utils import email_address_exists
 from django.utils.translation import gettext_lazy as _
-
-
+from Core.models import User
 
 
 class UserRegistrationSerializer(serializers.Serializer):
-    email         = serializers.EmailField(max_length=254, 
-                    required=allauth_settings.EMAIL_REQUIRED)
-
-    first_name    = serializers.CharField(required=True, max_length=30)
-    last_name     = serializers.CharField(required=True, max_length=150)
-    password1     = serializers.CharField(write_only=True)
-    password2     = serializers.CharField(write_only=True)
+    email = serializers.EmailField(max_length=254,required=allauth_settings.EMAIL_REQUIRED)
+    first_name = serializers.CharField(required=True, max_length=30)
+    last_name = serializers.CharField(required=True, max_length=150)
+    password1 = serializers.CharField(write_only=True)
+    password2 = serializers.CharField(write_only=True)
 
     def validate_email(self, email):
         email = get_adapter().clean_email(email)

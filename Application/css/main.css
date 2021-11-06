@@ -514,15 +514,6 @@ body {
   outline: none;
   transform: translateY(-0.1rem); }
 
-.button-round:not(:last-child) {
-  margin-right: 4rem; }
-  @media only screen and (max-width: 81.25em) {
-    .button-round:not(:last-child) {
-      margin-right: 2rem; } }
-  @media only screen and (max-width: 62.5em) {
-    .button-round:not(:last-child) {
-      margin-right: 0rem;
-      margin-bottom: 3rem; } }
 .button-round--shadow:hover {
   transform: translateY(-0.3rem); }
 

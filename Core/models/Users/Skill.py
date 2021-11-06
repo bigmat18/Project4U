@@ -31,7 +31,9 @@ class UserSkill(models.Model):
     
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     skill = models.ForeignKey(Skill,
-                              on_delete=models.CASCADE)
+                              on_delete=models.CASCADE,
+                              related_name="skill",
+                              related_query_name="skill")
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE)
     level = models.PositiveIntegerField(default=1,

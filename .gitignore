@@ -49,6 +49,7 @@ coverage.xml
 # Django custom files
 venv
 db.sqlite3
+aws.txt
 
 # Elastic Beanstalk Files
 .elasticbeanstalk

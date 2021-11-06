@@ -159,18 +159,18 @@
         transform: translateY(-0.1rem);
     }
 
-    &:not(:last-child) {
-        margin-right: 4rem;
+    // &:not(:last-child) {
+    //     margin-right: 4rem;
 
-        @include respond(tab-land) {
-            margin-right: 2rem;
-        }
+    //     @include respond(tab-land) {
+    //         margin-right: 2rem;
+    //     }
 
-        @include respond(tab-port) {
-            margin-right: 0rem;
-            margin-bottom: 3rem;
-        }
-    }
+    //     @include respond(tab-port) {
+    //         margin-right: 0rem;
+    //         margin-bottom: 3rem;
+    //     }
+    // }
 
     &--shadow:hover {
         transform: translateY(-.3rem);

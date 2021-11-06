@@ -39,7 +39,6 @@ class User(AbstractBaseUser, AbstractSlug):
     highschool_help_text = "La scuola superiori frequentata"
     university_help_text = "L'università frequentata"
     
-    
     class TypeUser(models.TextChoices):
         BASE = '01', _('Base')
         VERIFIED = '02', _('Verified')
@@ -73,11 +72,13 @@ class User(AbstractBaseUser, AbstractSlug):
     
     user_saved = models.ManyToManyField("self",
                                         related_name="saved_by",
-                                        related_query_name="saved_by")
+                                        related_query_name="saved_by",
+                                        blank=True,)
     
     project_saved = models.ManyToManyField("Project",
                                            related_name="saved_by",
-                                           related_query_name="saved_by")
+                                           related_query_name="saved_by",
+                                           blank=True,)
     
     highscool = models.CharField(_("highscool"), max_length=256,
                                  blank=True, null=True,
@@ -125,3 +126,4 @@ class User(AbstractBaseUser, AbstractSlug):
     def has_perm(self, perm, obj=None): return True
 
     def has_module_perms(self, app_label): return True
+    
