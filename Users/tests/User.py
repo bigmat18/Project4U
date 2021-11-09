@@ -1,8 +1,9 @@
+from django.http import response
+from django.test import client
 from rest_framework import status
 from rest_framework.test import APITestCase
 from Core.models import User
 from rest_framework_api_key.models import APIKey
-
 
 
 class UserApiTestCase(APITestCase):
@@ -16,6 +17,15 @@ class UserApiTestCase(APITestCase):
                                              first_name=self.first_name,last_name=self.last_name)
         key = APIKey.objects.create_key(name="prova")
         self.client.credentials(HTTP_X_API_KEY=key[1])
+        
+    def test_current_user_put_auth(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.put("/api/user/", {"highscool": "sdad"})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+    def test_current_user_put_un_auth(self):
+        response = self.client.put("/api/user/", {"highscool": "sdad"})
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED) 
 
     def test_user_list_un_auth(self):
         response = self.client.get("/api/users/")

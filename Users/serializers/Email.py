@@ -3,6 +3,8 @@ from Core.models import Email
 
 class EmailSerializer(serializers.ModelSerializer):
     added_at = serializers.SerializerMethodField(read_only=True)
+    first_name = serializers.CharField(required=True)
+    last_name = serializers.CharField(required=True)
 
     class Meta:
         model = Email
