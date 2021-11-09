@@ -8,7 +8,7 @@ from drf_yasg import openapi
 
 from Users.views import EmailCreateView
 from rest_auth.registration.views import RegisterView
-from rest_auth.views import LoginView, LogoutView
+from rest_auth.views import LoginView, LogoutView, UserDetailsView
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -44,6 +44,7 @@ urlpatterns = [
 
    # -------- API ------
    path('api/users/', include('Users.urls')),
+   path('api/user/', UserDetailsView.as_view(), name="user-detail"),
    # -------- API ------
    
    path('api/email/', EmailCreateView.as_view(), name="email-create"),
