@@ -116,12 +116,13 @@ class User(AbstractBaseUser, AbstractSlug):
         return f"{self.email}"
     
     @property
-    def full_name(self):
-        return f"{self.first_name} {self.last_name}"
+    def full_name(self): return f"{self.first_name} {self.last_name}"
     
     @property
-    def is_staff(self):
-        return self.admin
+    def is_staff(self): return self.admin
+    
+    @property
+    def is_active(self): return self.active
     
     def has_perm(self, perm, obj=None): return True
 

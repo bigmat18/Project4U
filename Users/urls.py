@@ -1,6 +1,11 @@
 from django.urls import include, path
-from Users.views import EmailCreateView
+from Users.views import EmailCreateView, UserRetriveView, UserListView
+from rest_framework.routers import DefaultRouter
+
 
 urlpatterns = [
-    path('email/', EmailCreateView.as_view(), name="email-create"),
+    # -------- USER ENDPOINTS ------
+    path('users/', UserListView.as_view({'get':'list'}), name="users-list"),
+    path('users/<slug:slug>/', UserRetriveView.as_view({'get':'get'}), name="user-retrieve"),
+    # -------- USER ENDPOINTS ------
 ]

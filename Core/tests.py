@@ -1,0 +1,1 @@
+from Users.tests import LoginRegistrationTestCase, UserApiTestCase
