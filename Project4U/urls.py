@@ -43,7 +43,7 @@ urlpatterns = [
    # -------- USER REGISTRATION UTILITES ------
 
    # -------- API ------
-   path('api/profile/', include('Users.urls')),
+   path('api/users/', include('Users.urls')),
    # -------- API ------
    
    path('api/email/', EmailCreateView.as_view(), name="email-create"),

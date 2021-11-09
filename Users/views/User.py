@@ -26,10 +26,10 @@ class UserListView(generics.ListAPIView,
 class UserRetriveView(generics.RetrieveAPIView,
                         viewsets.GenericViewSet):
     """
-    get:
+    retrieve:
     Ristituisce i dettagli di un'utente.
 
-    Ritorna tutti i dettagli dell'utente visibili da un utente diverso
+    Ritorna tutti i dettagli di un utente di cui è stato passato lo slug nell'ulr
     """
     serializer_class    = UserDetailSerializer
     queryset            = User.objects.filter(active=True)

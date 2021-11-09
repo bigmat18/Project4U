@@ -18,19 +18,19 @@ class UserApiTestCase(APITestCase):
         self.client.credentials(HTTP_X_API_KEY=key[1])
 
     def test_user_list_un_auth(self):
-        response = self.client.get("/api/profile/users/")
+        response = self.client.get("/api/users/")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         
     def test_user_list_auth(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.get("/api/profile/users/")
+        response = self.client.get("/api/users/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
     def test_user_detail_un_auth(self):
-        response = self.client.get(f"/api/profile/users/{self.user.slug}/")
+        response = self.client.get(f"/api/users/{self.user.slug}/")
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         
     def test_user_detail_auth(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.get(f"/api/profile/users/{self.user.slug}/")
+        response = self.client.get(f"/api/users/{self.user.slug}/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
