@@ -1,1 +1,2 @@
-from Users.tests import LoginRegistrationTestCase, UserApiTestCase
+from Users.tests import (LoginRegistrationTestCase, UsersTestCase, 
+                         SkillTestCase, UserSkillTestCase)

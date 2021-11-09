@@ -6,7 +6,7 @@ from Core.models import User
 from rest_framework_api_key.models import APIKey
 
 
-class UserApiTestCase(APITestCase):
+class UsersTestCase(APITestCase):
     first_name = "prova"
     last_name = "prova"
     email_user = "prova@prova.com"

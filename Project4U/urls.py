@@ -43,7 +43,7 @@ urlpatterns = [
    # -------- USER REGISTRATION UTILITES ------
 
    # -------- API ------
-   path('api/users/', include('Users.urls')),
+   path('api/', include('Users.urls')),
    path('api/user/', UserDetailsView.as_view(), name="user-detail"),
    # -------- API ------
    

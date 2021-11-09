@@ -1,6 +1,6 @@
 from Core.models import User
 from rest_framework import serializers
-from Users.serializers import UserSkillSerializer
+from Users.serializers import UserSkillListSerializer
 
 
 class UserListSerializer(serializers.ModelSerializer):
@@ -10,7 +10,7 @@ class UserListSerializer(serializers.ModelSerializer):
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
-    skills = UserSkillSerializer(source="userskill_set",many=True, required=False)
+    skills = UserSkillListSerializer(source="userskill_set",many=True, required=False, read_only=True)
     
     class Meta:
         model = User

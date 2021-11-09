@@ -1,6 +1,7 @@
 from django.db.models import fields
 from rest_framework import serializers
 from Core.models import Skill, UserSkill
+from Core.models.Users.User import User
 
 
 class SkillSerializer(serializers.ModelSerializer):
@@ -9,7 +10,7 @@ class SkillSerializer(serializers.ModelSerializer):
         fields = ["name", "type_skill"]
         
         
-class UserSkillSerializer(serializers.ModelSerializer):
+class UserSkillListSerializer(serializers.ModelSerializer):
     skill = serializers.SerializerMethodField(read_only=True)
     type = serializers.SerializerMethodField(read_only=True)
     id = serializers.SerializerMethodField(read_only=True)
@@ -26,3 +27,12 @@ class UserSkillSerializer(serializers.ModelSerializer):
     
     def get_id(self, instance):
         return instance.skill.id
+    
+    
+class UserSkillCreateSerializer(serializers.ModelSerializer):
+    level = serializers.IntegerField(required=True)
+    
+    class Meta:
+        model = UserSkill
+        read_only_fields = ["user"]
+        fields = "__all__"
