@@ -19,7 +19,7 @@ class Project(AbstractText, AbstractName, AbstractCreateUpdate):
                                 related_query_name="projects_created")
     
     image = models.ImageField(_("image"), blank=True, null=True)
-    link_site = models.CharField(_("link site"), blank=True, null=True,
+    link_site = models.TextField(_("link site"), blank=True, null=True,
                                  help_text=link_site_help_text,
                                  max_length=516)
     
@@ -27,6 +27,10 @@ class Project(AbstractText, AbstractName, AbstractCreateUpdate):
                                     help_text=ended_at_help_text)
     num_swipe = models.PositiveBigIntegerField(_("number swipe"), default=0,
                                                help_text=num_swipe_help_text)
+    
+    text = models.TextField(_("description"), 
+                            db_column="description",
+                            null=True, blank=True)
     
     tags = models.ManyToManyField(Tag,
                                   related_name="projects",

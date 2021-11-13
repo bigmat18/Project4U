@@ -19,7 +19,7 @@ class AbstractComment(AbstractCreateUpdate, AbstractText):
                                related_name=get_author_related_name.__func__(),
                                related_query_name=get_author_related_name.__func__())
     
-    likes_num = models.ManyToManyField(settings.AUTH_USER_MODEL,
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                        related_name=get_likes_related_name.__func__(),
                                        related_query_name=get_likes_related_name.__func__())
     

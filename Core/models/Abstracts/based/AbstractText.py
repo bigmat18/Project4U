@@ -7,7 +7,8 @@ class AbstractText(models.Model):
     
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     text = models.TextField(_("text"),
-                            help_text=text_help_text)
+                            help_text=text_help_text,
+                            max_length=516)
 
     class Meta:
         abstract = True

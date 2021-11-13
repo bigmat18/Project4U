@@ -1,15 +1,12 @@
 from django.urls import include, path
-from Users.views import UserRetriveView, UserListView, SkillListSerializer, UserSkillCreateView
+import Users.views as vw
 from rest_framework.routers import DefaultRouter
-
+    
+    
 router = DefaultRouter()
-router.register('users', UserRetriveView)
-router.register('users', UserListView)
-router.register('skills', SkillListSerializer)
+router.register(r'users', vw.UserRetriveView)
+router.register(r'users', vw.UserListView)
+router.register(r'skills', vw.SkillListView)
+router.register(r'user/skills', vw.UserSkillCUDView)
 
-urlpatterns = [
-    # -------- USER ENDPOINTS ------
-    path('', include(router.urls)),
-    path('users/<slug:slug>/skills/',UserSkillCreateView.as_view({"post":"create"}), name="userskill-create")
-    # -------- USER ENDPOINTS ------
-]
+urlpatterns = router.urls

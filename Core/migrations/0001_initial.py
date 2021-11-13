@@ -95,7 +95,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('level', models.PositiveIntegerField(default=1, help_text="Livello di competenza della skill dell'utente", validators=[django.core.validators.MinValueValidator(1), django.core.validators.MaxValueValidator(10)])),
-                ('skill', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Core.skill')),
+                ('skill', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='skill', related_query_name='skill', to='Core.skill')),
             ],
             options={
                 'verbose_name': 'User Skill',
@@ -125,9 +125,9 @@ class Migration(migrations.Migration):
                 ('highscool', models.CharField(blank=True, help_text='La scuola superiori frequentata', max_length=256, null=True, verbose_name='highscool')),
                 ('university', models.CharField(blank=True, help_text="L'università frequentata", max_length=256, null=True, verbose_name='university')),
                 ('extra', models.TextField(blank=True, help_text='Le esperienze scolasti o non, extra dello user', null=True, verbose_name='extra')),
-                ('project_saved', models.ManyToManyField(related_name='saved_by', related_query_name='saved_by', to='Core.Project')),
+                ('project_saved', models.ManyToManyField(blank=True, related_name='saved_by', related_query_name='saved_by', to='Core.Project')),
                 ('skills', models.ManyToManyField(related_name='users', related_query_name='users', through='Core.UserSkill', to='Core.Skill')),
-                ('user_saved', models.ManyToManyField(related_name='_Core_user_user_saved_+', related_query_name='saved_by', to=settings.AUTH_USER_MODEL)),
+                ('user_saved', models.ManyToManyField(blank=True, related_name='_Core_user_user_saved_+', related_query_name='saved_by', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'verbose_name': 'User',

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.db.models import base
 
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -22,6 +23,7 @@ class UserManager(BaseUserManager):
         user.admin = admin
         user.first_name = first_name
         user.last_name = last_name
+        user.date_joined = timezone.now()
         
         user.save(using=self._db)
         return user
@@ -35,14 +37,13 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, AbstractSlug):
     blocked_help_text   = "Indica se un utente è stato bloccato."
-    extra_help_text = "Le esperienze scolasti o non, extra dello user"
-    highschool_help_text = "La scuola superiori frequentata"
-    university_help_text = "L'università frequentata"
+    main_role_help_text = "Indica il ruolo principale dell'utente (32 caratteri max)"
+    description_help_text = "Descrizione dell'utente (256 caratteri max)"
     
     class TypeUser(models.TextChoices):
         BASE = '01', _('Base')
         VERIFIED = '02', _('Verified')
-        INNOVATOR = '03', _('Innovator')
+        INNOVATOR = '03', _('Innovatore')
     
     class TypeVip(models.TextChoices):
         FREE = 'FREE', _('Free')
@@ -57,8 +58,11 @@ class User(AbstractBaseUser, AbstractSlug):
     image = models.ImageField(_("image"), blank=True, null=True)
     username = models.CharField(max_length=64,blank=True,null=True,default=None)
     
+    main_role = models.CharField(_('main role'), blank=True, null=True, max_length=32,
+                                 help_text=main_role_help_text)
+    
     date_birth = models.DateField(_('date birth'), null=True,blank=True)
-    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+    date_joined = models.DateTimeField(_('date joined'))
 
     active = models.BooleanField(_("is active"), default=True)
     blocked = models.BooleanField(_("is blocked"), default=False,
@@ -80,16 +84,8 @@ class User(AbstractBaseUser, AbstractSlug):
                                            related_query_name="saved_by",
                                            blank=True,)
     
-    highscool = models.CharField(_("highscool"), max_length=256,
-                                 blank=True, null=True,
-                                 help_text=highschool_help_text)
-    
-    university = models.CharField(_("university"), max_length=256,
-                                  blank=True, null=True,
-                                  help_text=university_help_text)
-    
-    extra = models.TextField(_("extra"), blank=True, null=True,
-                             help_text=extra_help_text)
+    description = models.TextField(_("description"), blank=True, 
+                                   null=True,max_length=256)
     
     skills = models.ManyToManyField(Skill,
                                     through='UserSkill',
@@ -107,10 +103,6 @@ class User(AbstractBaseUser, AbstractSlug):
         db_table = 'user'
         verbose_name = _('User')
         verbose_name_plural = _('Users')
-        constraints = [
-            models.CheckConstraint(check=models.Q(date_birth__gte=timezone.now()),
-                                   name="date_birth__gte")
-        ]
         
     def __str__(self):
         return f"{self.email}"

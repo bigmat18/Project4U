@@ -9,6 +9,8 @@ from .Abstracts.composed.AbstractImage import AbstractImage
 from .Users.Skill import Skill, UserSkill
 from .Users.User import User
 from .Users.Email import Email
+from .Users.ExternalProject import ExternalProject
+from .Users.UserEducation import UserEducation
 
 from .Projects.Tag import Tag
 from .Projects.Project import Project

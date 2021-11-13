@@ -8,11 +8,11 @@ class Post(AbstractCreateUpdate):
                                on_delete=models.CASCADE,
                                related_name="posts",
                                related_query_name="posts")
-    likes_numer = models.ForeignKey(settings.AUTH_USER_MODEL,
+    likes = models.ForeignKey(settings.AUTH_USER_MODEL,
                                     on_delete=models.CASCADE,
                                     related_name="posts_likes",
                                     related_query_name="posts_likes")
-    view_number = models.PositiveBigIntegerField(_("views number"),
+    view_num = models.PositiveBigIntegerField(_("views number"),
                                                  default=0)
     
     class Meta:

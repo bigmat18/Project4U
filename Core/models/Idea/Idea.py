@@ -18,7 +18,7 @@ class Idea(AbstractCreateUpdate, AbstractText, AbstractName):
                                 null=True, blank=True,
                                 related_name="ideas",
                                 related_query_name="ideas")
-    message = models.ForeignKey(Message,
+    message = models.OneToOneField(Message,
                                 on_delete=models.SET_NULL,
                                 related_name="ideas",
                                 related_query_name="ideas",

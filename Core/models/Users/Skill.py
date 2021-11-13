@@ -38,7 +38,7 @@ class UserSkill(models.Model):
                              on_delete=models.CASCADE)
     level = models.PositiveIntegerField(default=1,
                                         validators=[MinValueValidator(1), 
-                                                    MaxValueValidator(10)],
+                                                    MaxValueValidator(5)],
                                         help_text=level_help_text)
     
     class Meta:
