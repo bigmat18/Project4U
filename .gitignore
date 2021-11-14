@@ -50,6 +50,7 @@ coverage.xml
 venv
 db.sqlite3
 aws.txt
+media
 
 # Elastic Beanstalk Files
 .elasticbeanstalk

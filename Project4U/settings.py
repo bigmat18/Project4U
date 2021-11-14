@@ -211,15 +211,3 @@ API_KEY_CUSTOM_HEADER = "HTTP_X_API_KEY"
 
 
 
-# -------- aws-s3-buckets ------
-AWS_ACCESS_KEY_ID = 'AKIATZXNVVJRN73WNBJI'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'p4u-media-bucket'
-AWS_S3_REGION_NAME = 'eu-south-1'
-
-AWS_S3_FILE_OVERWRITE = True
-AWS_DEFAULT_ACL = None
-AWS_S3_VERIFY = False
-
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-# -------- aws-s3-buckets ------
