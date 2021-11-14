@@ -1,20 +1,13 @@
 from rest_framework import status
-from rest_framework.test import APITestCase
-from Core.models import User
+from .BaseTest import BaseTestCase
 
 
-class LoginRegistrationTestCase(APITestCase):
-    first_name    = "prova"
-    last_name     = "prova"
-    email         = "prova@prova.com"
-    password      = "prova1234567_"
+class LoginRegistrationTestCase(BaseTestCase):
 
     def setUp(self):
-        self.user = User.objects.create_user(password=self.password,email=self.email,
-                                             first_name=self.first_name,last_name=self.last_name)
-        self.data = {"first_name": self.first_name,"last_name":self.last_name, 
-                    "email": self.email,"password1": self.password,
-                    "password2": self.password} 
+        self.data = self.init_test()
+        self.data["password1"] = self.data["password2"] = self.data["password"]
+        del self.data["password"]
 
     def test_registration_new_user(self):
         data = self.data

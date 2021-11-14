@@ -166,7 +166,7 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_UNIQUE_EMAIL = True
 
 REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'Users.serializers.UserDetailSerializer',
+    'USER_DETAILS_SERIALIZER': 'Users.serializers.CurrentUserSerializer',
 }
 REST_AUTH_REGISTER_SERIALIZERS = {
     'REGISTER_SERIALIZER': 'Users.serializers.UserRegistrationSerializer'
@@ -196,7 +196,9 @@ REST_FRAMEWORK = {
 
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 
-    'DEFAULT_PERMISSION_CLASSES': []
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated'],
+    
+    'DATE_INPUT_FORMATS': ['iso-8601', '%d-%m-%Y']
 }
 
 if not DEBUG:

@@ -1,2 +1,5 @@
-from Users.tests import (LoginRegistrationTestCase, UsersTestCase, 
-                         SkillTestCase, UserSkillTestCase)
+from Users.tests.Auth import LoginRegistrationTestCase
+from Users.tests.User import UsersTestCase
+from Users.tests.Skill import SkillTestCase, UserSkillTestCase
+from Users.tests.ExternalProject import ExternalProjectTestCase
+from Users.tests.UserEducation import UserEducationTestCase
