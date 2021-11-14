@@ -1,7 +1,8 @@
 from Core.models import User
 from rest_framework import serializers
 from Users.serializers import (UserSkillListSerializer, 
-                                ExternalProjectSerializer)
+                                ExternalProjectSerializer,
+                                UserEducationSerializer)
 
 
 class UserListSerializer(serializers.ModelSerializer):
@@ -14,6 +15,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
     skills = UserSkillListSerializer(source="userskill_set",many=True, 
                                      required=False, read_only=True)
     external_projects = ExternalProjectSerializer(many=True, read_only=True)
+    educations = UserEducationSerializer(many=True,read_only=True)
     
     class Meta:
         model = User
@@ -21,3 +23,11 @@ class UserDetailSerializer(serializers.ModelSerializer):
         exclude = ["active", "password", "date_joined", 
             "last_login","username","admin", "user_saved",
             "project_saved","type_vip"]
+        
+
+class CurrentUserSerializer(UserDetailSerializer):
+    class Meta:
+        model = User
+        read_only_fields = ["slug", "blocked", "type_user"]
+        exclude = ["active", "password", "date_joined", 
+            "last_login","username","admin"]

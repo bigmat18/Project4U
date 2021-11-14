@@ -5,7 +5,18 @@ from django.utils.translation import gettext_lazy as _
 import uuid
 
 class UserEducation(AbstractText):
+    
+    class TypeEducation(models.TextChoices):
+        UNIVERSITY = _('University')
+        HIGHSCHOOL = _('Highschool')
+        MASTER = _('Master')
+        COURSE = _('Course')
+        DOCTORATE = _('Doctorate')
+        OTHER = _('Other')
+    
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
+    type = models.CharField(max_length=32,choices=TypeEducation.choices,
+                            default=TypeEducation.OTHER)
     started_at = models.DateField()
     ended_at = models.DateField(null=True,blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
