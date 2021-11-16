@@ -10,6 +10,9 @@ from Users.views import EmailCreateView
 from rest_auth.registration.views import RegisterView
 from rest_auth.views import LoginView, LogoutView, UserDetailsView
 
+from django.conf.urls.static import static
+from django.conf import settings
+
 schema_view = get_schema_view(
    openapi.Info(
       title="API Project4U",
@@ -53,3 +56,6 @@ urlpatterns = [
    path('', include('Core.urls'))
    # -------- WEB-APP ------
 ] 
+
+# urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
