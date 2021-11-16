@@ -1,7 +1,6 @@
 from rest_framework import status
 from .BaseTest import BaseTestCase
 
-
 class LoginRegistrationTestCase(BaseTestCase):
 
     def setUp(self):
@@ -12,6 +11,7 @@ class LoginRegistrationTestCase(BaseTestCase):
     def test_registration_new_user(self):
         data = self.data
         data['email'] = "newemail@prova.com"
+        data['date_birth'] = "18-12-2002"
         response = self.client.post("/api/auth/registration/", data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 

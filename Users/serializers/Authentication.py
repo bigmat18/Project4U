@@ -4,7 +4,9 @@ from allauth.account.adapter import get_adapter
 from allauth.utils import email_address_exists
 from django.utils.translation import gettext_lazy as _
 from Core.models import User
+import datetime
 
+AGE = 16
 
 class UserRegistrationSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=254,required=allauth_settings.EMAIL_REQUIRED)
@@ -12,6 +14,7 @@ class UserRegistrationSerializer(serializers.Serializer):
     last_name = serializers.CharField(required=True, max_length=150)
     password1 = serializers.CharField(write_only=True)
     password2 = serializers.CharField(write_only=True)
+    date_birth = serializers.DateField(required=True)
 
     def validate_email(self, email):
         email = get_adapter().clean_email(email)
@@ -30,13 +33,21 @@ class UserRegistrationSerializer(serializers.Serializer):
             raise serializers.ValidationError(_(
             "Le password inserite sono diverse"))
         return data
-
+    
+    
+    def validate_date_birth(self, date_birth):
+        if (datetime.date.today() - date_birth).days < AGE * 356:
+            raise serializers.ValidationError(
+                _(f"Per pottersi registrare è necessario aver almeno {AGE} anni"))
+        return date_birth
+    
     def get_cleaned_data(self):
         return {
             'first_name': self.validated_data.get('first_name'),
             'last_name': self.validated_data.get('last_name'),
             'password': self.validated_data.get('password1'),
-            'email': self.validated_data.get('email')
+            'email': self.validated_data.get('email'),
+            'date_birth': self.validated_data.get('date_birth')
         }
 
     def save(self, request):

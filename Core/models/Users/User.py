@@ -1,7 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from django.db.models import base
-
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from Core.models import Skill, AbstractSlug
@@ -9,7 +7,7 @@ import uuid
 
 class UserManager(BaseUserManager):
 
-    def _create_user(self, email, password, first_name, last_name, admin):
+    def _create_user(self, email, password, first_name, last_name, admin, date_birth):
         if not email: raise ValueError(_('Users must have an email address'))
         if not password: raise ValueError(_('Users must have an password address'))
         if not first_name: raise ValueError(_('Users must have an first name'))
@@ -23,16 +21,17 @@ class UserManager(BaseUserManager):
         user.admin = admin
         user.first_name = first_name
         user.last_name = last_name
+        user.date_birth = date_birth
         user.date_joined = timezone.now()
         
         user.save(using=self._db)
         return user
 
-    def create_user(self, email, password, first_name, last_name):
-        return self._create_user(email, password, first_name, last_name, False)
+    def create_user(self, email, password, first_name, last_name, date_birth=None):
+        return self._create_user(email, password, first_name, last_name, False, date_birth)
 
-    def create_superuser(self, email, password, first_name, last_name):
-        return self._create_user(email, password, first_name, last_name, True)
+    def create_superuser(self, email, password, first_name, last_name, date_birth=None):
+        return self._create_user(email, password, first_name, last_name, True, date_birth)
 
 
 class User(AbstractBaseUser, AbstractSlug):
@@ -86,6 +85,9 @@ class User(AbstractBaseUser, AbstractSlug):
     
     description = models.TextField(_("description"), blank=True, 
                                    null=True,max_length=256)
+    
+    location = models.CharField(_("location"),blank=True,null=True,
+                                max_length=32)
     
     skills = models.ManyToManyField(Skill,
                                     through='UserSkill',
