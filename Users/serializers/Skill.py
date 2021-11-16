@@ -7,7 +7,7 @@ from Core.models.Users.User import User
 class SkillSerializer(serializers.ModelSerializer):
     class Meta:
         model = Skill
-        fields = ["name", "type_skill"]
+        fields = "__all__"
         
         
 class UserSkillListSerializer(serializers.ModelSerializer):
