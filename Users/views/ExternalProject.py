@@ -2,6 +2,8 @@ from rest_framework import mixins, viewsets
 from Users.serializers import ExternalProjectSerializer
 from Core.models import ExternalProject
 
+from rest_framework import status
+from rest_framework.response import Response
 
 class ExternalProjectCUDView(mixins.CreateModelMixin, 
                             mixins.UpdateModelMixin,
@@ -11,7 +13,10 @@ class ExternalProjectCUDView(mixins.CreateModelMixin,
     create:
     Aggiungi un progetto esterno all'utente
     
-    Permette di aggiungere un progetto esterno con il livello all'utente a cui è riferito lo slug nell'url
+    Permette di aggiungere un progetto esterno con il livello all'utente a cui è riferito lo slug nell'url.
+    Puoi mandare un singolo progetto oppure una lista di progetti usando questo formato:
+    [ { dati progetto }, { ... }, ... ]
+    L'endponts non ritrona nessun valore.
     
     update:
     Aggiorna i dati di un progetto esterno
@@ -29,6 +34,15 @@ class ExternalProjectCUDView(mixins.CreateModelMixin,
 
     def get_queryset(self):
         return ExternalProject.objects.filter(user=self.request.user)
+    
+    def create(self, request, *args, **kwargs):
+        if not isinstance(request.data, list):
+            return super(ExternalProjectCUDView, self).create(request, *args, **kwargs)
+        serializer = self.get_serializer(data=request.data, many=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(status=status.HTTP_201_CREATED, headers=headers)
     
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

@@ -17,6 +17,12 @@ class UserSkillTestCase(BaseTestCase):
     def setUp(self):
         self.init_test(True)
         self.skill = Skill.objects.create(name="prova")
+        self.skill2 = Skill.objects.create(name="prova2")
+        
+    def test_user_skill_list_create(self):
+        response = self.client.post(f"/api/user/skills/", format='json', data=[{"level":1, "skill": self.skill.id},
+                                                                        {"level":1, "skill": self.skill2.id}])
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         
     def test_user_skill_create(self):
         response = self.client.post(f"/api/user/skills/", data={"level":1, "skill": self.skill.id})

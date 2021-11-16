@@ -8,6 +8,12 @@ class ExternalProjectTestCase(BaseTestCase):
     def setUp(self):
         self.init_test(True)
         self.project = ExternalProject.objects.create(user=self.user,name="prova")
+        
+    def test_external_project_list_creation(self):
+        request = self.client.post("/api/user/external-projects/", format="json", data=[
+                                                                                {"name":"sdasd"},
+                                                                                {"name":"sdasd"}])
+        self.assertEqual(request.status_code, status.HTTP_201_CREATED)
     
     def test_external_project_creation(self):
         request = self.client.post("/api/user/external-projects/", data={"name":"sdasd"})
