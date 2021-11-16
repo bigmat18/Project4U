@@ -28,8 +28,8 @@ class UserSkillCUDView(mixins.CreateModelMixin,mixins.UpdateModelMixin,
     Aggiungi una skill all'utente
     
     Permette di aggiungere una skill con il livello all'utente a cui è riferito lo slug nell'url.
-    Puoi mandare una singola skill oppure una lista di skill usando questo formato:
-    [ { "level": //, "skill": // }, { ... }, ... ]
+    Puoi mandare una singola skill oppure una lista di skills usando questo formato:
+    [ { dati skill }, { ... }, ... ]
     L'endponts non ritrona nessun valore.
     
     update:
