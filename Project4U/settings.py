@@ -197,9 +197,12 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 
     'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated'],
-    
+        
     'DATE_INPUT_FORMATS': ['iso-8601', '%d-%m-%Y']
 }
+
+if not DEBUG:
+    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = ['rest_framework.renderers.JSONRenderer']
 
 if not DEBUG:
     REST_FRAMEWORK['DEFAULT_PERMISSION_CLASSES'].append(
