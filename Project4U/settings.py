@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
     
     'storages',
     
@@ -80,24 +81,16 @@ TEMPLATES = [
 WSGI_APPLICATION = 'Project4U.wsgi.application'
 
 
-if not DEBUG:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': os.environ['RDS_DB_NAME'],
-            'USER': os.environ['RDS_USERNAME'],
-            'PASSWORD': os.environ['RDS_PASSWORD'],
-            'HOST': os.environ['RDS_HOSTNAME'],
-            'PORT': os.environ['RDS_PORT'],
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get('RDS_DB_NAME','postgres'),
+        'USER': os.environ.get('RDS_USERNAME','postgres'),
+        'PASSWORD': os.environ.get('RDS_PASSWORD','postgres'),
+        'HOST': os.environ.get('RDS_HOSTNAME','127.0.0.1'),
+        'PORT': os.environ.get('RDS_PORT','5432'),
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -167,9 +160,10 @@ ACCOUNT_UNIQUE_EMAIL = True
 
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'Users.serializers.CurrentUserSerializer',
+    'LOGIN_SERIALIZER': 'Users.serializers.CustomLoginSerializer'
 }
 REST_AUTH_REGISTER_SERIALIZERS = {
-    'REGISTER_SERIALIZER': 'Users.serializers.UserRegistrationSerializer'
+    'REGISTER_SERIALIZER': 'Users.serializers.UserRegistrationSerializer',
 }
 # -------- django-allauth ------
 

@@ -1,3 +1,4 @@
+#------------------ ABSTRACT-MODELS ------------------
 from .Abstracts.based.AbstractSlug import AbstractSlug
 from .Abstracts.based.AbstractName import AbstractName
 from .Abstracts.based.AbstractText import AbstractText
@@ -5,6 +6,8 @@ from .Abstracts.based.AbstractCreateUpdate import AbstractCreateUpdate
 
 from .Abstracts.composed.AbstractComment import AbstractComment
 from .Abstracts.composed.AbstractImage import AbstractImage
+#------------------ ABSTRACT-MODELS ------------------
+
 
 from .Users.Skill import Skill, UserSkill
 from .Users.User import User

@@ -4,14 +4,12 @@ from django.conf.urls import url
 
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
+from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
 from Users.views import EmailCreateView
 from rest_auth.registration.views import RegisterView
 from rest_auth.views import LoginView, LogoutView, UserDetailsView
-
-from django.conf.urls.static import static
-from django.conf import settings
 
 schema_view = get_schema_view(
    openapi.Info(
@@ -22,7 +20,7 @@ schema_view = get_schema_view(
       API create per il funzionamento degli applicativi di Project4U, sito web project4u.it e l'app Project4U. L'API è ha esclusivo uso degli sviluppatori di Project4U,
       è necessario infatti possedere un API-KEY rilasciata solo per ambienti autorizzati dal nostro team amministrativo. REST API sviluppata da Giuntoni Matteo in python e django. 
       Link Project4U Admin-Pannel: http://admin.project4u.it
-      Link website: http://project4u.it
+      Link Website: http://project4u.it
       Link GitHub sviluppatore: https://github.com/Matteo181202
       Link Github progetto: https://github.com/Project4UTeam
       """,
@@ -34,20 +32,78 @@ schema_view = get_schema_view(
    permission_classes=[permissions.IsAdminUser],
 )
 
+#--------------- REGISTRATION DOC ------------
+registration_200 = openapi.Response(description="Registrazione avvenuta con successo",
+                                    schema=openapi.Schema(type=openapi.TYPE_OBJECT,
+                                                         properties={"key":openapi.Schema(title="auth-token",
+                                                                                          type=openapi.TYPE_STRING)}))
+registration_400_1 = openapi.Response(description="Nel caso venga ommesso un campo",
+                                    schema=openapi.Schema(type=openapi.TYPE_OBJECT,
+                                                         properties={"Nome del campo":openapi.Schema(description="Questo campo non può essere omesso",
+                                                                                                   type=openapi.TYPE_STRING)}))
+registration_400_2 = openapi.Response(description="Caso in cui un utente con la stessa mail sia registrato",
+                                    schema=openapi.Schema(type=openapi.TYPE_OBJECT,
+                                                         properties={"email":openapi.Schema(description="Un altro utente si è già registrato con questo indirizzo e-mail.",
+                                                                                          type=openapi.TYPE_STRING)}))
+registration_400_3 = openapi.Response(description="Se le due password non sono uguali",
+                                    schema=openapi.Schema(type=openapi.TYPE_OBJECT,
+                                                         properties={"non_field_errors":openapi.Schema(description="The two password fields didn't match.",
+                                                                                          type=openapi.TYPE_STRING)}))
+registration_400_4 = openapi.Response(description="Se l'età è inferiore ai 16 anni",
+                                    schema=openapi.Schema(type=openapi.TYPE_OBJECT,
+                                                         properties={"email":openapi.Schema(description="Per pottersi registrare è necessario aver almeno 16 anni",
+                                                                                          type=openapi.TYPE_STRING)}))
+registration_schema_view = \
+   swagger_auto_schema(method='post',
+                       operation_description="Registrazione utente con email, password (password1 e password2), first_name, last_name, date_birth, location (opzionale)",
+                       operation_summary="Registrazione nuovo utente",
+                       responses={"200":registration_200,
+                                 "1: 400":registration_400_1,
+                                 "2: 400":registration_400_2,
+                                 "3: 400":registration_400_3,
+                                 "4: 400":registration_400_4})(RegisterView.as_view())
+#--------------- REGISTRATION DOC ------------
 
+
+
+#--------------- LOGIN DOC ------------
+login_200 = openapi.Response(description="Login avvenuto con successo",
+                           schema=openapi.Schema(type=openapi.TYPE_OBJECT,
+                                                properties={"key":openapi.Schema(title="auth-token",
+                                                                                 type=openapi.TYPE_STRING)}))
+login_400 = openapi.Response(description="Credenziali sbagliate",
+                           schema=openapi.Schema(type=openapi.TYPE_OBJECT,
+                                                properties={"non_field_errors":openapi.Schema(description="Impossibile eseguire il login con le credenziali immesse.",
+                                                                                             type=openapi.TYPE_STRING)}))
+
+login_schema_view = \
+   swagger_auto_schema(method='post',
+                       operation_description="Login utente con email e password",
+                       operation_summary="Login utente registrato",
+                       responses={200:login_200,
+                                400:login_400})(LoginView.as_view())
+#--------------- LOGIN DOC ------------
+
+
+
+user_detail_schema_view = \
+   swagger_auto_schema(methods=["get","put","patch"],
+                       operation_description="""Aggiorna (PUT, PATCH) e recupera (GET) i dati dell'utente loggato, è possibili aggiornare si in modo parziale (PATCH)
+                       che totale (PUT). Inolte, anche se non specificato nella doc, è possibili aggiornare l'immagine profilo""",
+                       operation_summary="Aggiorna e recupera i dati dell'utente loggato")(UserDetailsView.as_view())
 urlpatterns = [
    path("admin/", admin.site.urls),
    url(r'^doc/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 
    # -------- USER REGISTRATION UTILITES ------
-   path("api/auth/login/", LoginView.as_view(), name="login"),
+   path("api/auth/login/", login_schema_view, name="login"),
    path("api/auth/logout/", LogoutView.as_view(), name="logout"),
-   path("api/auth/registration/", RegisterView.as_view(), name="registration"),
+   path("api/auth/registration/", registration_schema_view, name="registration"),
    # -------- USER REGISTRATION UTILITES ------
 
    # -------- API ------
    path('api/', include('Users.urls')),
-   path('api/user/', UserDetailsView.as_view(), name="user-detail"),
+   path('api/user/', user_detail_schema_view, name="user-detail"),
    # -------- API ------
    
    path('api/email/', EmailCreateView.as_view(), name="email-create"),
@@ -56,6 +112,3 @@ urlpatterns = [
    path('', include('Core.urls'))
    # -------- WEB-APP ------
 ] 
-
-# urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-# urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

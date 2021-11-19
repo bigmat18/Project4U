@@ -1,4 +1,4 @@
-from .Authentication import UserRegistrationSerializer
+from .Authentication import UserRegistrationSerializer, CustomLoginSerializer
 from .ExternalProject import ExternalProjectSerializer
 from .Skill import SkillSerializer, UserSkillListSerializer, UserSkillCreateSerializer
 from .Email import EmailSerializer
