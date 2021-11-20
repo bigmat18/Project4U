@@ -3,6 +3,13 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from Core.models import Skill, AbstractSlug
+
+from django.dispatch import receiver
+from django.db.models.signals import pre_save, pre_delete
+from storages.backends.s3boto3 import S3Boto3Storage
+
+from django.core.exceptions import ValidationError
+
 import uuid
 
 class UserManager(BaseUserManager):
@@ -22,7 +29,9 @@ class UserManager(BaseUserManager):
         user.first_name = first_name
         user.last_name = last_name
         user.date_birth = date_birth
+        print(user.date_joined)
         user.date_joined = timezone.now()
+        print(user.date_joined)
         
         user.save(using=self._db)
         return user
@@ -32,6 +41,12 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, email, password, first_name, last_name, date_birth=None):
         return self._create_user(email, password, first_name, last_name, True, date_birth)
+
+
+def image_path(instance,path):
+    if instance.id: filename = f"users_images/{instance.id}.jpg"
+    else: raise ValidationError("User non esistente")
+    return filename
 
 
 class User(AbstractBaseUser, AbstractSlug):
@@ -54,14 +69,14 @@ class User(AbstractBaseUser, AbstractSlug):
     email = models.EmailField(_('email address'), blank=True, unique=True)
     first_name = models.CharField(_('first name'), max_length=150, blank=True)
     last_name = models.CharField(_('last name'), max_length=150, blank=True)
-    image = models.ImageField(_("image"), blank=True, null=True)
+    image = models.ImageField(_("image"), blank=True, null=True, upload_to=image_path)
     username = models.CharField(max_length=64,blank=True,null=True,default=None)
     
     main_role = models.CharField(_('main role'), blank=True, null=True, max_length=32,
                                  help_text=main_role_help_text)
     
     date_birth = models.DateField(_('date birth'), null=True,blank=True)
-    date_joined = models.DateTimeField(_('date joined'))
+    date_joined = models.DateTimeField(_('date joined'),null=True)
 
     active = models.BooleanField(_("is active"), default=True)
     blocked = models.BooleanField(_("is blocked"), default=False,
@@ -121,3 +136,20 @@ class User(AbstractBaseUser, AbstractSlug):
     def has_perm(self, perm, obj=None): return True
 
     def has_module_perms(self, app_label): return True
+    
+
+
+@receiver(pre_delete,sender=User)
+def pre_delete_image(sender, instance, *args, **kwargs):
+    if instance.image:
+        storage = S3Boto3Storage()
+        storage.delete(str(instance.image))
+
+@receiver(pre_save, sender=User)
+def pre_save_image(sender, instance, *args, **kwargs):
+    user = User.objects.filter(id=instance.id)
+    if user.exists():
+        user = user.get(id=instance.id)
+        storage = S3Boto3Storage()
+        if not instance.image and user.image:
+            storage.delete(str(user.image))
