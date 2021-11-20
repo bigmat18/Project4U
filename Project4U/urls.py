@@ -7,7 +7,6 @@ from drf_yasg.views import get_schema_view
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
-from Users.views import EmailCreateView
 from rest_auth.registration.views import RegisterView
 from rest_auth.views import LoginView, LogoutView, UserDetailsView
 
@@ -33,7 +32,7 @@ schema_view = get_schema_view(
 )
 
 #--------------- REGISTRATION DOC ------------
-registration_200 = openapi.Response(description="Registrazione avvenuta con successo",
+registration_201 = openapi.Response(description="Registrazione avvenuta con successo",
                                     schema=openapi.Schema(type=openapi.TYPE_OBJECT,
                                                          properties={"key":openapi.Schema(title="auth-token",
                                                                                           type=openapi.TYPE_STRING)}))
@@ -57,7 +56,7 @@ registration_schema_view = \
    swagger_auto_schema(method='post',
                        operation_description="Registrazione utente con email, password (password1 e password2), first_name, last_name, date_birth, location (opzionale)",
                        operation_summary="Registrazione nuovo utente",
-                       responses={"200":registration_200,
+                       responses={"201":registration_201,
                                  "1: 400":registration_400_1,
                                  "2: 400":registration_400_2,
                                  "3: 400":registration_400_3,
@@ -80,24 +79,38 @@ login_schema_view = \
    swagger_auto_schema(method='post',
                        operation_description="Login utente con email e password",
                        operation_summary="Login utente registrato",
-                       responses={200:login_200,
-                                400:login_400})(LoginView.as_view())
+                       responses={"200":login_200,
+                                "400":login_400})(LoginView.as_view())
 #--------------- LOGIN DOC ------------
 
 
 
+#--------------- USER-DETAIL DOC ------------
 user_detail_schema_view = \
    swagger_auto_schema(methods=["get","put","patch"],
                        operation_description="""Aggiorna (PUT, PATCH) e recupera (GET) i dati dell'utente loggato, è possibili aggiornare si in modo parziale (PATCH)
                        che totale (PUT). Inolte, anche se non specificato nella doc, è possibili aggiornare l'immagine profilo""",
                        operation_summary="Aggiorna e recupera i dati dell'utente loggato")(UserDetailsView.as_view())
+#--------------- USER-DETAIL DOC ------------
+
+
+
+#--------------- USER-DETAIL DOC ------------
+logout_schema_view = \
+   swagger_auto_schema(methods=["get","post"],
+                       operation_description="""Slogga un utente loggato nel sistema rimuovendo il token a lui associato. E' possibili chiamare questo endpoints
+                       sia come richiesta POST che GET""",
+                       operation_summary="Slogga un utente loggato nel sistema")(LogoutView.as_view())
+#--------------- USER-DETAIL DOC ------------
+
+
 urlpatterns = [
    path("admin/", admin.site.urls),
    url(r'^doc/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 
    # -------- USER REGISTRATION UTILITES ------
    path("api/auth/login/", login_schema_view, name="login"),
-   path("api/auth/logout/", LogoutView.as_view(), name="logout"),
+   path("api/auth/logout/", logout_schema_view, name="logout"),
    path("api/auth/registration/", registration_schema_view, name="registration"),
    # -------- USER REGISTRATION UTILITES ------
 
@@ -105,9 +118,7 @@ urlpatterns = [
    path('api/', include('Users.urls')),
    path('api/user/', user_detail_schema_view, name="user-detail"),
    # -------- API ------
-   
-   path('api/email/', EmailCreateView.as_view(), name="email-create"),
-   
+      
    # -------- WEB-APP ------
    path('', include('Core.urls'))
    # -------- WEB-APP ------
