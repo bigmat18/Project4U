@@ -29,7 +29,11 @@ email_schema_view = \
                        responses={400:email_400})(vw.EmailCreateView.as_view())
 #--------------- EMAIL DOC ------------
 
+
 urlpatterns += [
     path('email/', email_schema_view, name="email-create"),
-    path('user/image/', vw.UserImageView.as_view(), name="user-image")
+    path('user/image/', vw.UserImageView.as_view(), name="user-image"),
+    path('user/', vw.CustumUserDetailsView.as_view({'put':'update',
+                                                    'patch':'update',
+                                                    'get':'retrieve'}), name="user-detail"),
 ]
