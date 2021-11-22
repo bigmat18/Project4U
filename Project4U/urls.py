@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls import url
+import debug_toolbar
 
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
@@ -89,7 +90,8 @@ login_schema_view = \
 user_detail_schema_view = \
    swagger_auto_schema(methods=["get","put","patch"],
                        operation_description="""Aggiorna (PUT, PATCH) e recupera (GET) i dati dell'utente loggato, è possibili aggiornare si in modo parziale (PATCH)
-                       che totale (PUT). Inolte, anche se non specificato nella doc, è possibili aggiornare l'immagine profilo""",
+                       che totale (PUT). Inolte, anche se non specificato nella doc.
+                       ------ Anche se non mostrato è possibili aggiornare l'immagine profilo ------""",
                        operation_summary="Aggiorna e recupera i dati dell'utente loggato")(UserDetailsView.as_view())
 #--------------- USER-DETAIL DOC ------------
 
@@ -107,6 +109,7 @@ logout_schema_view = \
 urlpatterns = [
    path("admin/", admin.site.urls),
    url(r'^doc/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+   path('__debug__/', include(debug_toolbar.urls)),
 
    # -------- USER REGISTRATION UTILITES ------
    path("api/auth/login/", login_schema_view, name="login"),

@@ -10,6 +10,7 @@ if DEBUG == 'False': DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
+INTERNAL_IPS = ['127.0.0.1']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -46,6 +47,8 @@ INSTALLED_APPS = [
 
     'django_filters',
     
+    'debug_toolbar',
+    
     'Core'
 ]
 
@@ -58,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'Project4U.urls'
@@ -157,6 +161,7 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True   
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_LOGOUT_ON_GET = True
 
 REST_AUTH_SERIALIZERS = {
     'USER_DETAILS_SERIALIZER': 'Users.serializers.CurrentUserSerializer',
@@ -192,7 +197,7 @@ REST_FRAMEWORK = {
 
     'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated'],
         
-    'DATE_INPUT_FORMATS': ['iso-8601', '%d-%m-%Y']
+    #'DATE_INPUT_FORMATS': ['iso-8601', '%d-%m-%Y']
 }
 
 if not DEBUG:

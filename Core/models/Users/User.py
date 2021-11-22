@@ -4,6 +4,8 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from Core.models import Skill, AbstractSlug
 
+from django.conf import settings
+
 from django.dispatch import receiver
 from django.db.models.signals import pre_save, pre_delete
 from storages.backends.s3boto3 import S3Boto3Storage
@@ -21,17 +23,15 @@ class UserManager(BaseUserManager):
         if not last_name: raise ValueError(_('Users must have an last name'))
 
 
-        email   = self.normalize_email(email)
-        user    = self.model(email=email)
+        email = self.normalize_email(email)
+        user = self.model(email=email)
         
         user.set_password(password)
         user.admin = admin
         user.first_name = first_name
         user.last_name = last_name
         user.date_birth = date_birth
-        print(user.date_joined)
         user.date_joined = timezone.now()
-        print(user.date_joined)
         
         user.save(using=self._db)
         return user
@@ -138,18 +138,18 @@ class User(AbstractBaseUser, AbstractSlug):
     def has_module_perms(self, app_label): return True
     
 
+if not settings.DEBUG:
+    @receiver(pre_delete,sender=User)
+    def pre_delete_image(sender, instance, *args, **kwargs):
+        if instance.image:
+            storage = S3Boto3Storage()
+            storage.delete(str(instance.image))
 
-@receiver(pre_delete,sender=User)
-def pre_delete_image(sender, instance, *args, **kwargs):
-    if instance.image:
-        storage = S3Boto3Storage()
-        storage.delete(str(instance.image))
-
-@receiver(pre_save, sender=User)
-def pre_save_image(sender, instance, *args, **kwargs):
-    user = User.objects.filter(id=instance.id)
-    if user.exists():
-        user = user.get(id=instance.id)
-        storage = S3Boto3Storage()
-        if not instance.image and user.image:
-            storage.delete(str(user.image))
+    @receiver(pre_save, sender=User)
+    def pre_save_image(sender, instance, *args, **kwargs):
+        user = User.objects.filter(id=instance.id)
+        if user.exists():
+            user = user.get(id=instance.id)
+            storage = S3Boto3Storage()
+            if not instance.image and user.image:
+                storage.delete(str(user.image))
