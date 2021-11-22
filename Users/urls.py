@@ -31,4 +31,5 @@ email_schema_view = \
 
 urlpatterns += [
     path('email/', email_schema_view, name="email-create"),
+    path('user/image/', vw.UserImageView.as_view(), name="user-image")
 ]

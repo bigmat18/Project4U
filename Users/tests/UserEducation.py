@@ -12,13 +12,13 @@ class UserEducationTestCase(BaseTestCase):
         
     def test_education_list_create(self):
         request = self.client.post("/api/user/educations/", format= "json", data=[
-            {"text":self.education.text,"started_at":"20-3-2020"},
-            {"text":self.education.text,"started_at":"20-3-2020"}])
+            {"text":self.education.text,"started_at":"2020-3-20"},
+            {"text":self.education.text,"started_at":"2020-3-20"}])
         self.assertEqual(request.status_code, status.HTTP_201_CREATED)
         
     def test_education_create(self):
         request = self.client.post("/api/user/educations/", data={"text":self.education.text, 
-                                                                  "started_at":"20-3-2020"})
+                                                                  "started_at":"2020-3-20"})
         self.assertEqual(request.status_code, status.HTTP_201_CREATED)
         
     def test_education_update(self):
