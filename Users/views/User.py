@@ -3,10 +3,36 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from Users.serializers import UserDetailSerializer, UserListSerializer
+from rest_auth.views import UserDetailsView
 from Core.models import User
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+
+
+update_summary = "Aggiorna i dati dell'utente loggato"
+        
+update_description = """
+                    Aggiorna (PUT, PATCH) i dati dell'utente loggato. E' possibili aggiornare si in modo parziale (PATCH) che totale (PUT).
+                    ------ Anche se non mostrato è possibili aggiornare l'immagine profilo ------
+                    """
+class CustumUserDetailsView(UserDetailsView,
+                            viewsets.GenericViewSet):
+    
+    """
+    retrieve:
+    Recupera i dati dell'utente loggato
+    
+    Recupera i dati dell'utente loggato
+    """
+
+    @swagger_auto_schema(responses={200:""},
+                         operation_description=update_description,
+                         operation_summary=update_summary)
+    def update(self, request, *args, **kwargs):
+        response = super().retrieve(request, *args, **kwargs)
+        return Response(status=response.status_code)
+
 
 
 class UserListView(generics.ListAPIView,

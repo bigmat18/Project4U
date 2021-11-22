@@ -87,17 +87,6 @@ login_schema_view = \
 
 
 #--------------- USER-DETAIL DOC ------------
-user_detail_schema_view = \
-   swagger_auto_schema(methods=["get","put","patch"],
-                       operation_description="""Aggiorna (PUT, PATCH) e recupera (GET) i dati dell'utente loggato, è possibili aggiornare si in modo parziale (PATCH)
-                       che totale (PUT). Inolte, anche se non specificato nella doc.
-                       ------ Anche se non mostrato è possibili aggiornare l'immagine profilo ------""",
-                       operation_summary="Aggiorna e recupera i dati dell'utente loggato")(UserDetailsView.as_view())
-#--------------- USER-DETAIL DOC ------------
-
-
-
-#--------------- USER-DETAIL DOC ------------
 logout_schema_view = \
    swagger_auto_schema(methods=["get","post"],
                        operation_description="""Slogga un utente loggato nel sistema rimuovendo il token a lui associato. E' possibili chiamare questo endpoints
@@ -119,7 +108,6 @@ urlpatterns = [
 
    # -------- API ------
    path('api/', include('Users.urls')),
-   path('api/user/', user_detail_schema_view, name="user-detail"),
    # -------- API ------
       
    # -------- WEB-APP ------
