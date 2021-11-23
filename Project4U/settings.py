@@ -88,7 +88,7 @@ WSGI_APPLICATION = 'Project4U.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('RDS_DB_NAME','postgres'),
+        'NAME': os.environ.get('RDS_DB_NAME','P4ULocalDB'),
         'USER': os.environ.get('RDS_USERNAME','postgres'),
         'PASSWORD': os.environ.get('RDS_PASSWORD','postgres'),
         'HOST': os.environ.get('RDS_HOSTNAME','127.0.0.1'),
