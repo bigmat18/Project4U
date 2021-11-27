@@ -11,6 +11,15 @@ class SkillTestCase(BaseTestCase):
         response = self.client.get("/api/skills/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
+    def test_create_skill_unauth(self):
+         self.client.logout()
+         response = self.client.post("/api/skills/", data={"name":"prova"})
+         self.assertEqual(response.status_code,status.HTTP_401_UNAUTHORIZED)
+         
+    def test_create_skill_auth(self):
+         response = self.client.post("/api/skills/", data={"name":"prova"})
+         self.assertEqual(response.status_code,status.HTTP_201_CREATED)
+        
         
 class UserSkillTestCase(BaseTestCase):
     

@@ -168,10 +168,6 @@ body {
         font-size: $small-title-font-size;
     }
 
-    @include respond(tab-land) {
-        font-size: $xsmall-title-font-size;
-    }
-
     &--blue {
         color: $color-primary-one-1;
     }
@@ -193,6 +189,10 @@ body {
 
     &--yellow {
         color: $color-primary-two-1;
+    }
+
+    @include respond(phone) {
+        font-size: $small-font-size;
     }
 }
 

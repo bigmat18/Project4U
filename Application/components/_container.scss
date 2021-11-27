@@ -11,4 +11,14 @@
     box-shadow: $shadow-xlarge-black;
 
     padding: 2rem 4rem;
+
+    @include respond(tab-port) {
+        padding: 0rem 0rem;
+        width: 70%;
+    }
+
+    @include respond(phone) {
+        padding: 1.3rem 0rem;
+        width: 90%;
+    }
 }

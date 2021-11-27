@@ -8,30 +8,41 @@ from Core.models import User
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from django.utils.decorators import method_decorator
 
 
-update_summary = "Aggiorna i dati dell'utente loggato"
-        
-update_description = """
-                    Aggiorna (PUT, PATCH) i dati dell'utente loggato. E' possibili aggiornare si in modo parziale (PATCH) che totale (PUT).
-                    ------ Anche se non mostrato è possibili aggiornare l'immagine profilo ------
-                    """
+                    
+@method_decorator(name='update', decorator=swagger_auto_schema(
+    operation_description=  """
+                            Aggiorna (PUT, PATCH) i dati dell'utente loggato. E' possibili aggiornare si in modo parziale (PATCH) che totale (PUT).
+                            ------ Anche se non mostrato è possibili aggiornare l'immagine profilo ------
+                            """,
+    operation_summary= "Aggiorna i dati dell'utente loggato",
+    responses={200:""}
+))
 class CustumUserDetailsView(UserDetailsView,
-                            viewsets.GenericViewSet):
-    
+                            viewsets.GenericViewSet):    
     """
     retrieve:
     Recupera i dati dell'utente loggato
     
     Recupera i dati dell'utente loggato
     """
-
-    @swagger_auto_schema(responses={200:""},
-                         operation_description=update_description,
-                         operation_summary=update_summary)
-    def update(self, request, *args, **kwargs):
-        response = super().retrieve(request, *args, **kwargs)
+    
+    def custom_response(self,response):
+        if response.status_code != status.HTTP_200_OK:
+            return Response(status=response.status_code,data=response.data)
         return Response(status=response.status_code)
+    
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, *args, **kwargs)
+        return self.custom_response(response)
+    
+    def partial_update(self, request, *args, **kwargs):
+        response = super().partial_update(request, *args, **kwargs)
+        return self.custom_response(response)
+
+
 
 
 

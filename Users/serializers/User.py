@@ -19,7 +19,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        read_only_fields = ["slug", "blocked", "type_user"]
+        read_only_fields = ["slug", "blocked"]
         exclude = ["active", "password", "date_joined", 
             "last_login","username","admin", "user_saved",
             "project_saved","type_vip"]
@@ -28,6 +28,6 @@ class UserDetailSerializer(serializers.ModelSerializer):
 class CurrentUserSerializer(UserDetailSerializer):
     class Meta:
         model = User
-        read_only_fields = ["slug", "blocked", "type_user"]
+        read_only_fields = ["slug", "blocked"]
         exclude = ["active", "password", "date_joined", 
             "last_login","username","admin"]

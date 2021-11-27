@@ -17,11 +17,14 @@ class ExternalProjectCUDView(mixins.CreateModelMixin,
     Puoi mandare un singolo progetto oppure una lista di progetti usando questo formato:
     [ { dati progetto }, { ... }, ... ]
     L'endponts non ritrona nessun valore.
+    ------ Anche se non mostrato è possibili inviare anche un'immagine del progetto ------
+
     
     update:
     Aggiorna i dati di un progetto esterno
     
-    Aggiorna i dati della skill, il proggetto da aggiornare viene decisa in base all'id della skill messo nell'url ({skill} = id skill)
+    Aggiorna i dati della skill, il proggetto da aggiornare viene decisa in base all'id della skill messo nell'url ({skill} = id skill).
+     ------ Anche se non mostrato è possibili aggiornare anche un'immagine del progetto ------
     
     destroy:
     Rimuovi un progetto esterno da un utente

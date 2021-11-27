@@ -94,7 +94,7 @@ logout_schema_view = \
                        operation_summary="Slogga un utente loggato nel sistema")(LogoutView.as_view())
 #--------------- USER-DETAIL DOC ------------
 
-
+admin.site.site_header = 'Project4U Administration'
 urlpatterns = [
    path("admin/", admin.site.urls),
    url(r'^doc/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
