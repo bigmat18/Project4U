@@ -15,10 +15,12 @@ class SkillFilter(filters.FilterSet):
         fields = ["name"]
         
     def filter_queryset(self, queryset):
-        if "name" in self.data:
-            result = queryset.annotate(similarity=TrigramSimilarity(
-                'name',self.data["name"])).filter(
-                    similarity__gte=0.01).order_by("-similarity")
+        if "name" in self.data and self.data["name"] is not "":
+            result = queryset\
+                .exclude(users=self.request.user)\
+                .annotate(similarity=TrigramSimilarity('name',self.data["name"]))\
+                .filter(similarity__gte=0.01)\
+                .order_by("-similarity")
             return result
         return queryset
     
@@ -48,7 +50,9 @@ class SkillListView(generics.ListAPIView,
     Lista delle skills
     
     Ritorna una lista di tutte le skills.
-    E' possibile fare una ricerca aggiungendo " /?name= " alla fine dell'endpoints (dove = inserire la stringa da cercare).
+    E' possibile fare una ricerca aggiungendo " /?name= " alla fine dell'endpoints (dove = inserire la stringa da cercare);
+    in questa ricerca se si manda una stringa vuota ritorernà la lista delle skills completa, inoltre questo fitro esclude di default
+    le skill già aggiunte all'untente che ha effetuato le richesta.
     La ricerca viene effetuata tramite triagrammi, quindi accetta errori di battituira maiuscole/minuscole differenti, caratteri speciali.
     
     create:
