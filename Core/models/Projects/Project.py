@@ -35,7 +35,8 @@ class Project(AbstractText, AbstractName, AbstractCreateUpdate):
     tags = models.ManyToManyField(Tag,
                                   related_name="projects",
                                   related_query_name="projects",
-                                  help_text=tags_help_text)
+                                  help_text=tags_help_text,
+                                  blank=True)
     
     users = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                    through="UserProject",

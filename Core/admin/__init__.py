@@ -7,3 +7,5 @@ from .Users.ExternalProject import ExternalProjectInline
 from .Users.User import UserAdmin
 from .Users.Email import EmailImportExport
 
+from .Projects.Project import *
+

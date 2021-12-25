@@ -13,15 +13,15 @@ from .Users.Skill import Skill, UserSkill
 from .Users.User import User
 from .Users.Email import Email
 from .Users.ExternalProject import ExternalProject
-from .Users.UserEducation import UserEducation, TypeEducation
+from .Users.UserEducation import UserEducation
 
 from .Projects.Tag import Tag
 from .Projects.Project import Project
 from .Projects.Role import Role, UserProject
-
-"""
 from .Projects.SearchCard import SearchCard
 
+
+"""
 from .Showcases.Showcase import Showcase
 from .Showcases.Message import Message
 from .Showcases.TextMessage import TextMessage
