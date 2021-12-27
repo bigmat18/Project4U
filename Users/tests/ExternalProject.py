@@ -1,5 +1,5 @@
 from django.http import request
-from .BaseTest import BaseTestCase
+from Core.tests import BaseTestCase
 from Core.models import ExternalProject
 from rest_framework import status
 

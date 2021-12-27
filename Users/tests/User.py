@@ -1,6 +1,5 @@
 from rest_framework import response, status
-from .BaseTest import BaseTestCase
-
+from Core.tests import BaseTestCase
 
 class UsersTestCase(BaseTestCase):
     

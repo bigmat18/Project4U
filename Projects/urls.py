@@ -3,6 +3,6 @@ import Projects.views as vw
 from rest_framework.routers import DefaultRouter
     
 router = DefaultRouter()
-router.register(r"projects", vw.ProjectViewSet)
+router.register(r"projects", vw.ProjectsViewSet)
 
 urlpatterns = router.urls

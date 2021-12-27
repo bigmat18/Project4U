@@ -1,1 +1,1 @@
-from .Project import ProjectViewSet
+from .Project import ProjectsViewSet
