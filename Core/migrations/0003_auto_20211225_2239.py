@@ -12,11 +12,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='project',
-            name='tags',
-            field=models.ManyToManyField(blank=True, help_text='I tags che identificano il progetto', related_name='projects', related_query_name='projects', to='Core.Tag'),
-        ),
         migrations.CreateModel(
             name='SearchCard',
             fields=[
