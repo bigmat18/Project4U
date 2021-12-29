@@ -11,8 +11,8 @@ class SkillSerializer(serializers.ModelSerializer):
         
         
 class UserSkillListSerializer(serializers.ModelSerializer):
-    skill = serializers.SerializerMethodField(read_only=True)
-    type = serializers.SerializerMethodField(read_only=True)
+    name = serializers.SerializerMethodField(read_only=True)
+    type_skill = serializers.SerializerMethodField(read_only=True)
     id = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
