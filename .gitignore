@@ -51,6 +51,7 @@ venv
 db.sqlite3
 aws.txt
 media
+.vscode
 
 # Elastic Beanstalk Files
 .elasticbeanstalk

@@ -9,10 +9,10 @@ import uuid
 class Skill(AbstractName):
     
     class TypeSkills(models.TextChoices):
-        PROGRAMMING = _('Programmazione')
-        MANAGEMENT = _('Managment')
-        DESIGN = _('Design')
-        OTHER = _('Altro')
+        PROGRAMMING = 'Programming'
+        MANAGEMENT = 'Managment'
+        DESIGN = 'Design'
+        OTHER = 'Other'
         
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     type_skill = models.CharField(_("type skill"), max_length=64, 

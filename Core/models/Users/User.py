@@ -55,15 +55,15 @@ class User(AbstractBaseUser, AbstractSlug):
     description_help_text = "Descrizione dell'utente (256 caratteri max)"
     
     class TypeUser(models.TextChoices):
-        BASE = _('Base')
-        VERIFIED = _('Verificato')
-        INNOVATOR = _('Innovatore')
+        BASE = 'Base'
+        VERIFIED = 'Verified'
+        INNOVATOR = 'Innovator'
     
     class TypeVip(models.TextChoices):
-        FREE = 'FREE', _('Free')
-        LV1 = 'LV1', _('Livello 01')
-        LV2 = 'LV2', _('Livello 02')
-        LV3 = 'LV3', _('Livello 03')
+        FREE = 'FREE'
+        LV1 = 'LV1'
+        LV2 = 'LV2'
+        LV3 = 'LV3'
     
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     email = models.EmailField(_('email address'), blank=True, unique=True)

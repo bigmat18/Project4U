@@ -28,21 +28,7 @@ class CustumUserDetailsView(UserDetailsView,
     
     Recupera i dati dell'utente loggato
     """
-    
-    def custom_response(self,response):
-        if response.status_code != status.HTTP_200_OK:
-            return Response(status=response.status_code,data=response.data)
-        return Response(status=response.status_code)
-    
-    def update(self, request, *args, **kwargs):
-        response = super().update(request, *args, **kwargs)
-        return self.custom_response(response)
-    
-    def partial_update(self, request, *args, **kwargs):
-        response = super().partial_update(request, *args, **kwargs)
-        return self.custom_response(response)
-
-
+    pass
 
 
 

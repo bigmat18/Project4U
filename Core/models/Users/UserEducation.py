@@ -7,12 +7,12 @@ import uuid
 class UserEducation(AbstractText):
     
     class TypeEducation(models.TextChoices):
-        UNIVERSITY = _('Università')
-        HIGHSCHOOL = _('Superiori')
-        MASTER = _('Master')
-        COURSE = _('Corso')
-        DOCTORATE = _('Dottorato')
-        OTHER = _('Altro')
+        UNIVERSITY = 'University'
+        HIGHSCHOOL = 'Highschool'
+        MASTER = 'Master'
+        COURSE = 'Course'
+        DOCTORATE = 'Doctorate'
+        OTHER = 'Other'
     
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     type = models.CharField(max_length=32,choices=TypeEducation.choices,
