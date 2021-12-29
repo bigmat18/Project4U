@@ -4,15 +4,15 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 import uuid
 
-class TypeEducation(models.TextChoices):
+class UserEducation(AbstractText):
+    
+    class TypeEducation(models.TextChoices):
         UNIVERSITY = 'University'
         HIGHSCHOOL = 'Highschool'
         MASTER = 'Master'
         COURSE = 'Course'
         DOCTORATE = 'Doctorate'
         OTHER = 'Other'
-
-class UserEducation(AbstractText):
     
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     type = models.CharField(max_length=32,choices=TypeEducation.choices,

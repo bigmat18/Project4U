@@ -17,8 +17,6 @@ class UserRegistrationSerializer(RegisterSerializer):
     username = None
     first_name = serializers.CharField(required=True, max_length=30)
     last_name = serializers.CharField(required=True, max_length=150)
-    date_birth = serializers.DateField(required=False)
-    location = serializers.CharField(required=False)
     
     def validate_date_birth(self, date_birth):
         if (datetime.date.today() - date_birth).days < AGE * 356:
