@@ -1,1 +1,1 @@
-from .Project import ProjectSerializer
+from .Project import ProjectSerializerList, ProjectSerializerDetail

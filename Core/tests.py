@@ -26,4 +26,4 @@ from Users.tests.Skill import SkillTestCase, UserSkillTestCase
 from Users.tests.ExternalProject import ExternalProjectTestCase
 from Users.tests.UserEducation import UserEducationTestCase
 
-from Projects.tests.Projects import ProjectsTestCase
+from Projects.tests.Project import ProjectsTestCase

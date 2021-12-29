@@ -1,6 +1,9 @@
+from rest_framework import generics, mixins
+from rest_framework import viewsets
 from rest_framework.viewsets import ModelViewSet
 from Core.models import Project
-from ..serializers import ProjectSerializer
+from Projects.serializers.Project import ProjectSerializerDetail
+from ..serializers import ProjectSerializerList
 from rest_framework_api_key.permissions import HasAPIKey
 from rest_framework.permissions import IsAuthenticated
 from rest_access_policy.access_policy import AccessPolicy
@@ -30,7 +33,9 @@ class ProjectsAccessPolicy(AccessPolicy):
 
 
 
-class ProjectsViewSet(ModelViewSet):
+class ProjectsListCreateView(mixins.CreateModelMixin,
+                            mixins.ListModelMixin,
+                            viewsets.GenericViewSet):
     """
     list:
     Mostra una lista di progetti.
@@ -58,12 +63,21 @@ class ProjectsViewSet(ModelViewSet):
     Dato un id di un progetto puoi agiornare 1 o più suoi dati. E' possibile esseguire l'aggiornamento
     soltato se si è il creatore del progetto.
     """
-    serializer_class = ProjectSerializer
+    serializer_class = ProjectSerializerList
     queryset = Project.objects.all()
-    lookup_field = "id"
     permission_classes = [IsAuthenticated, ProjectsAccessPolicy]
-    #if not settings.DEBUG: permission_classes.append(HasAPIKey)
+    if not settings.DEBUG: permission_classes.append(HasAPIKey)
 
     
     def perform_create(self, serializer):
         serializer.save(creator=self.request.user)
+
+
+
+class ProjectsRUDView(generics.RetrieveUpdateDestroyAPIView,
+                      viewsets.GenericViewSet):
+    serializer_class = ProjectSerializerDetail
+    queryset = Project.objects.all()
+    lookup_field = "id"
+    permission_classes = [IsAuthenticated, ProjectsAccessPolicy]
+    if not settings.DEBUG: permission_classes.append(HasAPIKey)
