@@ -35,6 +35,7 @@ class UserSkillTestCase(BaseTestCase):
         response = self.client.post(f"/api/user/skills/", format='json', data=[{"level":1, "skill": self.skill2.id},
                                                                         {"level":1, "skill": self.skill3.id}])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertIsInstance(response.data, list)
         
     def test_user_skill_update_auth(self):
         self.user.skills.add(self.skill1)

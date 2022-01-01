@@ -2,7 +2,8 @@ from rest_framework import generics, viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from Users.serializers import UserDetailSerializer, UserListSerializer
+from Users.serializers import (UserDetailSerializer, UserListSerializer,
+                               CurrentUserImageSerializer)
 from rest_auth.views import UserDetailsView
 from Core.models import User
 
@@ -48,7 +49,7 @@ class UserListView(generics.ListAPIView,
 
 
 class UserRetriveView(generics.RetrieveAPIView,
-                        viewsets.GenericViewSet):
+                      viewsets.GenericViewSet):
     """
     retrieve:
     Ristituisce i dettagli di un'utente.
@@ -60,12 +61,14 @@ class UserRetriveView(generics.RetrieveAPIView,
     lookup_field = "slug"
     
     
-class UserImageView(APIView):
     
-    @swagger_auto_schema(responses={"200":
-        openapi.Schema(type=openapi.TYPE_OBJECT,
-                       properties={"image":openapi.Schema(
-                           type=openapi.TYPE_STRING)})})
+@method_decorator(swagger_auto_schema(
+                responses={"200":openapi.Schema(
+                    type=openapi.TYPE_OBJECT,
+                    properties={"image":openapi.Schema(
+                        type=openapi.TYPE_STRING)})}),name="get")
+class UserImageView(APIView):
+
     def get(self,request):
         """
         Restituisce l'immage dell'utente loggato
@@ -73,5 +76,5 @@ class UserImageView(APIView):
         Restituisce l'immage dell'utente loggato
         """
         user = User.objects.get(id=request.user.id)
-        if user.image: return Response(status=status.HTTP_200_OK,data={"image":user.image})
-        else: return Response(status=status.HTTP_200_OK,data={"image":None})
+        serializer = CurrentUserImageSerializer(user)
+        return Response(status=status.HTTP_200_OK,data=serializer.data)

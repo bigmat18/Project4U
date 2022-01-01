@@ -19,10 +19,10 @@ class UserSkillListSerializer(serializers.ModelSerializer):
         model = UserSkill
         exclude = ["user"]
         
-    def get_skill(self, instance):
+    def get_name(self, instance):
         return instance.skill.name
     
-    def get_type(self, instance):
+    def get_type_skill(self, instance):
         return instance.skill.type_skill
     
     def get_id(self, instance):

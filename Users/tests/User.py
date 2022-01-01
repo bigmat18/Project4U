@@ -1,6 +1,6 @@
 from rest_framework import response, status
 from .BaseTest import BaseTestCase, User
-
+import tempfile
 
 class UsersTestCase(BaseTestCase):
     
@@ -16,8 +16,11 @@ class UsersTestCase(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         
     def test_current_user_image_auth(self):
+        image = tempfile.NamedTemporaryFile(suffix=".jpg").name
+        self.user.image = image
         response = self.client.get('/api/user/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["image"], f"http://testserver/media{image}")
         
     def test_user_list_auth(self):
         response = self.client.get("/api/users/")

@@ -53,14 +53,12 @@ class UserSkillCUDView(mixins.CreateModelMixin,mixins.UpdateModelMixin,
     @swagger_auto_schema(responses=create_responses,request_body=UserSkillCreateSerializer(many=True))
     def create(self, request, *args, **kwargs):
         if not isinstance(request.data, list):
-            response = super(UserSkillCUDView, self).create(request, *args, **kwargs)
-            response.data = {}
-            return response
+            return super(UserSkillCUDView, self).create(request, *args, **kwargs)
         serializer = self.get_serializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(status=status.HTTP_201_CREATED, headers=headers)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
     def perform_create(self, serializer):
         try: serializer.save(user=self.request.user)

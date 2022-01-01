@@ -44,7 +44,7 @@ class UserEducationCUDView(mixins.CreateModelMixin,
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(status=status.HTTP_201_CREATED, headers=headers)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
