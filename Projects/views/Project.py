@@ -1,6 +1,5 @@
 from rest_framework import generics, mixins
 from rest_framework import viewsets
-from rest_framework.viewsets import ModelViewSet
 from Core.models import Project
 from Projects.serializers.Project import ProjectSerializerDetail
 from ..serializers import ProjectSerializerList
@@ -46,7 +45,21 @@ class ProjectsListCreateView(mixins.CreateModelMixin,
     Aggiungi un progetto.
     
     Aggiungi un nuovo progetto con te come creatore.
+    """
+    serializer_class = ProjectSerializerList
+    queryset = Project.objects.all()
+    permission_classes = [IsAuthenticated, ProjectsAccessPolicy]
+    if not settings.DEBUG: permission_classes.append(HasAPIKey)
+
     
+    def perform_create(self, serializer):
+        serializer.save(creator=self.request.user)
+
+
+
+class ProjectsRUDView(generics.RetrieveUpdateDestroyAPIView,
+                      viewsets.GenericViewSet):
+    """
     retrieve:
     Mostra un progetto
     
@@ -63,19 +76,6 @@ class ProjectsListCreateView(mixins.CreateModelMixin,
     Dato un id di un progetto puoi agiornare 1 o più suoi dati. E' possibile esseguire l'aggiornamento
     soltato se si è il creatore del progetto.
     """
-    serializer_class = ProjectSerializerList
-    queryset = Project.objects.all()
-    permission_classes = [IsAuthenticated, ProjectsAccessPolicy]
-    if not settings.DEBUG: permission_classes.append(HasAPIKey)
-
-    
-    def perform_create(self, serializer):
-        serializer.save(creator=self.request.user)
-
-
-
-class ProjectsRUDView(generics.RetrieveUpdateDestroyAPIView,
-                      viewsets.GenericViewSet):
     serializer_class = ProjectSerializerDetail
     queryset = Project.objects.all()
     lookup_field = "id"

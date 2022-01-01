@@ -27,3 +27,4 @@ from Users.tests.ExternalProject import ExternalProjectTestCase
 from Users.tests.UserEducation import UserEducationTestCase
 
 from Projects.tests.Project import ProjectsTestCase
+from Projects.tests.Role import RoleTestCase
