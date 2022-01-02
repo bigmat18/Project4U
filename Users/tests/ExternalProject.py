@@ -1,5 +1,5 @@
 from django.http import request
-from .BaseTest import BaseTestCase
+from Core.tests import BaseTestCase
 from Core.models import ExternalProject
 from rest_framework import status
 
@@ -15,7 +15,7 @@ class ExternalProjectTestCase(BaseTestCase):
         response = self.client.post("/api/user/external-projects/",format="json",data=[{"name":"sdasd"},{"name":"sdasd"}])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIsInstance(response.data, list)
-        
+    
     def test_external_project_create_unauth(self):
         self.client.logout()
         response = self.client.post("/api/user/external-projects/", data={"name":"sdasd"})

@@ -8,8 +8,10 @@ class AbstractCreateUpdate(models.Model):
     
     created_at = models.DateTimeField(_('created at'), 
                                       default=timezone.now,
+                                      editable=False,
                                       help_text=created_at_help_text)
     updated_at = models.DateTimeField(_('updated at'),
+                                      editable=False,
                                       help_text=updated_at_help_text)
     
     class Meta:
@@ -18,7 +20,7 @@ class AbstractCreateUpdate(models.Model):
         indexes = [models.Index(fields=['-updated_at'])]
         
     def save(self, *args, **kwargs):
-        self.updated_at = timezone.now
+        self.updated_at = timezone.now()
         return super().save(*args, **kwargs)
     
     @property

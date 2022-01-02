@@ -6,7 +6,7 @@ from django.utils import timezone
 import uuid
 
 class Role(AbstractName):
-    project = models.ForeignKey(settings.AUTH_USER_MODEL,
+    project = models.ForeignKey(Project,
                                 on_delete=models.CASCADE,
                                 related_name="roles",
                                 related_query_name="roles")
