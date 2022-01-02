@@ -21,8 +21,11 @@ class UserEducationTestCase(BaseTestCase):
         self.assertIsInstance(response.data, list)
         
     def test_education_update_auth(self):
-        response = self.client.patch(f"/api/user/educations/{self.education.id}/", data={"text":"prova2"})
+        data = {"text":"prova2"}
+        response = self.client.patch(f"/api/user/educations/{self.education.id}/", data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertDictEqual(data, dict(response.json()))
+    
     
     def test_education_delete_auth(self):
         response = self.client.delete(f"/api/user/educations/{self.education.id}/")

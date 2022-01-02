@@ -49,3 +49,9 @@ class UserEducationCUDView(mixins.CreateModelMixin,
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
     
+    def update(self, request, *args, **kwargs):
+        response = super().update(request,*args,**kwargs)
+        if response.status_code != 200: return response
+        return Response(data=request.data,
+                        status=response.status_code,
+                        headers=response.headers)

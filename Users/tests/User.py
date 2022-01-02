@@ -7,8 +7,14 @@ class UsersTestCase(BaseTestCase):
     def setUp(self): self.init_test(True)
         
     def test_current_user_update_auth(self):
-        response = self.client.put("/api/user/", {"description": "sdad"})
+        data = {"description": "sdad"}
+        response = self.client.patch("/api/user/", data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertDictEqual(data, dict(response.json()))
+        
+        response = self.client.put("/api/user/", data=data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertDictEqual(data, dict(response.json()))
         
     def test_current_user_update_unauth(self):
         self.client.logout()

@@ -26,6 +26,7 @@ class ExternalProjectTestCase(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         
     def test_external_project_updete_auth(self):
-        response = self.client.patch(f"/api/user/external-projects/{self.project.id}/",
-                                    data={"name":"asdasded"})
+        data = {"name":"test"}
+        response = self.client.patch(f"/api/user/external-projects/{self.project.id}/",data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertDictEqual(data, dict(response.json()))

@@ -21,7 +21,7 @@ from django.utils.decorators import method_decorator
     operation_summary= "Aggiorna i dati dell'utente loggato",
     responses={200:""}
 ))
-class CustumUserDetailsView(UserDetailsView,
+class CustomUserDetailsView(UserDetailsView,
                             viewsets.GenericViewSet):    
     """
     retrieve:
@@ -29,7 +29,20 @@ class CustumUserDetailsView(UserDetailsView,
     
     Recupera i dati dell'utente loggato
     """
-    pass
+    
+    def put(self, request, *args, **kwargs):
+        response = self.update(request, *args, **kwargs)
+        if response.status_code != 200: return response
+        return Response(data=self.request.data,
+                        status=response.status_code,
+                        headers=response.headers)
+    
+    def patch(self, request, *args, **kwargs):
+        response = self.partial_update(request, *args, **kwargs)
+        if response.status_code != 200: return response
+        return Response(data=self.request.data,
+                        status=response.status_code,
+                        headers=response.headers)
 
 
 
@@ -62,11 +75,10 @@ class UserRetriveView(generics.RetrieveAPIView,
     
     
     
-@method_decorator(swagger_auto_schema(
-                responses={"200":openapi.Schema(
-                    type=openapi.TYPE_OBJECT,
-                    properties={"image":openapi.Schema(
-                        type=openapi.TYPE_STRING)})}),name="get")
+@method_decorator(name="get",decorator=swagger_auto_schema(
+                             responses={"200":openapi.Schema(type=openapi.TYPE_OBJECT,
+                                                            properties={"image":openapi.Schema(
+                                                                        type=openapi.TYPE_STRING)})}))
 class UserImageView(APIView):
 
     def get(self,request):

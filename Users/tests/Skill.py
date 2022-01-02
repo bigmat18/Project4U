@@ -39,8 +39,10 @@ class UserSkillTestCase(BaseTestCase):
         
     def test_user_skill_update_auth(self):
         self.user.skills.add(self.skill1)
-        response = self.client.patch(f"/api/user/skills/{self.skill1.id}/", data={"level": 5})
+        data = {"name": "newName"}
+        response = self.client.patch(f"/api/user/skills/{self.skill1.id}/", data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertDictEqual(data, dict(response.json()))
         
     def test_user_skill_delete_auth(self):
         self.user.skills.add(self.skill1)

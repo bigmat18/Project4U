@@ -15,5 +15,5 @@ urlpatterns = router.urls
 
 urlpatterns += [
     path('user/image/', vw.UserImageView.as_view(), name="user-image"),
-    path('user/', vw.CustumUserDetailsView.as_view({'put':'update','patch':'update','get':'retrieve'}), name="user-detail"),
+    path('user/', vw.CustomUserDetailsView.as_view({"get":"get","put":"put","patch":"patch"}), name="user-detail"),
 ]
