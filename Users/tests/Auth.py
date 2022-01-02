@@ -1,5 +1,5 @@
 from rest_framework import status
-from .BaseTest import BaseTestCase
+from Core.tests import BaseTestCase
 
 class LoginRegistrationTestCase(BaseTestCase):
 

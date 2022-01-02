@@ -1,5 +1,5 @@
 from rest_framework import response, status
-from .BaseTest import BaseTestCase, User
+from Core.tests import BaseTestCase
 import tempfile
 
 class UsersTestCase(BaseTestCase):

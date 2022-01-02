@@ -1,4 +1,4 @@
-from .BaseTest import BaseTestCase
+from Core.tests import BaseTestCase
 from Core.models import UserEducation
 from django.utils import timezone
 from rest_framework import status
