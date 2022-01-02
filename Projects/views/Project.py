@@ -1,6 +1,7 @@
 from rest_framework import generics, mixins
 from rest_framework import viewsets
 from Core.models import Project
+from rest_framework.response import Response
 from Projects.serializers.Project import ProjectSerializerDetail
 from ..serializers import ProjectSerializerList
 from rest_framework_api_key.permissions import HasAPIKey
@@ -13,7 +14,7 @@ from django.conf import settings
 class ProjectsAccessPolicy(AccessPolicy):
     statements = [
         {
-            "action": ["destroy", "update"],
+            "action": ["destroy", "update", "partial_update"],
             "principal": "*",
             "effect": "allow",
             "condition": "is_creator"
@@ -75,9 +76,23 @@ class ProjectsRUDView(generics.RetrieveUpdateDestroyAPIView,
     
     Dato un id di un progetto puoi agiornare 1 o più suoi dati. E' possibile esseguire l'aggiornamento
     soltato se si è il creatore del progetto.
+    
+    partial_update:
+    Aggiorna il progetto
+    
+    Dato un id di un progetto puoi agiornare 1 o più suoi dati. E' possibile esseguire l'aggiornamento
+    soltato se si è il creatore del progetto. Vengono restituiti soltato i campi modificati.
     """
     serializer_class = ProjectSerializerDetail
     queryset = Project.objects.all()
     lookup_field = "id"
     permission_classes = [IsAuthenticated, ProjectsAccessPolicy]
     if not settings.DEBUG: permission_classes.append(HasAPIKey)
+    
+    
+    def update(self,request,*args, **kwargs):
+        response = super().update(request,*args, **kwargs)
+        if response.status_code != 200: return response
+        return Response(data=request.data,
+                        status=response.status_code,
+                        headers=response.headers)

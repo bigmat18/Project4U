@@ -26,12 +26,19 @@ class ProjectsTestCase(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
     
     def test_projects_update_auth(self):
-        response = self.client.put(f'/api/projects/{self.project.id}/', data={"name":"new_name"})
+        data = {"name":"new_name"}
+        response = self.client.patch(f'/api/projects/{self.project.id}/', data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertDictEqual(data, dict(response.json()))
+        
+        response = self.client.put(f'/api/projects/{self.project.id}/', data=data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertDictEqual(data, dict(response.json()))
 
     def test_projects_update_unauth(self):
+        data = {"name":"new_name"}
         self.client.force_authenticate(user=self.new_user)
-        response = self.client.put(f'/api/projects/{self.project.id}/', data={"name":"new_name"})
+        response = self.client.patch(f'/api/projects/{self.project.id}/', data=data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
     
     def test_projects_delete_auth(self):
