@@ -5,6 +5,8 @@ from Core.models import ExternalProject
 from rest_framework import status
 from rest_framework.response import Response
 
+
+
 class ExternalProjectCUDView(mixins.CreateModelMixin, 
                             mixins.UpdateModelMixin,
                             mixins.DestroyModelMixin,
@@ -18,13 +20,13 @@ class ExternalProjectCUDView(mixins.CreateModelMixin,
     [ { dati progetto }, { ... }, ... ]
     L'endponts non ritrona nessun valore.
     ------ Anche se non mostrato è possibili inviare anche un'immagine del progetto ------
-
     
     update:
     Aggiorna i dati di un progetto esterno
     
     Aggiorna i dati della skill, il proggetto da aggiornare viene decisa in base all'id della skill messo nell'url ({skill} = id skill).
-     ------ Anche se non mostrato è possibili aggiornare anche un'immagine del progetto ------
+    Nel caso di un'aggiornamento parziale (PATCH) ritornano solo i campo aggiornati.
+    ------ Anche se non mostrato è possibili aggiornare anche un'immagine del progetto ------
     
     destroy:
     Rimuovi un progetto esterno da un utente
@@ -45,7 +47,14 @@ class ExternalProjectCUDView(mixins.CreateModelMixin,
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(status=status.HTTP_201_CREATED, headers=headers)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+        
+    def update(self, request, *args, **kwargs):
+        response = super().update(request,*args,**kwargs)
+        if response.status_code != 200: return response
+        return Response(data=request.data,
+                        status=response.status_code,
+                        headers=response.headers)

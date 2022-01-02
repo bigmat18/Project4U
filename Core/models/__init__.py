@@ -18,10 +18,10 @@ from .Users.UserEducation import UserEducation
 from .Projects.Tag import Tag
 from .Projects.Project import Project
 from .Projects.Role import Role, UserProject
-
-"""
 from .Projects.SearchCard import SearchCard
 
+
+"""
 from .Showcases.Showcase import Showcase
 from .Showcases.Message import Message
 from .Showcases.TextMessage import TextMessage

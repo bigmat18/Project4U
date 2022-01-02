@@ -2,7 +2,8 @@ from rest_framework import generics, viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from Users.serializers import UserDetailSerializer, UserListSerializer
+from Users.serializers import (UserDetailSerializer, UserListSerializer,
+                               CurrentUserImageSerializer)
 from rest_auth.views import UserDetailsView
 from Core.models import User
 
@@ -12,23 +13,42 @@ from django.utils.decorators import method_decorator
 
 
                     
-@method_decorator(name='update', decorator=swagger_auto_schema(
-    operation_description=  """
-                            Aggiorna (PUT, PATCH) i dati dell'utente loggato. E' possibili aggiornare si in modo parziale (PATCH) che totale (PUT).
-                            ------ Anche se non mostrato è possibili aggiornare l'immagine profilo ------
-                            """,
-    operation_summary= "Aggiorna i dati dell'utente loggato",
-    responses={200:""}
-))
-class CustumUserDetailsView(UserDetailsView,
+class CustomUserDetailsView(UserDetailsView,
                             viewsets.GenericViewSet):    
     """
-    retrieve:
+    get:
     Recupera i dati dell'utente loggato
     
     Recupera i dati dell'utente loggato
+    
+    put:
+    Aggiorna i dati dell'utente loggato
+    
+    Aggiorna (PUT, PATCH) i dati dell'utente loggato. E' possibili aggiornare si in modo parziale (PATCH) che totale (PUT).
+    Ritorna solo i dati aggiornati.
+    ------ Anche se non mostrato è possibili aggiornare l'immagine profilo ------
+    
+    patch:
+    Aggiorna i dati dell'utente loggato
+    
+    Aggiorna (PUT, PATCH) i dati dell'utente loggato. E' possibili aggiornare si in modo parziale (PATCH) che totale (PUT).
+    Ritorna solo i dati aggiornati.
+    ------ Anche se non mostrato è possibili aggiornare l'immagine profilo ------
     """
-    pass
+    
+    def put(self, request, *args, **kwargs):
+        response = self.update(request, *args, **kwargs)
+        if response.status_code != 200: return response
+        return Response(data=self.request.data,
+                        status=response.status_code,
+                        headers=response.headers)
+    
+    def patch(self, request, *args, **kwargs):
+        response = self.partial_update(request, *args, **kwargs)
+        if response.status_code != 200: return response
+        return Response(data=self.request.data,
+                        status=response.status_code,
+                        headers=response.headers)
 
 
 
@@ -48,7 +68,7 @@ class UserListView(generics.ListAPIView,
 
 
 class UserRetriveView(generics.RetrieveAPIView,
-                        viewsets.GenericViewSet):
+                      viewsets.GenericViewSet):
     """
     retrieve:
     Ristituisce i dettagli di un'utente.
@@ -60,12 +80,13 @@ class UserRetriveView(generics.RetrieveAPIView,
     lookup_field = "slug"
     
     
-class UserImageView(APIView):
     
-    @swagger_auto_schema(responses={"200":
-        openapi.Schema(type=openapi.TYPE_OBJECT,
-                       properties={"image":openapi.Schema(
-                           type=openapi.TYPE_STRING)})})
+@method_decorator(name="get",decorator=swagger_auto_schema(
+                             responses={"200":openapi.Schema(type=openapi.TYPE_OBJECT,
+                                                            properties={"image":openapi.Schema(
+                                                                        type=openapi.TYPE_STRING)})}))
+class UserImageView(APIView):
+
     def get(self,request):
         """
         Restituisce l'immage dell'utente loggato
@@ -73,5 +94,5 @@ class UserImageView(APIView):
         Restituisce l'immage dell'utente loggato
         """
         user = User.objects.get(id=request.user.id)
-        if user.image: return Response(status=status.HTTP_200_OK,data={"image":user.image})
-        else: return Response(status=status.HTTP_200_OK,data={"image":None})
+        serializer = CurrentUserImageSerializer(user)
+        return Response(status=status.HTTP_200_OK,data=serializer.data)

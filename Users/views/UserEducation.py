@@ -23,7 +23,8 @@ class UserEducationCUDView(mixins.CreateModelMixin,
     update:
     Aggiorna i dati di un tipo dell'educazione
     
-    Aggiorna i dati dell'educazione, l'educazione da aggiornare viene decisa in base all'id della skill messo nell'url ({skill} = id skill)
+    Aggiorna i dati dell'educazione, l'educazione da aggiornare viene decisa in base all'id della skill messo nell'url ({skill} = id skill).
+    Nel caso di un'aggiornamento parziale (PATCH) ritornano solo i campo aggiornati.
     
     destroy:
     Rimuovi un tipo dell'educazione da un utente
@@ -44,8 +45,14 @@ class UserEducationCUDView(mixins.CreateModelMixin,
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(status=status.HTTP_201_CREATED, headers=headers)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
     
+    def update(self, request, *args, **kwargs):
+        response = super().update(request,*args,**kwargs)
+        if response.status_code != 200: return response
+        return Response(data=request.data,
+                        status=response.status_code,
+                        headers=response.headers)

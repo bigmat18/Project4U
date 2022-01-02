@@ -6,7 +6,7 @@ from Core.models import (AbstractCreateUpdate,
                          AbstractText)
 
 
-class Project(AbstractText, AbstractName, AbstractCreateUpdate):
+class Project(AbstractName, AbstractText, AbstractCreateUpdate):
     link_site_help_text = _("Link del sito di contatto del progetto")
     ended_at_help_text = _("Data di chiusura del progetto. Se null il progetto è aperto")
     num_swipe_help_text = _("Il numero di swipe fatti dal progetto")
@@ -35,7 +35,8 @@ class Project(AbstractText, AbstractName, AbstractCreateUpdate):
     tags = models.ManyToManyField(Tag,
                                   related_name="projects",
                                   related_query_name="projects",
-                                  help_text=tags_help_text)
+                                  help_text=tags_help_text,
+                                  blank=True)
     
     users = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                    through="UserProject",
