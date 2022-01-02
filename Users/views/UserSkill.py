@@ -10,6 +10,7 @@ from rest_framework.response import Response
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from django.utils.decorators import method_decorator
 
 create_responses = {"201": openapi.Response(description="In caso di aggiunta di una o più skill riuscita",
                                             schema=openapi.Schema(type=openapi.TYPE_OBJECT,properties={})),
@@ -22,6 +23,10 @@ create_responses = {"201": openapi.Response(description="In caso di aggiunta di 
                                                 "error":openapi.Schema(type=openapi.TYPE_STRING)}),
                                             examples={"application/json":{"Error":"è già stata abbinata questa skill a questo utente"}})}
 
+
+@method_decorator(name="create",
+                  decorator=swagger_auto_schema(responses=create_responses,
+                                                request_body=UserSkillCreateSerializer(many=True)))
 class UserSkillCUDView(mixins.CreateModelMixin,mixins.UpdateModelMixin,
                         mixins.DestroyModelMixin,viewsets.GenericViewSet):
     """
@@ -35,7 +40,8 @@ class UserSkillCUDView(mixins.CreateModelMixin,mixins.UpdateModelMixin,
     update:
     Aggiorna i dati di una skill  
     
-    Aggiorna i dati della skill, la skill da aggiornare viene decisa in base all'id della skill messo nell'url ({skill} = id skill)
+    Aggiorna i dati della skill, la skill da aggiornare viene decisa in base all'id della skill messo nell'url ({skill} = id skill).
+    Nel caso di un'aggiornamento parziale (PATCH) ritornano solo i campo aggiornati.
       
     destroy:
     Rimuovi una skill da un utente
@@ -50,19 +56,23 @@ class UserSkillCUDView(mixins.CreateModelMixin,mixins.UpdateModelMixin,
         skill = self.kwargs.get("skill")
         return UserSkill.objects.filter(skill=skill).filter(user=self.request.user)
     
-    @swagger_auto_schema(responses=create_responses,request_body=UserSkillCreateSerializer(many=True))
     def create(self, request, *args, **kwargs):
         if not isinstance(request.data, list):
-            response = super(UserSkillCUDView, self).create(request, *args, **kwargs)
-            response.data = {}
-            return response
+            return super(UserSkillCUDView, self).create(request, *args, **kwargs)
         serializer = self.get_serializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(status=status.HTTP_201_CREATED, headers=headers)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
     def perform_create(self, serializer):
         try: serializer.save(user=self.request.user)
         except IntegrityError:
             raise ValidationError({"error":"è già stata abbinata questa skill a questo utente"})
+        
+    def update(self, request, *args, **kwargs):
+        response = super().update(request,*args,**kwargs)
+        if response.status_code != 200: return response
+        return Response(data=request.data,
+                        status=response.status_code,
+                        headers=response.headers)

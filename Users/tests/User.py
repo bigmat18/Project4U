@@ -1,14 +1,20 @@
 from rest_framework import response, status
 from .BaseTest import BaseTestCase, User
-
+import tempfile
 
 class UsersTestCase(BaseTestCase):
     
     def setUp(self): self.init_test(True)
         
     def test_current_user_update_auth(self):
-        response = self.client.put("/api/user/", {"description": "sdad"})
+        data = {"description": "sdad"}
+        response = self.client.patch("/api/user/", data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertDictEqual(data, dict(response.json()))
+        
+        response = self.client.put("/api/user/", data=data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertDictEqual(data, dict(response.json()))
         
     def test_current_user_update_unauth(self):
         self.client.logout()
@@ -16,8 +22,11 @@ class UsersTestCase(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         
     def test_current_user_image_auth(self):
+        image = tempfile.NamedTemporaryFile(suffix=".jpg").name
+        self.user.image = image
         response = self.client.get('/api/user/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["image"], f"http://testserver/media{image}")
         
     def test_user_list_auth(self):
         response = self.client.get("/api/users/")

@@ -31,3 +31,10 @@ class CurrentUserSerializer(UserDetailSerializer):
         read_only_fields = ["slug", "blocked"]
         exclude = ["active", "password", "date_joined", 
             "last_login","username","admin"]
+        
+        
+class CurrentUserImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ["image"]
