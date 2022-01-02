@@ -40,7 +40,8 @@ class UserSkillCUDView(mixins.CreateModelMixin,mixins.UpdateModelMixin,
     update:
     Aggiorna i dati di una skill  
     
-    Aggiorna i dati della skill, la skill da aggiornare viene decisa in base all'id della skill messo nell'url ({skill} = id skill)
+    Aggiorna i dati della skill, la skill da aggiornare viene decisa in base all'id della skill messo nell'url ({skill} = id skill).
+    Nel caso di un'aggiornamento parziale (PATCH) ritornano solo i campo aggiornati.
       
     destroy:
     Rimuovi una skill da un utente

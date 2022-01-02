@@ -23,7 +23,8 @@ class UserEducationCUDView(mixins.CreateModelMixin,
     update:
     Aggiorna i dati di un tipo dell'educazione
     
-    Aggiorna i dati dell'educazione, l'educazione da aggiornare viene decisa in base all'id della skill messo nell'url ({skill} = id skill)
+    Aggiorna i dati dell'educazione, l'educazione da aggiornare viene decisa in base all'id della skill messo nell'url ({skill} = id skill).
+    Nel caso di un'aggiornamento parziale (PATCH) ritornano solo i campo aggiornati.
     
     destroy:
     Rimuovi un tipo dell'educazione da un utente

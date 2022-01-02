@@ -13,21 +13,27 @@ from django.utils.decorators import method_decorator
 
 
                     
-@method_decorator(name='update', decorator=swagger_auto_schema(
-    operation_description=  """
-                            Aggiorna (PUT, PATCH) i dati dell'utente loggato. E' possibili aggiornare si in modo parziale (PATCH) che totale (PUT).
-                            ------ Anche se non mostrato è possibili aggiornare l'immagine profilo ------
-                            """,
-    operation_summary= "Aggiorna i dati dell'utente loggato",
-    responses={200:""}
-))
 class CustomUserDetailsView(UserDetailsView,
                             viewsets.GenericViewSet):    
     """
-    retrieve:
+    get:
     Recupera i dati dell'utente loggato
     
     Recupera i dati dell'utente loggato
+    
+    put:
+    Aggiorna i dati dell'utente loggato
+    
+    Aggiorna (PUT, PATCH) i dati dell'utente loggato. E' possibili aggiornare si in modo parziale (PATCH) che totale (PUT).
+    Ritorna solo i dati aggiornati.
+    ------ Anche se non mostrato è possibili aggiornare l'immagine profilo ------
+    
+    patch:
+    Aggiorna i dati dell'utente loggato
+    
+    Aggiorna (PUT, PATCH) i dati dell'utente loggato. E' possibili aggiornare si in modo parziale (PATCH) che totale (PUT).
+    Ritorna solo i dati aggiornati.
+    ------ Anche se non mostrato è possibili aggiornare l'immagine profilo ------
     """
     
     def put(self, request, *args, **kwargs):
