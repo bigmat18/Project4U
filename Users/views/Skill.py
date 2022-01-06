@@ -15,13 +15,15 @@ class SkillFilter(filters.FilterSet):
         fields = ["name"]
         
     def filter_queryset(self, queryset):
-        if "name" in self.data and self.data["name"] is not "":
-            result = queryset\
-                .exclude(users=self.request.user)\
-                .annotate(similarity=TrigramSimilarity('name',self.data["name"]))\
-                .filter(similarity__gte=0.01)\
-                .order_by("-similarity")
-            return result
+        if "name" in self.data:
+            if self.data["name"] is not "":
+                result = queryset\
+                    .exclude(users=self.request.user)\
+                    .annotate(similarity=TrigramSimilarity('name',self.data["name"]))\
+                    .filter(similarity__gte=0.01)\
+                    .order_by("-similarity")
+                return result
+            else: return queryset.exclude(users=self.request.user)
         return queryset
     
     
