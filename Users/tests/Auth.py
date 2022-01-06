@@ -1,6 +1,9 @@
 from rest_framework import status
 from Core.tests import BaseTestCase
+from django.test import tag
 
+
+@tag('Users', 'Auth')
 class LoginRegistrationTestCase(BaseTestCase):
 
     def setUp(self):
@@ -8,6 +11,7 @@ class LoginRegistrationTestCase(BaseTestCase):
         self.data["password1"] = self.data["password2"] = self.data["password"]
         del self.data["password"]
 
+    @tag('post')
     def test_registration_new_user(self):
         data = self.data
         data['email'] = "newemail@prova.com"
@@ -15,20 +19,24 @@ class LoginRegistrationTestCase(BaseTestCase):
         response = self.client.post("/api/auth/registration/", data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+    @tag('post')
     def test_registration_same_user(self):
         response = self.client.post("/api/auth/registration/", self.data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    @tag('post')
     def test_login(self):
         self.client.logout()
         data = {"email": self.email,"password": self.password} 
         response = self.client.post("/api/auth/login/", data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
-    def test_logut_get(self):
+    
+    @tag('get')  
+    def test_logout_get(self):
         response = self.client.get("/api/auth/logout/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
-    def test_logut_post(self):
+     
+    @tag('post')   
+    def test_logout_post(self):
         response = self.client.post("/api/auth/logout/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
