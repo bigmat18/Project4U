@@ -15,5 +15,5 @@ class ProjectSerializerDetail(ModelSerializer):
     
     class Meta:
         model = Project
-        fields = "__all__"
+        exclude = ["users","tags"]
 

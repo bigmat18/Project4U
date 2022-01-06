@@ -1,2 +1,3 @@
 from .Project import ProjectSerializerList, ProjectSerializerDetail
 from .Role import RoleSerializer
+from .UserProject import UserProjectListSerializer, UserProjectUpdateSerializer
