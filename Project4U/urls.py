@@ -24,6 +24,6 @@ urlpatterns = [
    # -------- API ------
       
    # -------- WEB-APP ------
-   path('', include('Core.urls'))
+   path('', include('Core.urls')),
    # -------- WEB-APP ------
 ] 
