@@ -9,7 +9,7 @@ class UserEducationTestCase(BaseTestCase):
         self.init_test(True)
         self.education = UserEducation.objects.create(text="prova",user=self.user,
                                                       started_at=timezone.now())
-        
+
     def test_education_create_auth(self):
         response = self.client.post("/api/user/educations/", data={"text":self.education.text, 
                                                                   "started_at":"2020-3-20"})
@@ -25,7 +25,7 @@ class UserEducationTestCase(BaseTestCase):
         response = self.client.patch(f"/api/user/educations/{self.education.id}/", data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertDictEqual(data, dict(response.json()))
-        
+    
     
     def test_education_delete_auth(self):
         response = self.client.delete(f"/api/user/educations/{self.education.id}/")
