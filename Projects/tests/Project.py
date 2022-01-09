@@ -3,6 +3,7 @@ from Core.models import Project, User
 from Core.tests import BaseTestCase
 from rest_framework import status
 from django.test import tag
+import tempfile, PIL
 
 @tag('Projects')
 class ProjectsTestCase(BaseTestCase):
@@ -39,6 +40,16 @@ class ProjectsTestCase(BaseTestCase):
         response = self.client.put(f'/api/projects/{self.project.id}/', data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertDictEqual(data, dict(response.json()))
+    
+    @tag('put','auth','file')
+    def test_projects_update_image_auth(self):
+        image = PIL.Image.new('RGB', size=(1, 1))
+        file = tempfile.NamedTemporaryFile(suffix=".jpg")
+        image.save(file)
+        with open(file.name, 'rb') as file_open:
+            response = self.client.patch(f'/api/projects/{self.project.id}/', 
+                                       data={"image": file_open}, format='multipart')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     @tag('put','unauth')  
     def test_projects_update_unauth(self):
