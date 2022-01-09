@@ -55,6 +55,7 @@ class ExternalProjectCUDView(mixins.CreateModelMixin,
     def update(self, request, *args, **kwargs):
         response = super().update(request,*args,**kwargs)
         if response.status_code != 200: return response
+        if "image" in request.data: request.data['image'] = response.data['image']
         return Response(data=request.data,
                         status=response.status_code,
                         headers=response.headers)

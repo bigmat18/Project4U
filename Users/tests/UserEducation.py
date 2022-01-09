@@ -4,7 +4,7 @@ from django.utils import timezone
 from rest_framework import status
 from django.test import tag
 
-@tag('Users')
+@tag('Users', 'user-educations-tests')
 class UserEducationTestCase(BaseTestCase):
 
     def setUp(self):
