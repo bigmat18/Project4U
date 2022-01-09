@@ -39,14 +39,16 @@ class CustomUserDetailsView(UserDetailsView,
     def put(self, request, *args, **kwargs):
         response = self.update(request, *args, **kwargs)
         if response.status_code != 200: return response
-        return Response(data=self.request.data,
+        if "image" in request.data: request.data['image'] = response.data['image']
+        return Response(data=request.data,
                         status=response.status_code,
                         headers=response.headers)
     
     def patch(self, request, *args, **kwargs):
         response = self.partial_update(request, *args, **kwargs)
         if response.status_code != 200: return response
-        return Response(data=self.request.data,
+        if "image" in request.data: request.data['image'] = response.data['image']
+        return Response(data=request.data,
                         status=response.status_code,
                         headers=response.headers)
 
