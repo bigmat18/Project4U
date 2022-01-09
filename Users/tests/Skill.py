@@ -4,7 +4,7 @@ from Core.models import Skill
 from django.test import tag
 
 
-@tag('Users')
+@tag('Users', 'skills-tests')
 class SkillTestCase(BaseTestCase):
     
     def setUp(self): self.init_test(True)
@@ -26,7 +26,7 @@ class SkillTestCase(BaseTestCase):
          self.assertEqual(response.status_code,status.HTTP_201_CREATED)
         
 
-@tag('Users')
+@tag('Users', 'user-skills-tests')
 class UserSkillTestCase(BaseTestCase):
     
     def setUp(self):

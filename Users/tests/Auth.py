@@ -3,7 +3,7 @@ from Core.tests import BaseTestCase
 from django.test import tag
 
 
-@tag('Users', 'Auth')
+@tag('Users', 'authentication-tests')
 class LoginRegistrationTestCase(BaseTestCase):
 
     def setUp(self):

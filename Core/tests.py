@@ -5,6 +5,5 @@ from Users.tests import (UserTestCase, SkillTestCase, UserSkillTestCase,
                          LoginRegistrationTestCase)
 
 
-from Projects.tests.Project import ProjectsTestCase
-from Projects.tests.Role import RoleTestCase
-from Projects.tests.UserProject import UserProjectTestCase
+from Projects.tests import (ProjectsTestCase,UserProjectTestCase,
+                            RoleTestCase)
