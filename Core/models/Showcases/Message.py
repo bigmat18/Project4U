@@ -22,6 +22,9 @@ class Message(AbstractCreateUpdate):
     type_message = models.CharField(max_length=32,
                                     choices=TYPE_MESSAGE,
                                     default="TXT")
+    viewed_by = models.ManyToManyField(settings.AUTH_USER_MODEL,
+                                       related_name="messages_visualize",
+                                       related_query_name="messages_visualize")
     
     class Meta:
         db_table = "message"

@@ -5,13 +5,10 @@ from Core.models import Message, AbstractText
 
 class Event(Message, AbstractText):
     date_help_text = _("Data dell'evento")
-    level_completation_help_text = _("Livello di completamento dell'evento")
     partecipants_help_text = _("Partecipanti all'evento")
     
     data = models.DateTimeField(_("date"),
                                 help_text=date_help_text)
-    level_completation = models.PositiveIntegerField(_("level completation"),default=1,
-                                                     help_text=level_completation_help_text)
     partecipants = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                           related_name="events",
                                           related_query_name="events",
