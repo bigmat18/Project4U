@@ -12,7 +12,8 @@ class Event(Message, AbstractText):
     partecipants = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                           related_name="events",
                                           related_query_name="events",
-                                          help_text=partecipants_help_text)
+                                          help_text=partecipants_help_text,
+                                          blank=True)
     text = models.TextField(_("description"), 
                             db_column="description",
                             null=True, blank=True)

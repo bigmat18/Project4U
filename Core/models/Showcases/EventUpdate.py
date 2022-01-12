@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
-from Core.models import AbstractCreateUpdate, AbstractText
+from Core.models import AbstractCreateUpdate, AbstractText, Event
 import uuid
 
 class EventUpdate(AbstractCreateUpdate, AbstractText):
@@ -10,6 +10,10 @@ class EventUpdate(AbstractCreateUpdate, AbstractText):
                                on_delete=models.CASCADE,
                                related_name="event_updates",
                                related_query_name="event_updates")
+    event = models.ForeignKey(Event,
+                              on_delete=models.CASCADE,
+                              related_name="event_updates",
+                              related_query_name="event_updates")
     
     class Meta:
         db_table = "event_update"

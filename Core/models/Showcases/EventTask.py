@@ -14,5 +14,5 @@ class EventTask(AbstractName):
     
     class Meta:
         db_table = "event_task"
-        verbose_name = _("EventTask")
-        verbose_name_plural = _("EventTasks")
+        verbose_name = _("Event Task")
+        verbose_name_plural = _("Event Tasks")

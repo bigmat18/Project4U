@@ -24,7 +24,8 @@ class Message(AbstractCreateUpdate):
                                     default="TXT")
     viewed_by = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                        related_name="messages_visualize",
-                                       related_query_name="messages_visualize")
+                                       related_query_name="messages_visualize",
+                                        blank=True)
     
     class Meta:
         db_table = "message"
