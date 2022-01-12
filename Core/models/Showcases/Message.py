@@ -5,11 +5,12 @@ from django.conf import settings
 import uuid
 
 class Message(AbstractCreateUpdate):
-    TYPE_MESSAGE = [
-        ('TXT', 'TextMessage'),
-        ('EV', 'Event'),
-        ('ID', 'Idea')
-    ]
+    
+    class TypeMessage(models.TextChoices):
+        TEXT = "TEXT"
+        EVENT = "EVENT"
+        IDEA = "IDEA"
+        
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     showcase = models.ForeignKey(Showcase,
                                  on_delete=models.CASCADE,
@@ -20,12 +21,11 @@ class Message(AbstractCreateUpdate):
                                related_name="messages",
                                related_query_name="messages")
     type_message = models.CharField(max_length=32,
-                                    choices=TYPE_MESSAGE,
-                                    default="TXT")
+                                    choices=TypeMessage.choices)
     viewed_by = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                        related_name="messages_visualize",
                                        related_query_name="messages_visualize",
-                                        blank=True)
+                                       blank=True)
     
     class Meta:
         db_table = "message"

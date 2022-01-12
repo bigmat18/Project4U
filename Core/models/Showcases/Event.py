@@ -7,7 +7,7 @@ class Event(Message, AbstractText):
     date_help_text = _("Data dell'evento")
     partecipants_help_text = _("Partecipanti all'evento")
     
-    data = models.DateTimeField(_("date"),
+    date = models.DateTimeField(_("date"),
                                 help_text=date_help_text)
     partecipants = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                           related_name="events",
@@ -17,6 +17,12 @@ class Event(Message, AbstractText):
     text = models.TextField(_("description"), 
                             db_column="description",
                             null=True, blank=True)
+    message = models.OneToOneField(Message, 
+                                   on_delete=models.CASCADE,
+                                   parent_link=True,
+                                   primary_key=True,
+                                   related_name="event",
+                                   related_query_name="event")
     
     class Meta:
         db_table = "event"

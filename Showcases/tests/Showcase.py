@@ -24,4 +24,4 @@ class ShowcaseTestCase(BaseTestCase):
         data = {'name':'test'}
         response = self.client.post(f'/api/projects/{self.project.id}/showcases/',data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['users'][0], self.user.id)
+        self.assertEqual(response.data['users'][0]['slug'], self.user.slug)

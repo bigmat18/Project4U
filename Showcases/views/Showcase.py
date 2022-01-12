@@ -1,6 +1,6 @@
 from ..serializers import ShowcaseSerializer
 from rest_framework import generics, viewsets
-from Core.models import Showcase, Project
+from Core.models import Showcase, Project, Message
 
 class ShowcaseListCreateView(generics.ListCreateAPIView,
                              viewsets.GenericViewSet):
@@ -12,7 +12,7 @@ class ShowcaseListCreateView(generics.ListCreateAPIView,
         return generics.get_object_or_404(Project, id=project_id)
     
     def get_queryset(self):
-        return Showcase.objects.filter(project=self.get_project())
+        return Showcase.objects.filter(project__id=self.kwargs['id'])
     
     def perform_create(self, serializer):
         instance = serializer.save(project=self.get_project())

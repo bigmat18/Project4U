@@ -4,4 +4,4 @@ from Core.models import TextMessage
 class TextMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = TextMessage
-        fields = "__all__"
+        fields = ["text"]

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from Core.models import Message
-from .TextMessage import TextMessageSerializer
+from Showcases.serializers import TextMessageSerializer, EventSerializer
 
 class MessageSerializer(serializers.ModelSerializer):
     content = serializers.SerializerMethodField(read_only=True)
@@ -10,5 +10,7 @@ class MessageSerializer(serializers.ModelSerializer):
         fields = "__all__"
         
     def get_content(self, instance):
-        if instance.type_message == "TXT":
-            return TextMessageSerializer(instance=instance.message_ptr_id).data
+        if instance.type_message == "TEXT":
+            return TextMessageSerializer(instance=instance.text_message).data
+        elif instance.type_message == "EVENT":
+            return EventSerializer(instance=instance.event).data
