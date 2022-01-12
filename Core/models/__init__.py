@@ -20,8 +20,6 @@ from .Projects.Project import Project
 from .Projects.Role import Role, UserProject
 from .Projects.SearchCard import SearchCard
 
-
-"""
 from .Showcases.Showcase import Showcase
 from .Showcases.Message import Message
 from .Showcases.TextMessage import TextMessage
@@ -29,7 +27,9 @@ from .Showcases.Event import Event
 from .Showcases.EventUpdate import EventUpdate
 from .Showcases.Poll import Poll
 from .Showcases.PollOption import PollOption
+from .Showcases.EventTask import EventTask
 
+"""
 from .Idea.Idea import Idea
 from .Idea.IdeaComment import IdeaComment
 from .Idea.IdeaImage import IdeaImage
