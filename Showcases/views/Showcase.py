@@ -4,6 +4,17 @@ from Core.models import Showcase, Project, Message
 
 class ShowcaseListCreateView(generics.ListCreateAPIView,
                              viewsets.GenericViewSet):
+    """
+    list:
+    Visualizza la lista delle bacheche.
+    
+    Visualizza una lista di tutte le bacheche del progetto di cui è stato passato l'id.
+    
+    create:
+    Crea una nuova bacheca.
+    
+    Crea una nuova bacheca nel progetto di cui è stato passato l'id.
+    """
     serializer_class = ShowcaseSerializer
     queryset = Showcase.objects.all()
     
