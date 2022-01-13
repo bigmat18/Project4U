@@ -28,7 +28,7 @@ class ShowcaseTestCase(BaseTestCase):
         
     @tag('post','auth')
     def test_showcase_create_auth(self):
-        data = {'name':'test'}
+        data = {'name':'test', "users": [str(self.new_user.id)]}
         response = self.client.post(f'/api/projects/{self.project.id}/showcases/',data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['users'][0]['slug'], self.user.slug)
