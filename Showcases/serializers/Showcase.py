@@ -19,6 +19,6 @@ class ShowcaseSerializer(serializers.ModelSerializer):
                                       .first()
         return MessageSerializer(instance=last_message).data
     
-    def get_notify(self, instance):
+    def get_notify(self, instance) -> int:
         return Message.objects.exclude(Q(viewed_by=self.context['request'].user) & \
                                        Q(showcase=instance)).count()

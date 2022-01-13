@@ -54,7 +54,8 @@ class ProjectsListCreateView(mixins.CreateModelMixin,
 
     
     def perform_create(self, serializer):
-        serializer.save(creator=self.request.user)
+        instance = serializer.save(creator=self.request.user)
+        instance.users.add(self.request.user)
 
 
 
