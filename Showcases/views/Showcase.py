@@ -1,6 +1,28 @@
 from ..serializers import ShowcaseSerializer
 from rest_framework import generics, viewsets
 from Core.models import Showcase, Project, Message
+from rest_access_policy import AccessPolicy
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_api_key.permissions import HasAPIKey
+from django.conf import settings
+
+
+class ShowcaseAccessPolicy(AccessPolicy):
+    statements = [
+        {
+            "action": ["list","create"],
+            "principal": "*",
+            "effect": "allow",
+            "condition": "is_inside_project"
+        }
+    ]
+    
+    def is_inside_project(self, request, view, action) -> bool:
+        project = generics.get_object_or_404(Project, id=view.kwargs['id'])
+        return (request.user == project.creator or 
+                project.users.filter(id=request.user.id).exists())
+
+
 
 class ShowcaseListCreateView(generics.ListCreateAPIView,
                              viewsets.GenericViewSet):
@@ -17,6 +39,8 @@ class ShowcaseListCreateView(generics.ListCreateAPIView,
     """
     serializer_class = ShowcaseSerializer
     queryset = Showcase.objects.all()
+    permission_classes = [IsAuthenticated, ShowcaseAccessPolicy]
+    if not settings.DEBUG: permission_classes.append(HasAPIKey)
     
     def get_project(self):
         project_id = self.kwargs['id']
