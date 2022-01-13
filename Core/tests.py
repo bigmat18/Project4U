@@ -7,3 +7,5 @@ from Users.tests import (UserTestCase, SkillTestCase, UserSkillTestCase,
 
 from Projects.tests import (ProjectsTestCase,UserProjectTestCase,
                             RoleTestCase)
+
+from Showcases.tests import (ShowcaseTestCase)

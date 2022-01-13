@@ -6,7 +6,7 @@ from Core.models import Project
 class ProjectSerializerList(ModelSerializer):
     class Meta:
         model = Project
-        fields = ["id","image","name","text"]
+        fields = ["id","image","name","text","link_site"]
 
 
 class ProjectSerializerDetail(ModelSerializer):

@@ -1,7 +1,18 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from Core.models import User
-from Core.admin import UserSkillInline, UserEducationInline, ExternalProjectInline
+from Core.models import User, ExternalProject, UserEducation
+from Core.admin import UserSkillInline
+
+
+class UserEducationInline(admin.TabularInline):
+    model = UserEducation
+    extra = 0
+
+
+class ExternalProjectInline(admin.TabularInline):
+    model = ExternalProject
+    extra = 0
+
 
 @admin.register(User)
 class User(UserAdmin):
