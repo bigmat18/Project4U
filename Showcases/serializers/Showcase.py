@@ -9,6 +9,7 @@ class ShowcaseSerializer(serializers.ModelSerializer):
     last_event = serializers.SerializerMethodField(read_only=True)
     users = UserListSerializer(many=True,required=False)
     notify = serializers.SerializerMethodField(read_only=True)
+    creator = UserListSerializer(read_only=True)
     
     class Meta:
         model = Showcase
