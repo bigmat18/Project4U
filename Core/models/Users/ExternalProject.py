@@ -12,9 +12,7 @@ from django.core.exceptions import ValidationError
 import uuid
 
 def image_path(instance,path):
-    if instance.id: filename = f"externals-projects_images/{instance.id}.jpg"
-    else: raise ValidationError("Progetto esterno non esistente")
-    return filename
+    return f"users/user-{instance.user.id}/externals-projects_images/{instance.id}.jpg"
 
 
 class ExternalProject(AbstractName):

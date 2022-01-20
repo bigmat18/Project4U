@@ -12,6 +12,8 @@ from storages.backends.s3boto3 import S3Boto3Storage
 
 from django.core.exceptions import ValidationError
 
+from script import generate_random_string
+
 import uuid
 
 class UserManager(BaseUserManager):
@@ -44,9 +46,7 @@ class UserManager(BaseUserManager):
 
 
 def image_path(instance,path):
-    if instance.id: filename = f"users_images/{instance.id}.jpg"
-    else: raise ValidationError("User non esistente")
-    return filename
+    return f"users/user-{instance.id}/user-image.jpg"
 
 
 class User(AbstractBaseUser, AbstractSlug):
