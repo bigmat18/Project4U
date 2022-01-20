@@ -7,7 +7,7 @@ class MessageSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Message
-        fields = "__all__"
+        exclude = ["created_at", "showcase", "viewed_by"]
         
     def get_content(self, instance):
         if instance.type_message == "TEXT":
