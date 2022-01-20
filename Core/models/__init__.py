@@ -28,6 +28,7 @@ from .Showcases.EventUpdate import EventUpdate
 from .Showcases.Poll import Poll
 from .Showcases.PollOption import PollOption
 from .Showcases.EventTask import EventTask
+from .Showcases.FileMessage import FileMessage
 
 """
 from .Idea.Idea import Idea

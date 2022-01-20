@@ -5,6 +5,7 @@ from .Users.Skill import SkillAdmin, UserSkillInline
 from .Users.User import UserAdmin
 from .Users.Email import EmailImportExport
 
+from .Showcases.FileMessage import FileMessageInline
 from .Showcases.Showcase import ShowcaseInline
 from .Showcases.TextMessage import TextMessageAdmin
 from .Showcases.Event import Event
