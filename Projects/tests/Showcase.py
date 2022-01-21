@@ -10,8 +10,6 @@ class ShowcaseTestCase(BaseTestCase):
         self.init_test(True)
         self.project = Project.objects.create(name="test", 
                                               creator=self.user)
-        self.showcase = Showcase.objects.create(name="test",
-                                                project=self.project)
         self.new_user = User.objects.create_user(email=f"2{self.email}", password=self.email,
                                             first_name=self.first_name, last_name=self.last_name)
         

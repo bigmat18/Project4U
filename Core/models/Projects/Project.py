@@ -50,6 +50,12 @@ class Project(AbstractName, AbstractText, AbstractCreateUpdate):
                                    through_fields=("project", "user"),
                                    related_name="projects",
                                    related_query_name="projects")
+    def save(self,*args, **kwargs):
+        from .Showcase import Showcase
+        if self._state.adding:
+            Showcase.objects.create(name="Generali",creator=self.creator,project=self)
+            Showcase.objects.create(name="Idea",creator=self.creator,project=self)
+        return super().save(*args,**kwargs)
     
     class Meta:
         db_table = "project"
@@ -59,7 +65,7 @@ class Project(AbstractName, AbstractText, AbstractCreateUpdate):
     @property
     def ended(self):
         return self.ended_at.strftime('%d %B %Y')
-    
+
     
     
 if not settings.DEBUG:

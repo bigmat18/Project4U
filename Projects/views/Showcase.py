@@ -89,5 +89,4 @@ class ShowcaseListCreateView(generics.ListCreateAPIView,
         return Showcase.objects.filter(project__id=self.kwargs['id'])
     
     def perform_create(self, serializer):
-        instance = serializer.save(project=self.get_project(),creator=self.request.user)
-        instance.users.add(self.request.user)
+        serializer.save(project=self.get_project(),creator=self.request.user)
