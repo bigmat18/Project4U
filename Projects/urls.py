@@ -14,5 +14,7 @@ urlpatterns += [
     path('projects/<uuid:id>/roles/',vw.RoleListCreateView.as_view({"get":"list","post":"create"}),name="roles-list-create"),
     path('projects/<uuid:id>/users/',vw.UserProjectListCreateView.as_view({"get":"list","post":"create"}),name="users-projects-list-create"),
     path('projects/<uuid:id>/showcases/',vw.ShowcaseListCreateView.as_view({"get":"list","post":"create"}),name="showcases-list-create"),
+    path('showcase/<uuid:id>/messages/',vw.MessageListView.as_view({'get':'list'}),name="messages-list"),
+    path('showcase/<uuid:id>/messages/text/',vw.TextMessageCreateView.as_view({'post':'create'}),name="text-message-create")
 ]
 

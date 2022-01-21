@@ -32,3 +32,6 @@ class Showcase(AbstractName, AbstractText):
         db_table = "showcase"
         verbose_name = _("Showcase")
         verbose_name_plural = _("Showcases")
+
+    def __str__(self):
+        return f"{str(self.project)}-{super().__str__()}"

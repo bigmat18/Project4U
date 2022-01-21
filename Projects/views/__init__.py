@@ -4,3 +4,4 @@ from .UserProject import UserProjectListCreateView, UserProjectUpdateDestroyView
 
 from .Showcase import ShowcaseListCreateView
 from .Message import MessageListView
+from .TextMessage import TextMessageCreateView
