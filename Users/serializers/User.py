@@ -10,7 +10,7 @@ from Users.serializers import (UserSkillListSerializer,
 class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["slug", "first_name", "last_name", "image","type_user"]
+        fields = ["id","slug", "first_name", "last_name", "image"]
 
 
 class UserDetailSerializer(serializers.ModelSerializer):

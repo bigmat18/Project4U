@@ -44,9 +44,7 @@ class UserManager(BaseUserManager):
 
 
 def image_path(instance,path):
-    if instance.id: filename = f"users_images/{instance.id}.jpg"
-    else: raise ValidationError("User non esistente")
-    return filename
+    return f"users/user-{instance.id}/user-image.jpg"
 
 
 class User(AbstractBaseUser, AbstractSlug):

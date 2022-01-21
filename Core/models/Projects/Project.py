@@ -5,6 +5,13 @@ from Core.models import (AbstractCreateUpdate,
                          Tag, AbstractName, 
                          AbstractText)
 
+from django.dispatch import receiver
+from django.db.models.signals import pre_save, pre_delete
+from storages.backends.s3boto3 import S3Boto3Storage
+
+def image_path(instance, filename):
+    return f"projects/project-{instance.id}/project-image.jpg"
+
 
 class Project(AbstractName, AbstractText, AbstractCreateUpdate):
     link_site_help_text = _("Link del sito di contatto del progetto")
@@ -18,7 +25,7 @@ class Project(AbstractName, AbstractText, AbstractCreateUpdate):
                                 related_name="projects_created",
                                 related_query_name="projects_created")
     
-    image = models.ImageField(_("image"), blank=True, null=True)
+    image = models.ImageField(_("image"), blank=True, null=True,upload_to=image_path)
     link_site = models.TextField(_("link site"), blank=True, null=True,
                                  help_text=link_site_help_text,
                                  max_length=516)
@@ -52,3 +59,21 @@ class Project(AbstractName, AbstractText, AbstractCreateUpdate):
     @property
     def ended(self):
         return self.ended_at.strftime('%d %B %Y')
+    
+    
+    
+if not settings.DEBUG:
+    @receiver(pre_delete,sender=Project)
+    def pre_delete_image(sender, instance, *args, **kwargs):
+        if instance.image:
+            storage = S3Boto3Storage()
+            storage.delete(str(instance.image))
+
+    @receiver(pre_save, sender=Project)
+    def pre_save_image(sender, instance, *args, **kwargs):
+        project = Project.objects.filter(id=instance.id)
+        if project.exists():
+            project = project.get(id=instance.id)
+            storage = S3Boto3Storage()
+            if not instance.image and project.image:
+                storage.delete(str(project.image))

@@ -1,4 +1,4 @@
-from .Auth import LoginRegistrationTestCase
+from .Authentication import LoginRegistrationTestCase
 from .User import UserTestCase
 from .Skill import SkillTestCase, UserSkillTestCase
 from .ExternalProject import ExternalProjectTestCase

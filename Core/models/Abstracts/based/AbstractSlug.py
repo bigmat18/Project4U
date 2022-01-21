@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from script import generate_slug
+from Core.management.utils.RandomGenerator import generate_slug
 
 class AbstractSlug(models.Model):
     slug = models.SlugField(_("slug"),

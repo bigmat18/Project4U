@@ -5,9 +5,10 @@ from .Users.Skill import SkillAdmin, UserSkillInline
 from .Users.User import UserAdmin
 from .Users.Email import EmailImportExport
 
-from .Showcases.Showcase import ShowcaseInline
-from .Showcases.TextMessage import TextMessageAdmin
-from .Showcases.Event import Event
+from .Projects.MessageFile import MessageFileInline
+from .Projects.Showcase import ShowcaseInline
+from .Projects.TextMessage import TextMessageAdmin
+from .Projects.Event import Event
 
 from .Projects.Role import RoleInline
 from .Projects.UserProject import UserProjectInline

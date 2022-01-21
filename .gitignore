@@ -47,13 +47,13 @@ coverage.xml
 *.pot
 
 # Django custom files
-venv
+.venv
 db.sqlite3
 aws.txt
 media
 .vscode
-SQL
-SQL/*
+.sqlquery
+.sqlquery/*
 
 # Elastic Beanstalk Files
 .elasticbeanstalk

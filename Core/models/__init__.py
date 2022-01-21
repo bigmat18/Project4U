@@ -20,14 +20,15 @@ from .Projects.Project import Project
 from .Projects.Role import Role, UserProject
 from .Projects.SearchCard import SearchCard
 
-from .Showcases.Showcase import Showcase
-from .Showcases.Message import Message
-from .Showcases.TextMessage import TextMessage
-from .Showcases.Event import Event
-from .Showcases.EventUpdate import EventUpdate
-from .Showcases.Poll import Poll
-from .Showcases.PollOption import PollOption
-from .Showcases.EventTask import EventTask
+from .Projects.Showcase import Showcase
+from .Projects.Message import Message
+from .Projects.TextMessage import TextMessage
+from .Projects.Event import Event
+from .Projects.EventUpdate import EventUpdate
+from .Projects.Poll import Poll
+from .Projects.PollOption import PollOption
+from .Projects.EventTask import EventTask
+from .Projects.MessageFile import MessageFile
 
 """
 from .Idea.Idea import Idea

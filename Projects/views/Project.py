@@ -1,6 +1,6 @@
 from rest_framework import generics, mixins
 from rest_framework import viewsets
-from Core.models import Project
+from Core.models import Project, Showcase
 from rest_framework.response import Response
 from Projects.serializers.Project import ProjectSerializerDetail
 from ..serializers import ProjectSerializerList
@@ -56,6 +56,10 @@ class ProjectsListCreateView(mixins.CreateModelMixin,
     def perform_create(self, serializer):
         instance = serializer.save(creator=self.request.user)
         instance.users.add(self.request.user)
+        showcase = Showcase.objects.create(project=instance,name="Generali",creator=instance.creator)
+        showcase.users.add(self.request.user)
+        showcase = Showcase.objects.create(project=instance,name="Idee",creator=instance.creator)
+        showcase.users.add(self.request.user)
 
 
 

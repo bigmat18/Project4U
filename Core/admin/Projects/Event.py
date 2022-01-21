@@ -1,5 +1,6 @@
 from django.contrib import admin
 from Core.models import Event, EventTask, EventUpdate
+from Core.admin import MessageFileInline
 
 class EventTaskInline(admin.TabularInline):
     model = EventTask
@@ -14,4 +15,4 @@ class EventUpdateInline(admin.TabularInline):
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     list_display = ('id','text','showcase','author')
-    inlines = [EventUpdateInline, EventTaskInline]
+    inlines = [EventUpdateInline, EventTaskInline, MessageFileInline]
