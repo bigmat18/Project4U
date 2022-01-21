@@ -9,8 +9,6 @@ from django.dispatch import receiver
 from django.db.models.signals import pre_save, pre_delete
 from storages.backends.s3boto3 import S3Boto3Storage
 
-from script import generate_random_string
-
 def image_path(instance, filename):
     return f"projects/project-{instance.id}/project-image.jpg"
 

@@ -12,8 +12,6 @@ from storages.backends.s3boto3 import S3Boto3Storage
 
 from django.core.exceptions import ValidationError
 
-from script import generate_random_string
-
 import uuid
 
 class UserManager(BaseUserManager):

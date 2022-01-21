@@ -1,8 +1,13 @@
-from Core.models import Showcase, Message
+from Core.models import Showcase, Message,User
 from rest_framework import serializers
-from Showcases.serializers import MessageSerializer
-from Users.serializers import UserListSerializer
+from .Message import MessageSerializer
 from django.db.models import Q
+
+
+class UserListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id","slug", "first_name", "last_name", "image"]
 
 class ShowcaseSerializer(serializers.ModelSerializer):
     last_message = serializers.SerializerMethodField(read_only=True)

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from Core.models import Message
-from Showcases.serializers import TextMessageSerializer, EventSerializer
+from .TextMessage import TextMessageSerializer
+from .Event import EventSerializer
 
 class MessageSerializer(serializers.ModelSerializer):
     content = serializers.SerializerMethodField(read_only=True)

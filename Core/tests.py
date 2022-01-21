@@ -1,4 +1,4 @@
-from .BaseTestCase import BaseTestCase
+from .management.utils.BaseTestCase import BaseTestCase
 
 from Users.tests import (UserTestCase, SkillTestCase, UserSkillTestCase,
                          ExternalProjectTestCase, UserEducationTestCase,
@@ -6,6 +6,4 @@ from Users.tests import (UserTestCase, SkillTestCase, UserSkillTestCase,
 
 
 from Projects.tests import (ProjectsTestCase,UserProjectTestCase,
-                            RoleTestCase)
-
-from Showcases.tests import (ShowcaseTestCase)
+                            RoleTestCase, ShowcaseTestCase)

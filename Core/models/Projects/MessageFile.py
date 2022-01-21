@@ -13,7 +13,7 @@ def file_path(instace,filename):
            f"/showcase-{instace.message.showcase.id}"+\
            f"/message-{instace.message.id}/{filename}"
 
-class FileMessage(models.Model):
+class MessageFile(models.Model):
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     message = models.ForeignKey(Message,
                                 on_delete=models.CASCADE,
@@ -32,7 +32,7 @@ class FileMessage(models.Model):
     
     
 if not settings.DEBUG:
-    @receiver(pre_delete,sender=FileMessage)
+    @receiver(pre_delete,sender=MessageFile)
     def pre_delete_file(sender, instance, *args, **kwargs):
         if instance.file:
             storage = S3Boto3Storage()
