@@ -4,7 +4,7 @@ from .Message import MessageSerializer
 from django.db.models import Q
 
 
-class UserListSerializer(serializers.ModelSerializer):
+class UserShowcaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id","slug", "first_name", "last_name", "image"]
@@ -12,9 +12,9 @@ class UserListSerializer(serializers.ModelSerializer):
 class ShowcaseSerializer(serializers.ModelSerializer):
     last_message = serializers.SerializerMethodField(read_only=True)
     last_event = serializers.SerializerMethodField(read_only=True)
-    users = UserListSerializer(many=True,required=False)
+    users = UserShowcaseSerializer(many=True,required=False)
     notify = serializers.SerializerMethodField(read_only=True)
-    creator = UserListSerializer(read_only=True)
+    creator = UserShowcaseSerializer(read_only=True)
     
     class Meta:
         model = Showcase

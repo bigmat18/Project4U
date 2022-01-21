@@ -22,7 +22,16 @@ class Showcase(AbstractName, AbstractText):
                                 blank=True,
                                 related_name="showcases_created",
                                 related_query_name="showcases_created")
+    
+    def save(self,*args, **kwargs):
+        if self._state.adding:
+            self.users.add(self.creator)
+        return super().save(*args,**kwargs)
+    
     class Meta:
         db_table = "showcase"
         verbose_name = _("Showcase")
         verbose_name_plural = _("Showcases")
+
+    def __str__(self):
+        return f"{str(self.project)}-{super().__str__()}"

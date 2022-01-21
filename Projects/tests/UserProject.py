@@ -5,15 +5,13 @@ from rest_framework import status
 from django.test import tag
 
 
-@tag('Projects')
+@tag('Projects','users-projects-tests')
 class UserProjectTestCase(BaseTestCase):
     
     def setUp(self):
-        self.init_test(True)
+        self.baseSetup()
         self.project = Project.objects.create(name="test",creator=self.user)
         self.role = Role.objects.create(name="test1", project=self.project)
-        self.user1 = User.objects.create_user(email=f"2{self.email}",password=self.password,
-                                              first_name=self.first_name,last_name=self.last_name)
         self.user_project = UserProject.objects.create(user=self.user,project=self.project)
         
     @tag('get', 'auth') 
@@ -29,7 +27,7 @@ class UserProjectTestCase(BaseTestCase):
     
     @tag('post', 'auth')
     def test_user_project_create_auth(self):
-        response = self.client.post(f"/api/projects/{self.project.id}/users/", data={"user":str(self.user1.id)})
+        response = self.client.post(f"/api/projects/{self.project.id}/users/", data={"user":str(self.new_user.id)})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         response = self.client.post(f"/api/projects/{self.project.id}/users/", data={"user":str(self.user.id)})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -37,8 +35,8 @@ class UserProjectTestCase(BaseTestCase):
     
     @tag('post', 'unauth') 
     def test_user_project_create_unauth(self):
-        self.client.force_authenticate(user=self.user1)
-        response = self.client.post(f"/api/projects/{self.project.id}/users/", data={"user":str(self.user1.id)})
+        self.client.force_authenticate(user=self.new_user)
+        response = self.client.post(f"/api/projects/{self.project.id}/users/", data={"user":str(self.new_user.id)})
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
     
     @tag('put', 'auth')
@@ -50,7 +48,7 @@ class UserProjectTestCase(BaseTestCase):
     
     @tag('put', 'unauth')
     def test_user_project_update_unauth(self):
-        self.client.force_authenticate(user=self.user1)
+        self.client.force_authenticate(user=self.new_user)
         data = {"role":[str(self.role.id)]}
         response = self.client.patch(f"/api/projects/users/{self.user_project.id}/", data=data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -62,6 +60,6 @@ class UserProjectTestCase(BaseTestCase):
     
     @tag('delete', 'unauth')
     def test_user_project_delete_unauth(self):
-        self.client.force_authenticate(user=self.user1)
+        self.client.force_authenticate(user=self.new_user)
         response = self.client.delete(f"/api/projects/users/{self.user_project.id}/")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

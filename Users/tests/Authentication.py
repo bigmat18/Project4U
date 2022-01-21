@@ -7,7 +7,7 @@ from django.test import tag
 class LoginRegistrationTestCase(BaseTestCase):
 
     def setUp(self):
-        self.data = self.init_test(True)
+        self.data = self.baseSetup()
         self.data["password1"] = self.data["password2"] = self.data["password"]
         del self.data["password"]
 
