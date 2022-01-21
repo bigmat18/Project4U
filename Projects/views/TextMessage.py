@@ -5,6 +5,12 @@ from Core.models import Showcase
 
 class TextMessageCreateView(generics.CreateAPIView,
                             viewsets.GenericViewSet):
+    """
+    create:
+    Create un messaggio testuale
+    
+    Crea un nuovo messaggio testuale nella bacheca di cui è stato passato l'id.
+    """
     serializer_class = TextMessageSerializer
     
     def get_showcases(self):
