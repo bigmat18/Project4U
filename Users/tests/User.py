@@ -6,7 +6,7 @@ import PIL, tempfile
 @tag('Users', 'users-tests')
 class UserTestCase(BaseTestCase):
     
-    def setUp(self): self.init_test(True)
+    def setUp(self): self.baseSetup()
         
     @tag('put','auth')
     def test_current_user_update_auth(self):

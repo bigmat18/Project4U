@@ -4,15 +4,13 @@ from Core.tests import BaseTestCase
 from rest_framework import status
 from django.test import tag
 
-@tag('Projects')
+@tag('Projects','roles-tests')
 class RoleTestCase(BaseTestCase):
     
     def setUp(self):
-        self.init_test(True)
+        self.baseSetup()
         self.project = Project.objects.create(name="test",creator=self.user)
         self.role1 = Role.objects.create(name="role1", project=self.project)
-        self.user1 = User.objects.create_user(email=f"2{self.email}",password=self.password,
-                                              first_name=self.first_name,last_name=self.last_name)
         
     @tag('get', 'auth')   
     def test_role_list_auth(self):
@@ -21,7 +19,7 @@ class RoleTestCase(BaseTestCase):
         
     @tag('get', 'unauth')
     def test_role_list_unauth(self):
-        self.client.force_authenticate(user=self.user1)
+        self.client.force_authenticate(user=self.new_user)
         response = self.client.get(f"/api/projects/{self.project.id}/roles/")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         
@@ -34,8 +32,8 @@ class RoleTestCase(BaseTestCase):
     @tag('post', 'unauth')
     def test_role_create_unauth(self):
         data = {"name":"new_role"}
-        self.client.force_authenticate(user=self.user1)
-        self.project.users.add(self.user1)
+        self.client.force_authenticate(user=self.new_user)
+        self.project.users.add(self.new_user)
         response = self.client.post(f"/api/projects/{self.project.id}/roles/", data=data)
         self.assertEqual(response.status_code,status.HTTP_403_FORBIDDEN)
 
@@ -49,7 +47,7 @@ class RoleTestCase(BaseTestCase):
     @tag('put', 'unauth')
     def test_role_update_unauth(self):
         data = {"name":"new_name"}
-        self.client.force_authenticate(user=self.user1)
+        self.client.force_authenticate(user=self.new_user)
         response = self.client.patch(f"/api/role/{self.role1.id}/", data=data)
         self.assertEqual(response.status_code,status.HTTP_403_FORBIDDEN)
       
@@ -60,6 +58,6 @@ class RoleTestCase(BaseTestCase):
         
     @tag('delete', 'unauth')  
     def test_role_delete_unauth(self):
-        self.client.force_authenticate(user=self.user1)
+        self.client.force_authenticate(user=self.new_user)
         response = self.client.delete(f"/api/role/{self.role1.id}/")
         self.assertEqual(response.status_code,status.HTTP_403_FORBIDDEN)

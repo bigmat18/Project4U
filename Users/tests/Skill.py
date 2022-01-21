@@ -7,7 +7,7 @@ from django.test import tag
 @tag('Users', 'skills-tests')
 class SkillTestCase(BaseTestCase):
     
-    def setUp(self): self.init_test(True)
+    def setUp(self): self.baseSetup()
             
     @tag('get','auth')
     def test_skill_list_auth(self):
@@ -30,7 +30,7 @@ class SkillTestCase(BaseTestCase):
 class UserSkillTestCase(BaseTestCase):
     
     def setUp(self):
-        self.init_test(True)
+        self.baseSetup()
         self.skill1 = Skill.objects.create(name="prova1")
         self.skill2 = Skill.objects.create(name="prova2")
         self.skill3 = Skill.objects.create(name="prova3")

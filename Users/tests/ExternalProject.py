@@ -10,7 +10,7 @@ import PIL, tempfile
 class ExternalProjectTestCase(BaseTestCase):
     
     def setUp(self):
-        self.init_test(True)
+        self.baseSetup()
         self.project = ExternalProject.objects.create(user=self.user,name="prova")
     
     @tag('post','auth') 

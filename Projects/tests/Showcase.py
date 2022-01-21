@@ -7,11 +7,9 @@ from django.test import tag
 class ShowcaseTestCase(BaseTestCase):
     
     def setUp(self):
-        self.init_test(True)
+        self.baseSetup()
         self.project = Project.objects.create(name="test", 
                                               creator=self.user)
-        self.new_user = User.objects.create_user(email=f"2{self.email}", password=self.email,
-                                            first_name=self.first_name, last_name=self.last_name)
         
     @tag('get','auth') 
     def test_showcase_list_auth(self):
