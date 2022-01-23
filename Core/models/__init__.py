@@ -15,7 +15,7 @@ from .Users.Email import Email
 from .Users.ExternalProject import ExternalProject
 from .Users.UserEducation import UserEducation
 
-from .Projects.Tag import Tag
+from .Projects.ProjectTag import ProjectTag
 from .Projects.Project import Project
 from .Projects.Role import Role, UserProject
 from .Projects.SearchCard import SearchCard

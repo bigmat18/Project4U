@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from Core.models import (AbstractCreateUpdate,
-                         Tag, AbstractName, 
+                         ProjectTag, AbstractName, 
                          AbstractText)
 
 from django.dispatch import receiver
@@ -39,7 +39,7 @@ class Project(AbstractName, AbstractText, AbstractCreateUpdate):
                             db_column="description",
                             null=True, blank=True)
     
-    tags = models.ManyToManyField(Tag,
+    tags = models.ManyToManyField(ProjectTag,
                                   related_name="projects",
                                   related_query_name="projects",
                                   help_text=tags_help_text,
@@ -57,6 +57,7 @@ class Project(AbstractName, AbstractText, AbstractCreateUpdate):
         if adding:
             Showcase.objects.create(name="Generali",creator=self.creator,project=self)
             Showcase.objects.create(name="Idee",creator=self.creator,project=self)
+            self.users.add(self.creator)
         return project
     
     class Meta:
