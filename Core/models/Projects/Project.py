@@ -52,10 +52,12 @@ class Project(AbstractName, AbstractText, AbstractCreateUpdate):
                                    related_query_name="projects")
     def save(self,*args, **kwargs):
         from .Showcase import Showcase
-        if self._state.adding:
+        adding = self._state.adding
+        project = super().save(*args,**kwargs)
+        if adding:
             Showcase.objects.create(name="Generali",creator=self.creator,project=self)
-            Showcase.objects.create(name="Idea",creator=self.creator,project=self)
-        return super().save(*args,**kwargs)
+            Showcase.objects.create(name="Idee",creator=self.creator,project=self)
+        return project
     
     class Meta:
         db_table = "project"
