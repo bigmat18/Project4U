@@ -48,16 +48,17 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='Tag',
+            name='ProjectTag',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('created_at', models.DateTimeField(db_column='date_added', default=None, editable=False, help_text='Data di aggiunta utente nel progetto', null=True, verbose_name='created at')),
                 ('name', models.CharField(max_length=64, verbose_name='name')),
                 ('searches_number', models.PositiveIntegerField(default=0, help_text='Numero di ricerche fatte a questo tag', verbose_name='searches number')),
             ],
             options={
-                'verbose_name': 'Tag',
-                'verbose_name_plural': 'Tags',
-                'db_table': 'tag',
+                'verbose_name': 'Projects Tag',
+                'verbose_name_plural': 'Projects Tags',
+                'db_table': 'project_tag',
             },
         ),
         migrations.CreateModel(
@@ -99,7 +100,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='project',
             name='tags',
-            field=models.ManyToManyField(blank=True, help_text='I tags che identificano il progetto', related_name='projects', related_query_name='projects', to='Core.Tag'),
+            field=models.ManyToManyField(blank=True, help_text='I tags che identificano il progetto', related_name='projects', related_query_name='projects', to='Core.ProjectTag'),
         ),
         migrations.AddField(
             model_name='project',

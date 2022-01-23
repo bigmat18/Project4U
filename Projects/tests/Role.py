@@ -1,5 +1,4 @@
-from django.http import request, response
-from Core.models import Project, User, Role
+from Core.models import Project, Role
 from Core.tests import BaseTestCase
 from rest_framework import status
 from django.test import tag

@@ -1,7 +1,7 @@
 from Core.models import User, Project
 from rest_framework import serializers
 from django.db.models import Q
-from Projects.serializers import ProjectSerializerList
+from Projects.serializers import ProjectListSerializer
 from Users.serializers import (UserSkillListSerializer, 
                                 ExternalProjectSerializer,
                                 UserEducationSerializer)
@@ -28,17 +28,13 @@ class UserDetailSerializer(serializers.ModelSerializer):
         
 
 class CurrentUserSerializer(UserDetailSerializer):
-    projects = serializers.SerializerMethodField(read_only=True)
+    projects = ProjectListSerializer(read_only=True,many=True)
     
     class Meta:
         model = User
         read_only_fields = ["slug", "blocked"]
         exclude = ["active", "password", "date_joined", 
             "last_login","username","admin"]
-        
-    def get_projects(self, instance):
-        projects = Project.objects.filter(Q(users=instance) | Q(creator=instance))
-        return ProjectSerializerList(instance=projects,many=True).data
         
         
 class CurrentUserImageSerializer(serializers.ModelSerializer):

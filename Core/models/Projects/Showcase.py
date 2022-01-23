@@ -24,9 +24,10 @@ class Showcase(AbstractName, AbstractText):
                                 related_query_name="showcases_created")
     
     def save(self,*args, **kwargs):
-        if self._state.adding:
-            self.users.add(self.creator)
-        return super().save(*args,**kwargs)
+        adding = self._state.adding
+        showcase = super().save(*args,**kwargs)
+        if adding: self.users.add(self.creator)
+        return showcase
     
     class Meta:
         db_table = "showcase"

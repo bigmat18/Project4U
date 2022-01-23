@@ -1,19 +1,22 @@
 from rest_framework import serializers
-from rest_framework.serializers import ModelSerializer
 from Core.models import Project
+from .ProjectTag import ProjectTagSerializer
 
 
-class ProjectSerializerList(ModelSerializer):
+class ProjectListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ["id","image","name","text","link_site"]
 
 
-class ProjectSerializerDetail(ModelSerializer):
+class ProjectDetailSerializer(serializers.ModelSerializer):
     num_swipe = serializers.IntegerField(read_only=True)
     creator = serializers.PrimaryKeyRelatedField(read_only=True)
+    tags_list = ProjectTagSerializer(many=True,read_only=True,source="tags")
     
     class Meta:
         model = Project
-        exclude = ["users","tags"]
-
+        exclude = ["users"]
+        extra_kwargs = {
+            'tags': {'write_only': True},
+        }

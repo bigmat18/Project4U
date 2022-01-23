@@ -7,8 +7,6 @@ from Core.models import Email
 class EmailResource(resources.ModelResource):
     class Meta:
         model = Email
-        exclude = ('id','added_at',)
-        import_id_fields = ('email', 'first_name', 'last_name',)
 
 class EmailImportExport(ImportExportModelAdmin):
     resource_class = EmailResource
