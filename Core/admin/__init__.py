@@ -13,4 +13,4 @@ from .Projects.Event import Event
 from .Projects.Role import RoleInline
 from .Projects.UserProject import UserProjectInline
 from .Projects.Project import ProjectAdmin
-
+from .Projects.ProjectTag import ProjectTagAdmin
