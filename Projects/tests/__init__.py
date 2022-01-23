@@ -4,3 +4,5 @@ from .UserProject import UserProjectTestCase
 
 from .Showcase import ShowcaseTestCase
 from .Message import MessageTestCase
+
+from .ProjectTag import ProjectTagTestCase

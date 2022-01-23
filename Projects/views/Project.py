@@ -2,8 +2,8 @@ from rest_framework import generics, mixins
 from rest_framework import viewsets
 from Core.models import Project, Showcase
 from rest_framework.response import Response
-from Projects.serializers.Project import ProjectSerializerDetail
-from ..serializers import ProjectSerializerList
+from Projects.serializers.Project import ProjectDetailSerializer
+from ..serializers import ProjectListSerializer
 from rest_framework_api_key.permissions import HasAPIKey
 from rest_framework.permissions import IsAuthenticated
 from rest_access_policy.access_policy import AccessPolicy
@@ -47,7 +47,7 @@ class ProjectsListCreateView(mixins.CreateModelMixin,
     
     Aggiungi un nuovo progetto con te come creatore.
     """
-    serializer_class = ProjectSerializerList
+    serializer_class = ProjectListSerializer
     queryset = Project.objects.all()
     permission_classes = [IsAuthenticated, ProjectsAccessPolicy]
     if not settings.DEBUG: permission_classes.append(HasAPIKey)
@@ -83,7 +83,7 @@ class ProjectsRUDView(generics.RetrieveUpdateDestroyAPIView,
     Dato un id di un progetto puoi agiornare 1 o più suoi dati. E' possibile esseguire l'aggiornamento
     soltato se si è il creatore del progetto. Vengono restituiti soltato i campi modificati.
     """
-    serializer_class = ProjectSerializerDetail
+    serializer_class = ProjectDetailSerializer
     queryset = Project.objects.all()
     lookup_field = "id"
     permission_classes = [IsAuthenticated, ProjectsAccessPolicy]

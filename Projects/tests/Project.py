@@ -28,7 +28,7 @@ class ProjectsTestCase(BaseTestCase):
         response = self.client.post('/api/projects/', data={"name": "test1"})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         
-    @tag('post','auth')  
+    @tag('post','auth','this')  
     def test_projects_create_showcases_auth(self):
         response = self.client.post('/api/projects/', data={"name": "test1"})
         showcases = Showcase.objects.filter(project=response.data['id'])

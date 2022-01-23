@@ -1,4 +1,4 @@
-from .Project import ProjectSerializerList, ProjectSerializerDetail
+from .Project import ProjectListSerializer, ProjectDetailSerializer
 from .Role import RoleSerializer
 from .UserProject import UserProjectListSerializer, UserProjectUpdateSerializer
 from .ProjectTag import ProjectTagSerializer

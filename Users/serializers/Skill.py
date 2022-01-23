@@ -1,7 +1,5 @@
-from django.db.models import fields
 from rest_framework import serializers
 from Core.models import Skill, UserSkill
-from Core.models.Users.User import User
 
 
 class SkillSerializer(serializers.ModelSerializer):

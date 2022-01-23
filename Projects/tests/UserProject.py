@@ -1,8 +1,8 @@
-from django.http import request, response
-from Core.models import Project, User, Role, UserProject
+from Core.models import Project, Role, UserProject
 from Core.tests import BaseTestCase
 from rest_framework import status
 from django.test import tag
+from django.db.models import Q
 
 
 @tag('Projects','users-projects-tests')
@@ -12,7 +12,7 @@ class UserProjectTestCase(BaseTestCase):
         self.baseSetup()
         self.project = Project.objects.create(name="test",creator=self.user)
         self.role = Role.objects.create(name="test1", project=self.project)
-        self.user_project = UserProject.objects.create(user=self.user,project=self.project)
+        self.user_project = UserProject.objects.get(Q(user=self.user) & Q(project=self.project))
         
     @tag('get', 'auth') 
     def test_user_project_list_auth(self):
