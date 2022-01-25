@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Project',
             fields=[
-                ('name', models.CharField(max_length=64, verbose_name='name',unique=True)),
+                ('name', models.CharField(max_length=64, verbose_name='name')),
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('created_at', models.DateTimeField(default=None, editable=False, help_text='Data di creazione del modello', null=True, verbose_name='created at')),
                 ('updated_at', models.DateTimeField(default=None, editable=False, help_text='Data di aggiornamento del modello', null=True, verbose_name='updated at')),
