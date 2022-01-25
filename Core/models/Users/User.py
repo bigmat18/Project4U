@@ -107,6 +107,9 @@ class User(AbstractBaseUser, AbstractSlug):
                                     through_fields=('user','skill'),
                                     related_name="users",
                                     related_query_name="users")
+    slug = models.SlugField(_("slug"), editable=False,
+                            db_column="secret_key",
+                            unique=True,null=True,blank=True)
     
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
@@ -123,7 +126,7 @@ class User(AbstractBaseUser, AbstractSlug):
         return f"{self.email}"
     
     @property
-    def full_name(self): return f"{self.first_name} {self.last_name}"
+    def full_name(self): return f"{self.first_name}-{self.last_name}"
     
     @property
     def is_staff(self): return self.admin

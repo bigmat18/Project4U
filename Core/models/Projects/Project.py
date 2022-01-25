@@ -25,6 +25,8 @@ class Project(AbstractName, AbstractText, AbstractCreateUpdate):
                                 related_name="projects_created",
                                 related_query_name="projects_created")
     
+    name = models.CharField(_("name"), unique=True,max_length=64)
+    
     image = models.ImageField(_("image"), blank=True, null=True,upload_to=image_path)
     link_site = models.TextField(_("link site"), blank=True, null=True,
                                  help_text=link_site_help_text,

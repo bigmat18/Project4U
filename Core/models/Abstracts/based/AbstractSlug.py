@@ -4,6 +4,7 @@ from Core.management.utils.RandomGenerator import generate_slug
 
 class AbstractSlug(models.Model):
     slug = models.SlugField(_("slug"),
+                            editable=False,
                             unique=True,
                             null=True,
                             blank=True)
@@ -17,6 +18,5 @@ class AbstractSlug(models.Model):
                 self.slug = generate_slug(self.title)
             elif hasattr(self, 'name'):
                 self.slug = generate_slug(self.name)
-            else: 
-                self.slug = generate_slug('')
+            else: self.slug = generate_slug('')
         return super().save(*args, **kwargs)
