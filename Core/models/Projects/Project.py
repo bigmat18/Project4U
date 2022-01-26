@@ -38,7 +38,7 @@ class Project(AbstractCreateUpdate):
                                  help_text=link_site_help_text,
                                  max_length=516)
     
-    ended_at = models.DateTimeField(_("ended"),null=True, blank=True,
+    ended_at = models.DateField(_("ended"),null=True, blank=True,
                                     help_text=ended_at_help_text)
     num_swipe = models.PositiveBigIntegerField(_("number swipe"), default=0,
                                                help_text=num_swipe_help_text)

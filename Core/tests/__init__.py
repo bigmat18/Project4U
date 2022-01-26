@@ -1,5 +1,5 @@
 from .BaseTestCase import BaseTestCase
-from .UserModelTest import UserModelTestCase
+from .ConstraintsTestCase import ConstraintsTestCase
 
 from Users.tests import (UserTestCase, SkillTestCase, UserSkillTestCase,
                          ExternalProjectTestCase, UserEducationTestCase,

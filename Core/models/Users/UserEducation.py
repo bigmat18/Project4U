@@ -32,7 +32,9 @@ class UserEducation(models.Model):
         db_table = "user_education"
         verbose_name = _("User Education")
         verbose_name_plural = _("User Educations")
-        constraints = [CheckConstraint(check=Q(ended_at__gt=F('started_at')),
-                                       name="check_user_education_start_date")]
+        constraints = [
+            CheckConstraint(check=Q(ended_at__gt=F('started_at')),
+                            name="check_user_education_start_date")
+        ]
         
     def __str__(self): return str(self.id)
