@@ -9,22 +9,22 @@ class UserEducationTestCase(BaseTestCase):
 
     def setUp(self):
         self.baseSetup()
-        self.education = UserEducation.objects.create(text="prova",user=self.user,
+        self.education = UserEducation.objects.create(description="prova",user=self.user,
                                                       started_at=timezone.now())
     @tag('post','auth')
     def test_education_create_auth(self):
-        response = self.client.post("/api/user/educations/", data={"text":self.education.text, 
+        response = self.client.post("/api/user/educations/", data={"description":self.education.description, 
                                                                   "started_at":"2020-3-20"})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         response = self.client.post("/api/user/educations/", format= "json", data=[
-            {"text":self.education.text,"started_at":"2020-3-20"},
-            {"text":self.education.text,"started_at":"2020-3-20"}])
+            {"description":self.education.description,"started_at":"2020-3-20"},
+            {"description":self.education.description,"started_at":"2020-3-20"}])
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIsInstance(response.data, list)
     
     @tag('put','auth')
     def test_education_update_auth(self):
-        data = {"text":"prova2"}
+        data = {"description":"prova2"}
         response = self.client.patch(f"/api/user/educations/{self.education.id}/", data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertDictEqual(data, dict(response.json()))

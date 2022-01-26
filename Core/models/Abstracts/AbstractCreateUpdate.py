@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.db.models import CheckConstraint, Q, F
+
 
 class AbstractCreateUpdate(models.Model):
     created_at_help_text = _("Data di creazione del modello")
@@ -20,7 +22,11 @@ class AbstractCreateUpdate(models.Model):
     class Meta:
         abstract = True
         ordering = ["-updated_at"]
-        indexes = [models.Index(fields=['-updated_at'])]
+        constraints = [
+            CheckConstraint(check=Q(updated_at__gte=F('created_at')),
+                            name='check_%(class)s_updated_at')
+        ]
+        
         
     def save(self, *args, **kwargs):
         if self.created_at is None:

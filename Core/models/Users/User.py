@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from Core.models import Skill, AbstractSlug
+from Core.models import Skill
 
 from django.conf import settings
 
@@ -10,7 +10,9 @@ from django.dispatch import receiver
 from django.db.models.signals import pre_save, pre_delete
 from storages.backends.s3boto3 import S3Boto3Storage
 
-from django.core.exceptions import ValidationError
+from ...management.utils.RandomGenerator import generate_slug
+from django.db.models import CheckConstraint, Q
+from django.db.models.functions import Now
 
 import uuid
 
@@ -32,6 +34,7 @@ class UserManager(BaseUserManager):
         user.last_name = last_name
         user.date_birth = date_birth
         user.date_joined = timezone.now()
+        user.secret_key = generate_slug('')
         
         user.save(using=self._db)
         return user
@@ -47,7 +50,7 @@ def image_path(instance,path):
     return f"users/user-{instance.id}/user-image.jpg"
 
 
-class User(AbstractBaseUser, AbstractSlug):
+class User(AbstractBaseUser):
     blocked_help_text   = "Indica se un utente è stato bloccato."
     main_role_help_text = "Indica il ruolo principale dell'utente (32 caratteri max)"
     description_help_text = "Descrizione dell'utente (256 caratteri max)"
@@ -107,9 +110,8 @@ class User(AbstractBaseUser, AbstractSlug):
                                     through_fields=('user','skill'),
                                     related_name="users",
                                     related_query_name="users")
-    slug = models.SlugField(_("slug"), editable=False,
-                            db_column="secret_key",
-                            unique=True,null=True,blank=True)
+    secret_key = models.SlugField(_("secret key"), editable=False, 
+                                  unique=True,blank=True)
     
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
@@ -121,9 +123,11 @@ class User(AbstractBaseUser, AbstractSlug):
         db_table = 'user'
         verbose_name = _('User')
         verbose_name_plural = _('Users')
+        constraints = [
+            CheckConstraint(check=Q(date_birth__lte=Now()),name="check_user_date_birth")
+        ]
         
-    def __str__(self):
-        return f"{self.email}"
+    def __str__(self): return f"{self.email}"
     
     @property
     def full_name(self): return f"{self.first_name}-{self.last_name}"

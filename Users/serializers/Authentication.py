@@ -5,24 +5,15 @@ import datetime
 from rest_auth.registration.serializers import RegisterSerializer
 from rest_auth.serializers import LoginSerializer
 
-AGE = 16
-
 
 class CustomLoginSerializer(LoginSerializer):
     username = None
-
 
 
 class UserRegistrationSerializer(RegisterSerializer):
     username = None
     first_name = serializers.CharField(required=True, max_length=30)
     last_name = serializers.CharField(required=True, max_length=150)
-    
-    def validate_date_birth(self, date_birth):
-        if (datetime.date.today() - date_birth).days < AGE * 356:
-            raise serializers.ValidationError(
-                _(f"Per pottersi registrare è necessario aver almeno {AGE} anni"))
-        return date_birth
     
     def get_cleaned_data(self):
         return {

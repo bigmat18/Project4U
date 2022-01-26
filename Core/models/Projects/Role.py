@@ -1,12 +1,12 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
-from Core.models import AbstractName, Project, AbstractCreateUpdate
-from django.utils import timezone
+from Core.models import Project, AbstractCreateUpdate
 import uuid
 
-class Role(AbstractName):
+class Role(models.Model):
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
+    name = models.CharField(_("name"), max_length=64)
     project = models.ForeignKey(Project,
                                 on_delete=models.CASCADE,
                                 related_name="roles",
@@ -17,7 +17,7 @@ class Role(AbstractName):
         verbose_name = _("Role")
         verbose_name_plural = _("Roles")
         
-        
+    def __str__(self): return str(self.id)
         
 
 class UserProject(AbstractCreateUpdate):
@@ -43,11 +43,10 @@ class UserProject(AbstractCreateUpdate):
                                       editable=False,
                                       help_text=date_added_help_text)
     
-    class Meta:
+    class Meta(AbstractCreateUpdate.Meta):
         unique_together = (("user", "project"),)
         db_table = "user_project"
         verbose_name = _("User Project")
         verbose_name_plural = _("User Projects")
         
-    def __str__(self):
-        return f"{self.project} - {self.user}"
+    def __str__(self): return f"{self.project} - {self.user}"

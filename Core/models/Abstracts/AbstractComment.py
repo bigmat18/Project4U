@@ -1,10 +1,10 @@
 from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
-from Core.models import AbstractCreateUpdate, AbstractText
+from Core.models import AbstractCreateUpdate
 import uuid
 
-class AbstractComment(AbstractCreateUpdate, AbstractText):
+class AbstractComment(AbstractCreateUpdate):
     @staticmethod
     def get_author_related_name():
         return '%(app_label)s_%(class)s' + '_author'
@@ -23,6 +23,8 @@ class AbstractComment(AbstractCreateUpdate, AbstractText):
                                        related_name=get_likes_related_name.__func__(),
                                        related_query_name=get_likes_related_name.__func__())
     
-    class Meta:
+    text = models.TextField(_("text"),max_length=516,null=True,blank=True)
+    
+    class Meta(AbstractCreateUpdate.Meta):
         abstract = True
     

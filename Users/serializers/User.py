@@ -10,7 +10,7 @@ from Users.serializers import (UserSkillListSerializer,
 class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id","slug", "first_name", "last_name", "image"]
+        fields = ["id","secret_key", "first_name", "last_name", "image"]
 
 
 class UserDetailSerializer(serializers.ModelSerializer):
@@ -21,7 +21,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        read_only_fields = ["slug", "blocked"]
+        read_only_fields = ["secret_key", "blocked"]
         exclude = ["active", "password", "date_joined", 
             "last_login","username","admin", "user_saved",
             "project_saved","type_vip"]
@@ -32,7 +32,7 @@ class CurrentUserSerializer(UserDetailSerializer):
     
     class Meta:
         model = User
-        read_only_fields = ["slug", "blocked"]
+        read_only_fields = ["secret_key", "blocked"]
         exclude = ["active", "password", "date_joined", 
             "last_login","username","admin"]
         

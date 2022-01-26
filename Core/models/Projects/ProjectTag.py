@@ -1,14 +1,14 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from Core.models import AbstractName
 
 import uuid
 
-class ProjectTag(AbstractName):
-    id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
+class ProjectTag(models.Model):
     searches_number_help_text = _("Numero di ricerche fatte a questo tag")
     
-    searches_number = models.PositiveIntegerField(_("searches number"), default=0,
+    id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
+    name = models.CharField(_("name"), max_length=64)
+    searches_number = models.PositiveBigIntegerField(_("searches number"), default=0,
                                                   help_text=searches_number_help_text)
     
     class Meta:
@@ -16,4 +16,4 @@ class ProjectTag(AbstractName):
         verbose_name = _("Projects Tag")
         verbose_name_plural = _("Projects Tags")
 
-    
+    def __str__(self): return str(self.id)

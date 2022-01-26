@@ -1,24 +1,28 @@
 from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
-from Core.models import (AbstractCreateUpdate,
-                         ProjectTag, AbstractName, 
-                         AbstractText)
+from Core.models import (AbstractCreateUpdate, ProjectTag)
 
 from django.dispatch import receiver
 from django.db.models.signals import pre_save, pre_delete
 from storages.backends.s3boto3 import S3Boto3Storage
 
+from django.db.models import CheckConstraint, Q, F
+from django.db.models.functions import Now
+
+import uuid
+
 def image_path(instance, filename):
     return f"projects/project-{instance.id}/project-image.jpg"
 
 
-class Project(AbstractName, AbstractText, AbstractCreateUpdate):
+class Project(AbstractCreateUpdate):
     link_site_help_text = _("Link del sito di contatto del progetto")
     ended_at_help_text = _("Data di chiusura del progetto. Se null il progetto è aperto")
     num_swipe_help_text = _("Il numero di swipe fatti dal progetto")
     tags_help_text = _("I tags che identificano il progetto")
     
+    id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     creator = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 on_delete=models.SET_NULL,
                                 null=True,
@@ -26,6 +30,8 @@ class Project(AbstractName, AbstractText, AbstractCreateUpdate):
                                 related_query_name="projects_created")
     
     name = models.CharField(_("name"), unique=True,max_length=64)
+    description = models.TextField(_("description"),max_length=516,null=True,blank=True)
+
     
     image = models.ImageField(_("image"), blank=True, null=True,upload_to=image_path)
     link_site = models.TextField(_("link site"), blank=True, null=True,
@@ -36,10 +42,6 @@ class Project(AbstractName, AbstractText, AbstractCreateUpdate):
                                     help_text=ended_at_help_text)
     num_swipe = models.PositiveBigIntegerField(_("number swipe"), default=0,
                                                help_text=num_swipe_help_text)
-    
-    text = models.TextField(_("description"), 
-                            db_column="description",
-                            null=True, blank=True)
     
     tags = models.ManyToManyField(ProjectTag,
                                   related_name="projects",
@@ -52,6 +54,20 @@ class Project(AbstractName, AbstractText, AbstractCreateUpdate):
                                    through_fields=("project", "user"),
                                    related_name="projects",
                                    related_query_name="projects")
+    
+    class Meta(AbstractCreateUpdate.Meta):
+        db_table = "project"
+        verbose_name = _("Project")
+        verbose_name_plural = _("Projects")
+        constraints = [
+            CheckConstraint(check=Q(ended_at__lte=Now()),name="check_ended_at"),
+            CheckConstraint(check=Q(updated_at__gte=F('created_at')),name="check_project_updated_at")
+        ]
+    
+    @property
+    def ended(self):
+        return self.ended_at.strftime('%d %B %Y')
+    
     def save(self,*args, **kwargs):
         from .Showcase import Showcase
         adding = self._state.adding
@@ -62,14 +78,7 @@ class Project(AbstractName, AbstractText, AbstractCreateUpdate):
             self.users.add(self.creator)
         return project
     
-    class Meta:
-        db_table = "project"
-        verbose_name = _("Project")
-        verbose_name_plural = _("Projects")
-    
-    @property
-    def ended(self):
-        return self.ended_at.strftime('%d %B %Y')
+    def __str__(self): return f"{self.name}"
 
     
     

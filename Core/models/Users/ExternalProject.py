@@ -1,13 +1,10 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
-from Core.models import AbstractName
 
 from django.dispatch import receiver
 from django.db.models.signals import pre_save, pre_delete
 from storages.backends.s3boto3 import S3Boto3Storage
-
-from django.core.exceptions import ValidationError
 
 import uuid
 
@@ -15,10 +12,11 @@ def image_path(instance,path):
     return f"users/user-{instance.user.id}/externals-projects_images/{instance.id}.jpg"
 
 
-class ExternalProject(AbstractName):
+class ExternalProject(models.Model):
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     image = models.ImageField(blank=True, null=True,upload_to=image_path)
     link_site = models.CharField(max_length=516, null=True, blank=True)
+    name = models.CharField(_("name"), max_length=64)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE,
                              related_name="external_projects",
@@ -30,6 +28,8 @@ class ExternalProject(AbstractName):
         db_table = "external_project"
         verbose_name = _("External Project")
         verbose_name_plural = _("External Projects")
+        
+    def __str__(self): return str(self.id)
     
     
 @receiver(pre_delete,sender=ExternalProject)

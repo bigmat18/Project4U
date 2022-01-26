@@ -75,11 +75,11 @@ class UserRetriveView(generics.RetrieveAPIView,
     retrieve:
     Ristituisce i dettagli di un'utente.
 
-    Ritorna tutti i dettagli di un utente di cui è stato passato lo slug nell'ulr
+    Ritorna tutti i dettagli di un utente di cui è stato passato lo secret_key nell'url.
     """
     serializer_class = UserDetailSerializer
     queryset = User.objects.filter(active=True)
-    lookup_field = "slug"
+    lookup_field = "secret_key"
     
     
     

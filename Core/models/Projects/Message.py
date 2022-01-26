@@ -27,12 +27,11 @@ class Message(AbstractCreateUpdate):
                                        related_query_name="messages_visualize",
                                        blank=True)
     
-    class Meta:
+    class Meta(AbstractCreateUpdate.Meta):
         db_table = "message"
         verbose_name = _("Message")
         verbose_name_plural = _("Messages")
         
         
-    def __str__(self):
-        return f"{self.author} - {self.showcase}"
+    def __str__(self): return str(self.id)
     

@@ -7,7 +7,7 @@ from django.db.models import Q
 class UserShowcaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id","slug", "first_name", "last_name", "image"]
+        fields = ["id","secret_key", "first_name", "last_name", "image"]
 
 class ShowcaseSerializer(serializers.ModelSerializer):
     last_message = serializers.SerializerMethodField(read_only=True)

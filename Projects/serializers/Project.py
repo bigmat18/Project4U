@@ -6,7 +6,7 @@ from .ProjectTag import ProjectTagSerializer
 class ProjectListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
-        fields = ["id","image","name","text","link_site"]
+        fields = ["id","image","name","description","link_site"]
 
 
 class ProjectDetailSerializer(serializers.ModelSerializer):

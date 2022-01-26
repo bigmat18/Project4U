@@ -3,7 +3,7 @@ from django.conf import settings
 from Core.models import Message
 
 from django.dispatch import receiver
-from django.db.models.signals import pre_save, pre_delete
+from django.db.models.signals import pre_delete
 from storages.backends.s3boto3 import S3Boto3Storage
 
 import uuid
@@ -27,8 +27,7 @@ class MessageFile(models.Model):
         verbose_name = "MessageFile"
         verbose_name_plural = "MessageFiles"
         
-    def __str__(self) -> str:
-        return str(self.id)
+    def __str__(self): return str(self.id)
     
     
 if not settings.DEBUG:
