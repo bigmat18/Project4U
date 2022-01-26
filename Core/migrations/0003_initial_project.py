@@ -4,7 +4,7 @@ from django.db import migrations, models
 import django.db.models.deletion
 from django.conf import settings
 import uuid
-
+import Core.models.Projects.Project
 
 class Migration(migrations.Migration):
 
@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('created_at', models.DateTimeField(default=None, editable=False, help_text='Data di creazione del modello', null=True, verbose_name='created at')),
                 ('updated_at', models.DateTimeField(default=None, editable=False, help_text='Data di aggiornamento del modello', null=True, verbose_name='updated at')),
-                ('image', models.ImageField(blank=True, null=True, upload_to='', verbose_name='image')),
+                ('image', models.ImageField(blank=True, null=True, upload_to=Core.models.Projects.Project.image_path, verbose_name='image')),
                 ('link_site', models.TextField(blank=True, help_text='Link del sito di contatto del progetto', max_length=516, null=True, verbose_name='link site')),
                 ('ended_at', models.DateTimeField(blank=True, help_text='Data di chiusura del progetto. Se null il progetto è aperto', null=True, verbose_name='ended')),
                 ('num_swipe', models.PositiveBigIntegerField(default=0, help_text='Il numero di swipe fatti dal progetto', verbose_name='number swipe')),
@@ -51,7 +51,6 @@ class Migration(migrations.Migration):
             name='ProjectTag',
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(db_column='date_added', default=None, editable=False, help_text='Data di aggiunta utente nel progetto', null=True, verbose_name='created at')),
                 ('name', models.CharField(max_length=64, verbose_name='name')),
                 ('searches_number', models.PositiveIntegerField(default=0, help_text='Numero di ricerche fatte a questo tag', verbose_name='searches number')),
             ],

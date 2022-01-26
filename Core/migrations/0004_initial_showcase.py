@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
 import uuid
+from ..models.Projects.MessageFile import file_path
 
 
 class Migration(migrations.Migration):
@@ -85,6 +86,7 @@ class Migration(migrations.Migration):
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='showcases', related_query_name='showcases', to='Core.project')),
                 ('users', models.ManyToManyField(blank=True, related_name='showcases', related_query_name='showcases', to=settings.AUTH_USER_MODEL)),
+                ('creator', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='showcases_created', related_query_name='showcases_created', to=settings.AUTH_USER_MODEL))
             ],
             options={
                 'verbose_name': 'Showcase',
@@ -144,6 +146,19 @@ class Migration(migrations.Migration):
                 'verbose_name': 'Event Task',
                 'verbose_name_plural': 'Event Tasks',
                 'db_table': 'event_task',
+            },
+        ),
+        migrations.CreateModel(
+            name='MessageFile',
+            fields=[
+                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('file', models.FileField(max_length=1000, upload_to=file_path)),
+                ('message', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='files', related_query_name='files', to='Core.message')),
+            ],
+            options={
+                'verbose_name': 'MessageFile',
+                'verbose_name_plural': 'MessageFiles',
+                'db_table': 'message_file',
             },
         ),
     ]

@@ -9,7 +9,11 @@ from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
 from django.conf import settings
+from rest_framework.pagination import PageNumberPagination
 
+
+class MessagePagintation(PageNumberPagination):
+    page_size = 25
 
 
 class MessageAccessPolicy(AccessPolicy):
@@ -52,6 +56,7 @@ class MessageListView(generics.ListAPIView,
     """
     serializer_class = MessageSerializer
     filterset_class = MessageFilter
+    pagination_class = MessagePagintation
     permission_classes = [IsAuthenticated, MessageAccessPolicy]
     if not settings.DEBUG: permission_classes.append(HasAPIKey)
 
