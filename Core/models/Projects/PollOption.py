@@ -5,7 +5,7 @@ from Core.models import Poll
 import uuid
 
 class PollOption(models.Model):
-    votes_help_text = _("I voti dati all'opzione del sondaggio")
+    __votes_help_text = _("I voti dati all'opzione del sondaggio")
     
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     text = models.TextField(_("text"),max_length=516,null=True,blank=True)
@@ -16,7 +16,7 @@ class PollOption(models.Model):
     votes = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                    related_name="poll_option_votes",
                                    related_query_name="poll_option_votes",
-                                   help_text=votes_help_text)
+                                   help_text=__votes_help_text)
     
     class Meta:
         db_table = "poll_option"

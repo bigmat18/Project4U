@@ -1,10 +1,5 @@
 from django.db import models
-from django.conf import settings
-from Core.models import Message
-
-from django.dispatch import receiver
-from django.db.models.signals import pre_delete
-from storages.backends.s3boto3 import S3Boto3Storage
+from Core.models import Message, AbstractFile
 
 import uuid
 
@@ -13,7 +8,7 @@ def file_path(instace,filename):
            f"/showcase-{instace.message.showcase.id}"+\
            f"/message-{instace.message.id}/{filename}"
 
-class MessageFile(models.Model):
+class MessageFile(AbstractFile):
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     message = models.ForeignKey(Message,
                                 on_delete=models.CASCADE,
@@ -28,11 +23,3 @@ class MessageFile(models.Model):
         verbose_name_plural = "MessageFiles"
         
     def __str__(self): return str(self.id)
-    
-    
-if not settings.DEBUG:
-    @receiver(pre_delete,sender=MessageFile)
-    def pre_delete_file(sender, instance, *args, **kwargs):
-        if instance.file:
-            storage = S3Boto3Storage()
-            storage.delete(str(instance.file))

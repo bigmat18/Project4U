@@ -20,10 +20,13 @@ class AbstractComment(AbstractCreateUpdate):
                                related_query_name=get_author_related_name.__func__())
     
     likes = models.ManyToManyField(settings.AUTH_USER_MODEL,
-                                       related_name=get_likes_related_name.__func__(),
-                                       related_query_name=get_likes_related_name.__func__())
+                                   related_name=get_likes_related_name.__func__(),
+                                   related_query_name=get_likes_related_name.__func__())
     
-    text = models.TextField(_("text"),max_length=516,null=True,blank=True)
+    text = models.TextField(_("text"),
+                            max_length=516,
+                            null=True,blank=True)
+    
     
     class Meta(AbstractCreateUpdate.Meta):
         abstract = True

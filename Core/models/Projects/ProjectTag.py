@@ -4,12 +4,12 @@ from django.utils.translation import gettext_lazy as _
 import uuid
 
 class ProjectTag(models.Model):
-    searches_number_help_text = _("Numero di ricerche fatte a questo tag")
+    __searches_number_help_text = _("Numero di ricerche fatte a questo tag")
     
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     name = models.CharField(_("name"), max_length=64)
     searches_number = models.PositiveBigIntegerField(_("searches number"), default=0,
-                                                  help_text=searches_number_help_text)
+                                                  help_text=__searches_number_help_text)
     
     class Meta:
         db_table = "project_tag"

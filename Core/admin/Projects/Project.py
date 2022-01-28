@@ -12,7 +12,7 @@ class ProjectResource(resources.ModelResource):
 
 @admin.register(Project)
 class ProjectAdmin(ImportExportMixin, admin.ModelAdmin):
-    list_display = ('id', 'name', 'created_at', 'creator')
+    list_display = ('id', 'name', 'created_at', 'updated_at', 'creator')
     resource_class = ProjectResource
     inlines = [RoleInline, UserProjectInline, ShowcaseInline]
 

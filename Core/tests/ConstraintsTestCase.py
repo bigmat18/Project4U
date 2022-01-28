@@ -8,8 +8,7 @@ import datetime
 from Core.models.Projects.Project import Project
 from Core.models.Projects.Showcase import Showcase
 
-
-@tag('this')
+@tag("Contraints")
 class ConstraintsTestCase(TestCase):
     
     def test_user_date_birth_check(self):

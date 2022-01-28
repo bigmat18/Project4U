@@ -5,19 +5,20 @@ from django.db.models import CheckConstraint, Q, F
 
 
 class AbstractCreateUpdate(models.Model):
-    created_at_help_text = _("Data di creazione del modello")
-    updated_at_help_text = _("Data di aggiornamento del modello")
+    __default_format = "YY - MM - GG"
+    __created_at_help_text = _("Data di creazione del modello")
+    __updated_at_help_text = _("Data di aggiornamento del modello")
     
     created_at = models.DateTimeField(_('created at'),
                                       null=True,
                                       default=None,
                                       editable=False,
-                                      help_text=created_at_help_text)
+                                      help_text=__created_at_help_text)
     updated_at = models.DateTimeField(_('updated at'),
                                       null=True,
                                       default=None,
                                       editable=False,
-                                      help_text=updated_at_help_text)
+                                      help_text=__updated_at_help_text)
     
     class Meta:
         abstract = True
@@ -26,18 +27,24 @@ class AbstractCreateUpdate(models.Model):
             CheckConstraint(check=Q(updated_at__gte=F('created_at')),
                             name='check_%(class)s_updated_at')
         ]
-        
-        
+    
+    @property
+    def is_updated(self):
+        return self.created_at.strftime(self.__default_format)
+    
+    @property
+    def is_creted(self):
+        return self.created_at.strftime(self.__default_format)
+    
+    
     def save(self, *args, **kwargs):
-        if self.created_at is None:
-            self.created_at = timezone.now()
-        self.updated_at = timezone.now()
+        self.set_created_at()
+        self.set_update_at()
         return super().save(*args, **kwargs)
     
-    @property
-    def updated(self):
-        return self.updated.strftime('%d %B %Y')
-    
-    @property
-    def creted(self):
-        return self.created_at.strftime('%d %B %Y')
+    def set_created_at(self):
+        if self.created_at is None:
+            self.created_at = timezone.now()
+            
+    def set_update_at(self):
+        self.updated_at = timezone.now()

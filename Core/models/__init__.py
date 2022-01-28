@@ -1,4 +1,5 @@
 #------------------ ABSTRACT-MODELS ------------------
+from .Abstracts.AbstractFile import AbstractFile
 from .Abstracts.AbstractCreateUpdate import AbstractCreateUpdate
 from .Abstracts.AbstractComment import AbstractComment
 from .Abstracts.AbstractImage import AbstractImage

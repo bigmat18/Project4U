@@ -4,7 +4,8 @@ from Core.models import Project, Skill
 import uuid
 
 class SearchCard(models.Model):
-    skills_help_text = _("Le abilità richieste nella casta di ricerca")
+    __skills_help_text = _("Le abilità richieste nella casta di ricerca")
+    
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
   
     project = models.ForeignKey(Project,
@@ -14,7 +15,7 @@ class SearchCard(models.Model):
     skills = models.ManyToManyField(Skill,
                                    related_name="search_cards",
                                    related_query_name="search_cards",
-                                   help_text=skills_help_text)
+                                   help_text=__skills_help_text)
     description = models.TextField(_("description"),null=True, blank=True)
     
     class Meta:
