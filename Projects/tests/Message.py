@@ -34,3 +34,16 @@ class MessageTestCase(BaseTestCase):
         self.client.force_authenticate(user=self.new_user)
         response = self.client.post(f'/api/showcase/{self.showcase.id}/messages/text/', data=data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        
+    @tag('get','auth')  
+    def test_message_pagination_empty_auth(self):
+        response = self.client.get(f'/api/showcase/{self.showcase.id}/messages/?page=2')
+        self.assertEqual(str(response.data['detail']), "Pagina non valida.")
+        
+    @tag('get','auth') 
+    def test_message_pagination_limit_auth(self):
+        TextMessage.objects.create(text='test',showcase=self.showcase,author=self.user)
+        TextMessage.objects.create(text='test',showcase=self.showcase,author=self.user)
+        response = self.client.get(f'/api/showcase/{self.showcase.id}/messages/?size=1')
+        self.assertIsNone(response.data['previous'])
+        self.assertIsNotNone(response.data['next'])

@@ -22,6 +22,8 @@ class Project(AbstractFile,AbstractCreateUpdate):
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     creator = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 on_delete=models.SET_NULL,
+                                editable=False,
+                                blank=True,
                                 null=True,
                                 related_name="projects_created",
                                 related_query_name="projects_created")
@@ -66,22 +68,26 @@ class Project(AbstractFile,AbstractCreateUpdate):
         return self.ended_at.strftime('%d %B %Y')
     
     def save(self,*args, **kwargs):
-        adding = self._state.adding
         project = super().save(*args,**kwargs)
-        if adding: self.adding_setup()
+        self.setup_default_showcase()
+        self.setup_creator()
         return project
     
     def adding_setup(self):
         self.create_default_showcase()
-        self.set_creator_in_users()
+        self.users.add(self.creator)
+        
+    def setup_creator(self):
+        if not self.users.filter(id=self.creator.id):
+            self.users.add(self.creator)
     
-    def create_default_showcase(self):
+    def setup_default_showcase(self):
         from .Showcase import Showcase
-        Showcase.objects.create(name="Generali",creator=self.creator,project=self)
+        if not Showcase.objects.filter(project=self,name="Generali").exists():
+            Showcase.objects.create(name="Generali",creator=self.creator,project=self)
+        if not Showcase.objects.filter(project=self,name="Idee").exists():
+            Showcase.objects.create(name="Idee",creator=self.creator,project=self)
         Showcase.objects.create(name="Idee",creator=self.creator,project=self)
         
-    def set_creator_in_users(self):
-        if not self.users.filter(id=self.creator.id).exists():
-            self.users.add(self.creator)
     
     def __str__(self): return f"{self.name}"

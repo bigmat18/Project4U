@@ -20,6 +20,7 @@ class Showcase(models.Model):
                                    blank=True)
     creator = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 on_delete=models.SET_NULL,
+                                editable=True,
                                 null=True,
                                 blank=True,
                                 related_name="showcases_created",
