@@ -1,15 +1,18 @@
+import imp
 from rest_framework import generics, viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from Users.serializers import (UserDetailSerializer, UserListSerializer,
                                CurrentUserImageSerializer)
+from Projects.serializers import ProjectListSerializer
 from rest_auth.views import UserDetailsView
-from Core.models import User
+from Core.models import User, Project
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.utils.decorators import method_decorator
+from django.db.models import Q
 
 
                     
@@ -55,7 +58,7 @@ class CustomUserDetailsView(UserDetailsView,
 
 
 class UserListView(generics.ListAPIView,
-                viewsets.GenericViewSet):
+                   viewsets.GenericViewSet):
 
     """
     list:
@@ -98,3 +101,15 @@ class UserImageView(APIView):
         user = User.objects.get(id=request.user.id)
         serializer = CurrentUserImageSerializer(user)
         return Response(status=status.HTTP_200_OK,data=serializer.data)
+
+
+
+class UserProjectsListView(generics.ListAPIView,
+                           viewsets.GenericViewSet):
+    serializer_class = ProjectListSerializer
+    queryset = Project.objects.all()
+    
+    def get_queryset(self):
+        return Project.objects.filter(Q(creator=self.request.user.id) | 
+                                      Q(users=self.request.user.id))
+    

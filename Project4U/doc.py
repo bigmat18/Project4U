@@ -66,15 +66,6 @@ registration_400_3 = \
     
     
 registration_400_4 = \
-    openapi.Response(description="Se l'età è inferiore ai 16 anni",
-                    schema=openapi.Schema(
-                        type=openapi.TYPE_OBJECT,
-                        properties={"email":openapi.Schema(
-                            description="Per pottersi registrare è necessario aver almeno 16 anni",
-                            type=openapi.TYPE_STRING)}))
-    
-    
-registration_400_5 = \
     openapi.Response(description="Se la password non rispetta il formato richiesto",
                     schema=openapi.Schema(
                         type=openapi.TYPE_OBJECT,
@@ -90,8 +81,8 @@ registration_schema_view = \
                                  "1: 400":registration_400_1,
                                  "2: 400":registration_400_2,
                                  "3: 400":registration_400_3,
-                                 "4: 400":registration_400_4,
-                                 "5. 400":registration_400_5})(RegisterView.as_view())
+                                 "4: 400":registration_400_4})\
+                                     (RegisterView.as_view())
 #--------------- REGISTRATION DOC ------------
 
 
@@ -123,7 +114,8 @@ login_schema_view = \
                        operation_description="Login utente con email e password",
                        operation_summary="Login utente registrato",
                        responses={"200":login_200,
-                                "400":login_400})(LoginView.as_view())
+                                "400":login_400})\
+                                    (LoginView.as_view())
 #--------------- LOGIN DOC ------------
 
 

@@ -22,13 +22,11 @@ class Project(AbstractFile,AbstractCreateUpdate):
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     creator = models.ForeignKey(settings.AUTH_USER_MODEL,
                                 on_delete=models.SET_NULL,
-                                editable=False,
-                                blank=True,
                                 null=True,
                                 related_name="projects_created",
                                 related_query_name="projects_created")
     
-    name = models.CharField(_("name"), unique=True,max_length=64)
+    name = models.CharField(_("name"),unique=True,max_length=64)
     description = models.TextField(_("description"),max_length=516,null=True,blank=True)
 
     
@@ -86,8 +84,6 @@ class Project(AbstractFile,AbstractCreateUpdate):
         if not Showcase.objects.filter(project=self,name="Generali").exists():
             Showcase.objects.create(name="Generali",creator=self.creator,project=self)
         if not Showcase.objects.filter(project=self,name="Idee").exists():
-            Showcase.objects.create(name="Idee",creator=self.creator,project=self)
-        Showcase.objects.create(name="Idee",creator=self.creator,project=self)
-        
+            Showcase.objects.create(name="Idee",creator=self.creator,project=self)        
     
     def __str__(self): return f"{self.name}"

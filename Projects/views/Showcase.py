@@ -1,7 +1,7 @@
 from django.db import models
 from ..serializers import ShowcaseSerializer
 from rest_framework import generics, viewsets
-from Core.models import Showcase, Project, Message
+from Core.models import Showcase, Project
 from rest_access_policy import AccessPolicy
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
@@ -9,8 +9,6 @@ from django.conf import settings
 from django.utils.decorators import method_decorator
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from django.db.models import Subquery, OuterRef
-from django.contrib.postgres.aggregates import ArrayAgg, StringAgg
 
 
 

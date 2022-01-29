@@ -10,6 +10,7 @@ router.register(r'user/skills', vw.UserSkillCUDView)
 router.register(r'user/external-projects', vw.ExternalProjectCUDView)
 router.register(r'user/educations', vw.UserEducationCUDView)
 router.register(r'email', vw.EmailCreateView)
+router.register(r'user/projects', vw.UserProjectsListView)
 
 urlpatterns = router.urls
 
