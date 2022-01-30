@@ -1,10 +1,18 @@
 from rest_framework import serializers
-from Core.models import Message
+from Core.models import Message, User
 from .TextMessage import TextMessageSerializer
 from .Event import EventSerializer
 
+
+class AuthorMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id","secret_key", "first_name", "last_name", "image"]
+
+
 class MessageSerializer(serializers.ModelSerializer):
     content = serializers.SerializerMethodField(read_only=True)
+    author = AuthorMessageSerializer(read_only=True)
     
     class Meta:
         model = Message

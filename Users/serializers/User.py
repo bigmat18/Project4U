@@ -1,6 +1,5 @@
-from Core.models import User, Project
+from Core.models import User
 from rest_framework import serializers
-from django.db.models import Q
 from Projects.serializers import ProjectListSerializer
 from Users.serializers import (UserSkillListSerializer, 
                                 ExternalProjectSerializer,

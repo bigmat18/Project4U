@@ -28,8 +28,8 @@ class ShowcaseSerializer(serializers.ModelSerializer):
         return MessageSerializer(instance=last_event).data
         
     def get_last_message(self,instance):
-        last_message = Message.objects.filter(showcase=instance)\
-                                      .order_by("-updated_at")\
+        last_message = Message.objects.filter(Q(showcase=instance) & ~Q(type_message="EVENT"))\
+                                      .order_by("updated_at")\
                                       .first()
         if not last_message: return last_message
         return MessageSerializer(instance=last_message).data
