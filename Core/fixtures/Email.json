@@ -1,186 +1,232 @@
 [
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "ffe49aa4-6987-41aa-ab18-636f4570f90a",
-    "email": "fl.fiorellaludovico@gmail.com",
-    "added_at": "2022-01-23 13:52:20",
-    "first_name": "Ludovico",
-    "last_name": "Fiorella"
+    "fields": {
+      "email": "fl.fiorellaludovico@gmail.com",
+      "added_at": "2022-01-23 13:52:20",
+      "first_name": "Ludovico",
+      "last_name": "Fiorella"
+    }
   },
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "f82cf4e6-053c-4623-b513-c259be8984e4",
-    "email": "architetto.corsinicecilia@gmail.com",
-    "added_at": "2022-01-23 13:52:19",
-    "first_name": "Cecilia",
-    "last_name": "Corsini"
+    "fields": {
+      "email": "architetto.corsinicecilia@gmail.com",
+      "added_at": "2022-01-23 13:52:19",
+      "first_name": "Cecilia",
+      "last_name": "Corsini"
+    }
   },
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "eedad089-9525-49f5-b9d4-b240b9120959",
-    "email": "gianlucachiarini42@gmail.com",
-    "added_at": "2022-01-23 13:52:20",
-    "first_name": "Gianluca",
-    "last_name": "Chiarini"
+    "fields": {
+      "email": "gianlucachiarini42@gmail.com",
+      "added_at": "2022-01-23 13:52:20",
+      "first_name": "Gianluca",
+      "last_name": "Chiarini"
+    }
   },
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "edcf8271-4da9-4e67-89a0-cbd441210377",
-    "email": "gageanumarioluca@gmail.com",
-    "added_at": "2022-01-23 13:52:19",
-    "first_name": "Mario-Luca",
-    "last_name": "Gageanu"
+    "fields": {
+      "email": "gageanumarioluca@gmail.com",
+      "added_at": "2022-01-23 13:52:19",
+      "first_name": "Mario-Luca",
+      "last_name": "Gageanu"
+    }
   },
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "e7aba1d9-64f6-4555-a6cc-f62e1f971bae",
-    "email": "sambag58@gmail.com",
-    "added_at": "2022-01-23 13:52:20",
-    "first_name": "Samuele",
-    "last_name": "Bagni"
+    "fields": {
+      "email": "sambag58@gmail.com",
+      "added_at": "2022-01-23 13:52:20",
+      "first_name": "Samuele",
+      "last_name": "Bagni"
+    }
   },
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "e36884fb-9974-4bfc-baff-91de4f9003ad",
-    "email": "stefano.ippolitoni896@gmail.com",
-    "added_at": "2022-01-23 13:52:20",
-    "first_name": "Stefano",
-    "last_name": "Ippolitoni"
+    "fields": {
+      "email": "stefano.ippolitoni896@gmail.com",
+      "added_at": "2022-01-23 13:52:20",
+      "first_name": "Stefano",
+      "last_name": "Ippolitoni"
+    }
   },
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "e0664d64-b786-423b-81bd-8415f694f01b",
-    "email": "lorenzocarboncini6@gmail.com",
-    "added_at": "2022-01-23 13:52:20",
-    "first_name": "Lorenzo",
-    "last_name": "Carboncini"
+    "fields": {
+      "email": "lorenzocarboncini6@gmail.com",
+      "added_at": "2022-01-23 13:52:20",
+      "first_name": "Lorenzo",
+      "last_name": "Carboncini"
+    }
   },
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "db9beba2-27c7-43c7-9212-b6c971283522",
-    "email": "mar-giu1970@hotmail.it",
-    "added_at": "2022-01-23 13:52:20",
-    "first_name": "Marco",
-    "last_name": "Giuntoni"
+    "fields": {
+      "email": "mar-giu1970@hotmail.it",
+      "added_at": "2022-01-23 13:52:20",
+      "first_name": "Marco",
+      "last_name": "Giuntoni"
+    }
   },
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "dabbb3ef-9eee-4771-b3e1-c20aeae30d9e",
-    "email": "mitm@gmail.com",
-    "added_at": "2022-01-23 13:52:19",
-    "first_name": "MITM",
-    "last_name": "API KEY"
+    "fields": {
+      "email": "mitm@gmail.com",
+      "added_at": "2022-01-23 13:52:19",
+      "first_name": "MITM",
+      "last_name": "API KEY"
+    }
   },
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "c6167ff5-cfc3-492b-8a3e-e13b0fe81b24",
-    "email": "mat.giu2002@gmail.com",
-    "added_at": "2022-01-23 13:52:20",
-    "first_name": "Matteo",
-    "last_name": "Giuntoni"
+    "fields": {
+      "email": "mat.giu2002@gmail.com",
+      "added_at": "2022-01-23 13:52:20",
+      "first_name": "Matteo",
+      "last_name": "Giuntoni"
+    }
   },
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "c45fb246-4daf-4421-9654-ae0879c9706a",
-    "email": "alessandra.baroncioni@russell-newton.edu.it",
-    "added_at": "2022-01-23 13:52:20",
-    "first_name": "Alessandra",
-    "last_name": "Baroncioni"
+    "fields": {
+      "email": "alessandra.baroncioni@russell-newton.edu.it",
+      "added_at": "2022-01-23 13:52:20",
+      "first_name": "Alessandra",
+      "last_name": "Baroncioni"
+    }
   },
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "8d216efb-63de-4862-b7d3-eeb69657fb2d",
-    "email": "chiriciale@gmail.com",
-    "added_at": "2022-01-23 13:52:19",
-    "first_name": "Alessandro",
-    "last_name": "Chirici"
+    "fields": {
+      "email": "chiriciale@gmail.com",
+      "added_at": "2022-01-23 13:52:19",
+      "first_name": "Alessandro",
+      "last_name": "Chirici"
+    }
   },
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "81af1f79-4823-4631-aa14-840167867ec6",
-    "email": "marconencini2002@gmail.com",
-    "added_at": "2022-01-23 13:52:20",
-    "first_name": "Marco",
-    "last_name": "Nencini"
+    "fields": {
+      "email": "marconencini2002@gmail.com",
+      "added_at": "2022-01-23 13:52:20",
+      "first_name": "Marco",
+      "last_name": "Nencini"
+    }
   },
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "7eed2997-b672-454e-8b8d-cf84d8a56799",
-    "email": "chiara.duba@gmail.com",
-    "added_at": "2022-01-23 13:52:20",
-    "first_name": "Chiara",
-    "last_name": "D'Ubaldi"
+    "fields": {
+      "email": "chiara.duba@gmail.com",
+      "added_at": "2022-01-23 13:52:20",
+      "first_name": "Chiara",
+      "last_name": "D'Ubaldi"
+    }
   },
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "738155a5-1ef2-49e1-8d63-619ba1565741",
-    "email": "marco.molluzzo@gmail.com",
-    "added_at": "2022-01-23 13:52:20",
-    "first_name": "Marco",
-    "last_name": "Molluzzo"
+    "fields": {
+      "email": "marco.molluzzo@gmail.com",
+      "added_at": "2022-01-23 13:52:20",
+      "first_name": "Marco",
+      "last_name": "Molluzzo"
+    }
   },
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "64a1f2b9-ae8a-4e8b-8239-023bd236d4d0",
-    "email": "fiorellaludovico11@gmail.com",
-    "added_at": "2022-01-23 13:52:20",
-    "first_name": "Ludovico",
-    "last_name": "Fiorella"
+    "fields": {
+      "email": "fiorellaludovico11@gmail.com",
+      "added_at": "2022-01-23 13:52:20",
+      "first_name": "Ludovico",
+      "last_name": "Fiorella"
+    }
   },
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "5a8b1b86-8f2e-401f-a584-15ec432dd484",
-    "email": "marco.morsfwerozzi2002@gmail.com",
-    "added_at": "2022-01-23 13:52:20",
-    "first_name": "Marco",
-    "last_name": "Morozzi"
+    "fields": {
+      "email": "marco.morsfwerozzi2002@gmail.com",
+      "added_at": "2022-01-23 13:52:20",
+      "first_name": "Marco",
+      "last_name": "Morozzi"
+    }
   },
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "56aa32fe-de1d-4b98-9662-7406a32875df",
-    "email": "chiara.lelli2015@gmail.com",
-    "added_at": "2022-01-23 13:52:19",
-    "first_name": "chiara",
-    "last_name": "lelli"
+    "fields": {
+      "email": "chiara.lelli2015@gmail.com",
+      "added_at": "2022-01-23 13:52:19",
+      "first_name": "chiara",
+      "last_name": "lelli"
+    }
   },
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "3c11f900-07d4-49d8-bfd4-b0de138e4a70",
-    "email": "lauradubaldi98@gmail.com",
-    "added_at": "2022-01-23 13:52:19",
-    "first_name": "Laura",
-    "last_name": "D’Ubaldi"
+    "fields": {
+      "email": "lauradubaldi98@gmail.com",
+      "added_at": "2022-01-23 13:52:19",
+      "first_name": "Laura",
+      "last_name": "D’Ubaldi"
+    }
   },
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "3ab8529c-7185-46a9-bed8-702cb85294f4",
-    "email": "marco.morozzi2002@gmail.com",
-    "added_at": "2022-01-23 13:52:20",
-    "first_name": "Marco",
-    "last_name": "Morozzi"
+    "fields": {
+      "email": "marco.morozzi2002@gmail.com",
+      "added_at": "2022-01-23 13:52:20",
+      "first_name": "Marco",
+      "last_name": "Morozzi"
+    }
   },
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "2e3bf67f-9e43-46a1-b52e-f4e35783f3ee",
-    "email": "dylankaye7@gmail.com",
-    "added_at": "2022-01-23 13:52:20",
-    "first_name": "Dylan",
-    "last_name": "Kaye"
+    "fields": {
+      "email": "dylankaye7@gmail.com",
+      "added_at": "2022-01-23 13:52:20",
+      "first_name": "Dylan",
+      "last_name": "Kaye"
+    }
   },
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "24f9964a-29ac-4dc7-b603-e2c522cf57f8",
-    "email": "giuntoni.matteo@gmail.com",
-    "added_at": "2022-01-23 13:52:20",
-    "first_name": "dfg",
-    "last_name": "dfg"
+    "fields": {
+      "email": "giuntoni.matteo@gmail.com",
+      "added_at": "2022-01-23 13:52:20",
+      "first_name": "dfg",
+      "last_name": "dfg"
+    }
   },
   {
-    "model": "Email",
+    "model": "Core.Email",
     "id": "06735024-4b67-48cf-bc17-5f7515417adf",
-    "email": "daniele.resti@me.com",
-    "added_at": "2022-01-23 13:52:20",
-    "first_name": "Daniele",
-    "last_name": "Resti"
+    "fields": {
+      "email": "daniele.resti@me.com",
+      "added_at": "2022-01-23 13:52:20",
+      "first_name": "Daniele",
+      "last_name": "Resti"
+    }
   }
 ]

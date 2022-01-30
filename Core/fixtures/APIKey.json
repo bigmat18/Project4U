@@ -2,11 +2,13 @@
   {
     "model": "rest_framework_api_key.ApiKey",
     "id": "Jkkro3Nc.pbkdf2_sha256$260000$qsOOczVl2ylPV3mc40lXW1$Kfp3Ery8Uut1WXcJJqckgC/eaY8+k6DcBXUp1nEShb4=",
-    "prefix": "Jkkro3Nc",
-    "hashed_key": "pbkdf2_sha256$260000$qsOOczVl2ylPV3mc40lXW1$Kfp3Ery8Uut1WXcJJqckgC/eaY8+k6DcBXUp1nEShb4=",
-    "created": "2022-01-23 13:52:44",
-    "name": "Testing",
-    "revoked": "0",
-    "expiry_date": ""
+    "fields": {
+      "prefix": "Jkkro3Nc",
+      "hashed_key": "pbkdf2_sha256$260000$qsOOczVl2ylPV3mc40lXW1$Kfp3Ery8Uut1WXcJJqckgC/eaY8+k6DcBXUp1nEShb4=",
+      "created": "2022-01-23 13:52:44",
+      "name": "Testing",
+      "revoked": "0",
+      "expiry_date": null
+    }
   }
 ]
