@@ -7,13 +7,13 @@ from Users.serializers import (UserSkillListSerializer,
                                 UserEducationSerializer)
 
 
-class UserListSerializer(serializers.ModelSerializer):
+class UsersListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id","secret_key", "first_name", "last_name", "image"]
 
 
-class UserDetailSerializer(serializers.ModelSerializer):
+class UsersDetailsSerializer(serializers.ModelSerializer):
     skills = UserSkillListSerializer(source="userskill_set",many=True, 
                                      required=False, read_only=True)
     external_projects = ExternalProjectSerializer(many=True, read_only=True)
@@ -27,7 +27,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
             "project_saved","type_vip"]
         
 
-class CurrentUserSerializer(UserDetailSerializer):
+class CurrentUserDetailsSerializer(UsersDetailsSerializer):
     projects = ProjectListSerializer(read_only=True,many=True)
     
     class Meta:
@@ -42,3 +42,11 @@ class CurrentUserImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["image"]
+        
+        
+class CurrentUserInfoSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = User
+        fields = ["id", "secret_key", "image", "first_name", 
+                  "last_name", "date_birth", "type_vip", "type_user"]

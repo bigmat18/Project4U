@@ -66,3 +66,9 @@ class UserTestCase(BaseTestCase):
         response = self.client.get('/api/user/projects/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(list(response.data)[0]['name'],project.name)
+    
+    @tag('get', 'auth') 
+    def test_user_info_auth(self):
+        response = self.client.get('/api/user/info/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(dict(response.data)['id'], str(self.user.id))

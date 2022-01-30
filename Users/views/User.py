@@ -1,10 +1,11 @@
 import imp
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from Users.serializers import (UserDetailSerializer, UserListSerializer,
-                               CurrentUserImageSerializer)
+from Users.serializers import (UsersDetailsSerializer, UsersListSerializer,
+                               CurrentUserInfoSerializer, CurrentUserImageSerializer)
 from Projects.serializers import ProjectListSerializer
 from rest_auth.views import UserDetailsView
 from Core.models import User, Project
@@ -16,8 +17,8 @@ from django.db.models import Q
 
 
                     
-class CustomUserDetailsView(UserDetailsView,
-                            viewsets.GenericViewSet):    
+class UserRetrieveUpdateView(UserDetailsView,
+                             viewsets.GenericViewSet):    
     """
     get:
     Recupera i dati dell'utente loggato
@@ -57,7 +58,7 @@ class CustomUserDetailsView(UserDetailsView,
 
 
 
-class UserListView(generics.ListAPIView,
+class UsersListView(generics.ListAPIView,
                    viewsets.GenericViewSet):
 
     """
@@ -67,12 +68,12 @@ class UserListView(generics.ListAPIView,
     Ritorna una lista di utenti in un formato ridetto. E' necessario
     essere autenticati per ricere una risposta.
     """
-    serializer_class = UserListSerializer
+    serializer_class = UsersListSerializer
     queryset = User.objects.filter(active=True)
 
 
 
-class UserRetriveView(generics.RetrieveAPIView,
+class UsersRetriveView(generics.RetrieveAPIView,
                       viewsets.GenericViewSet):
     """
     retrieve:
@@ -80,19 +81,30 @@ class UserRetriveView(generics.RetrieveAPIView,
 
     Ritorna tutti i dettagli di un utente di cui è stato passato lo secret_key nell'url.
     """
-    serializer_class = UserDetailSerializer
+    serializer_class = UsersDetailsSerializer
     queryset = User.objects.filter(active=True)
     lookup_field = "secret_key"
     
     
     
+class UserProjectsListView(generics.ListAPIView,
+                           viewsets.GenericViewSet):
+    serializer_class = ProjectListSerializer
+    queryset = Project.objects.all()
+    
+    def get_queryset(self):
+        return Project.objects.filter(Q(creator=self.request.user.id) | 
+                                      Q(users=self.request.user.id))
+    
+
+
 @method_decorator(name="get",decorator=swagger_auto_schema(
                              responses={"200":openapi.Schema(type=openapi.TYPE_OBJECT,
                                                             properties={"image":openapi.Schema(
                                                                         type=openapi.TYPE_STRING)})}))
 class UserImageView(APIView):
 
-    def get(self,request):
+    def get(self, request, *args, **kwargs):
         """
         Restituisce l'immage dell'utente loggato
         
@@ -104,12 +116,10 @@ class UserImageView(APIView):
 
 
 
-class UserProjectsListView(generics.ListAPIView,
-                           viewsets.GenericViewSet):
-    serializer_class = ProjectListSerializer
-    queryset = Project.objects.all()
+
+class UserInfoView(APIView):
     
-    def get_queryset(self):
-        return Project.objects.filter(Q(creator=self.request.user.id) | 
-                                      Q(users=self.request.user.id))
-    
+    def get(self, request, *args, **kwargs):
+        user = get_object_or_404(User, id=request.user.id)
+        serializer = CurrentUserInfoSerializer(instance=user)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
