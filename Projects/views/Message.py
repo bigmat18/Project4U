@@ -4,6 +4,7 @@ from ..serializers import MessageSerializer, TextMessageSerializer
 import django_filters as filters
 from rest_access_policy import AccessPolicy
 from django.shortcuts import get_object_or_404
+from rest_framework.response import Response
 
 
 from rest_framework.permissions import IsAuthenticated
@@ -69,6 +70,19 @@ class MessageListView(generics.ListAPIView,
     def get_queryset(self):
         return Message.objects.filter(showcase=self.get_showcase())\
                               .select_related('text_message', 'event')
+                              
+                              
+    def set_message_visualize(self, messages):
+        for message in messages:
+            message.viewed_by.add(self.request.user)
+                              
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            self.set_message_visualize(page)
+            serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
 
 
@@ -90,6 +104,7 @@ class TextMessageCreateView(generics.CreateAPIView,
         return get_object_or_404(Showcase, id=self.kwargs['id'])
     
     def perform_create(self, serializer):
-        serializer.save(showcase=self.get_showcases(),
-                        type_message="TEXT",
-                        author=self.request.user)
+        instance = serializer.save(showcase=self.get_showcases(),
+                                   type_message="TEXT",
+                                   author=self.request.user)
+        instance.viewed_by.add(self.request.user)

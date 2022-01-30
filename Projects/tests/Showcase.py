@@ -1,4 +1,4 @@
-from time import time
+from Core.models.Projects.Showcase import Showcase
 from Core.tests import BaseTestCase
 from rest_framework import status
 from Core.models import Project, TextMessage, Event
@@ -47,5 +47,14 @@ class ShowcaseTestCase(BaseTestCase):
         data = {'name':'test'}
         response = self.client.post(f'/api/projects/{self.project.id}/showcases/',data=data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+      
+    @tag('get', 'auth')  
+    def test_message_viewed_by_auth(self):
+        showcase = Showcase.objects.get(project=self.project,name="Generali")
+        TextMessage.objects.create(text='test',showcase=showcase,author=self.user)
+        response = self.client.get(f'/api/projects/{self.project.id}/showcases/')
+        self.assertEqual(list(response.data)[0]["notify"], 1)
         
-
+        self.client.get(f'/api/showcase/{showcase.id}/messages/')
+        response = self.client.get(f'/api/projects/{self.project.id}/showcases/')
+        self.assertEqual(list(response.data)[0]["notify"], 0)

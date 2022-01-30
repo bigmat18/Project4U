@@ -15,4 +15,4 @@ class TextMessage(Message):
         verbose_name = _("Text Message")
         verbose_name_plural = _("Text Messages")
     
-    def __str__(self): return str(self.message)
+    def __str__(self): return str(self.author)
