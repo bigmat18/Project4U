@@ -19,13 +19,34 @@ class ShowcaseAccessPolicy(AccessPolicy):
             "principal": "*",
             "effect": "allow",
             "condition": "is_inside_project"
+        },
+        {
+            "action": ["retrieve"],
+            "principal": "*",
+            "effect": "allow",
+            "condition": ["is_inside_showcase", "is_creator"]
+        },
+        {
+            "action": ["update","partial_update","destroy"],
+            "principal": "*",
+            "effect": "allow",
+            "condition": "is_creator"
         }
     ]
+    
+    def is_creator(self, request, view, action) -> bool:
+        showcase = view.get_object()
+        return request.user == showcase.creator or request.user == showcase.project.creator
     
     def is_inside_project(self, request, view, action) -> bool:
         project = generics.get_object_or_404(Project, id=view.kwargs['id'])
         return (request.user == project.creator or 
                 project.users.filter(id=request.user.id).exists())
+        
+    def is_inside_showcase(self, request, view, action) -> bool:
+        showcase = view.get_object()
+        return (request.user == showcase.creator or 
+                showcase.users.filter(id=request.user.id).exists())
 
 
 @method_decorator(name="create",
@@ -91,22 +112,18 @@ class ShowcaseListCreateView(generics.ListCreateAPIView,
         
         
         
-# class ShowcaseRUDView(generics.RetrieveUpdateDestroyAPIView,
-#                       viewsets.GenericViewSet):
-#     serializer_class = ShowcaseSerializer
-#     queryset = Showcase.objects.all()
-#     lookup_field = "id"
-#     permission_classes = [IsAuthenticated, ShowcaseAccessPolicy]
-#     if not settings.DEBUG: permission_classes.append(HasAPIKey)
+class ShowcaseRUDView(generics.RetrieveUpdateDestroyAPIView,
+                      viewsets.GenericViewSet):
+    serializer_class = ShowcaseSerializer
+    queryset = Showcase.objects.all()
+    lookup_field = "id"
+    permission_classes = [IsAuthenticated, ShowcaseAccessPolicy]
+    if not settings.DEBUG: permission_classes.append(HasAPIKey)
     
-#     def perform_update(self, serializer):
-#         instance = super().perform_update
-#         self.add_creator_to_users(instance)
-            
-#     def partial_update(self, request, *args, **kwargs):
-#         instance = super().partial_update(request, *args, **kwargs)
-#         self.add_creator_to_users(instance)
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        self.add_creator_to_users(instance)
 
-#     def add_creator_to_users(self, instance):
-#         if not instance.users.filter(id=instance.creator.id).exists():
-#             instance.users.add(instance.creator)
+    def add_creator_to_users(self, instance):
+        if not instance.users.filter(id=instance.creator.id).exists():
+            instance.users.add(instance.creator)
