@@ -5,5 +5,6 @@ from .ProjectTag import ProjectTagSerializer
 
 from .TextMessage import TextMessageSerializer
 from .Event import EventSerializer
+from .ShowcaseUpdate import ShowcaseUpdateSerializer
 from .Message import MessageSerializer
 from .Showcase import ShowcaseSerializer

@@ -15,7 +15,7 @@ class ExternalProjectCUDView(mixins.CreateModelMixin,
     create:
     Aggiungi un progetto esterno all'utente
     
-    Permette di aggiungere un progetto esterno con il livello all'utente a cui è riferito lo slug nell'url.
+    Permette di aggiungere un progetto esterno all'utente che ha fatto la richiesta.
     Puoi mandare un singolo progetto oppure una lista di progetti usando questo formato:
     [ { dati progetto }, { ... }, ... ]
     L'endponts non ritrona nessun valore.
@@ -24,14 +24,14 @@ class ExternalProjectCUDView(mixins.CreateModelMixin,
     update:
     Aggiorna i dati di un progetto esterno
     
-    Aggiorna i dati della skill, il proggetto da aggiornare viene decisa in base all'id della skill messo nell'url ({skill} = id skill).
+    Aggiorna i dati del progetto esterno, il proggetto da aggiornare viene decisa in base all'id del progetto messo nell'url.
     Nel caso di un'aggiornamento parziale (PATCH) ritornano solo i campo aggiornati.
     ------ Anche se non mostrato è possibili aggiornare anche un'immagine del progetto ------
     
     destroy:
     Rimuovi un progetto esterno da un utente
     
-    Rimuovi un progetto esterno da un utente, il progetto da eliminare viene decisa in base all'id della skill messo nell'url ({skill} = id skill)
+    Rimuovi un progetto esterno da un utente, il progetto da eliminare viene decisa in base all'id della skill messo nell'url
     """
     serializer_class = ExternalProjectSerializer
     queryset = ExternalProject.objects.all()

@@ -153,7 +153,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SITE_ID = 1
 # -------- django-contrib-sites ------
 
-FIXTURE_DIRS = [os.path.join(BASE_DIR, "Core/fixtures/")]
 
 
 # -------- django-allauth ------

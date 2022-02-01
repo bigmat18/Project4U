@@ -10,9 +10,12 @@ class ProjectTagCreateView(generics.CreateAPIView,
                            viewsets.GenericViewSet):
     """
     create:
-    Crea tags progetto.
+    Crea/aggiungi tags ad un progetto
     
-    Crea un nuovo tags progetto.
+    Questo endponts permette di andare a creare ed aggiungere o solo aggiungere un tag ad il 
+    progetto di cui si è passato l'id, infatti data una lista di nomi di tag (oppure un singolo tag, infatti 
+    è possibile mandare sia una lista che un singolo) viene controllato se esiste già un tag con quel nome nel db
+    e nel caso contrario viene creato e poi in qualsiasi caso viene aggiungo al progetto.
     """
     serializer_class = ProjectTagSerializer
     queryset = ProjectTag.objects.all()

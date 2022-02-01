@@ -1,5 +1,3 @@
-from statistics import mode
-from tabnanny import verbose
 from Core.models import Message
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -23,6 +21,12 @@ class ShowcaseUpdate(Message):
     type_update = models.CharField(choices=TypeUpdate.choices,max_length=16,
                                    help_text=__type_update_help_text,
                                    default=TypeUpdate.DESC)
+    message = models.OneToOneField(Message, 
+                                   on_delete=models.CASCADE,
+                                   parent_link=True,
+                                   primary_key=True,
+                                   related_name="showcase_update",
+                                   related_query_name="showcase_update")
     
     class Meta:
         db_table = "showcase_update"

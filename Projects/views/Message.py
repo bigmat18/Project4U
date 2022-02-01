@@ -49,12 +49,15 @@ class MessageListView(generics.ListAPIView,
     
     Restituisce una lista con tutti i messaggi della bacheca di cui è stato passato l'id.
     E' possibile filtrare i tipi di messaggi scrivendo nell'url '?type_message=' ed accanto il tipo di messaggio
-    fra TEXT, IDEA, EVENT.
+    fra TEXT, IDEA, EVENT, UPDATE. La lista che ritorna ritorna in ordine dall'utlimo messaggio scritto inoltre è organizzata
+    in pagine da 25. Per cambiare pagina '?page=', per cambiare dimensioni pagine '?size='.
+    Ogni volta che si richiede la lista delle pagine tutti i messaggi in quella pagina vengono segnati come visualizzati dall'utente
+    che ha effetuato la richiesta
     Soltato i partecipanti alla bacheca possono vedere la lista dei messaggi.
     
     -----IMPORTANTE----
     Il campo 'content' non è una stringa ma restituisce un oggetto con i capi del messaggio, vedi in fondo
-    alla pagina TextMessage e Event modelli per vedere i campi.
+    alla pagina TextMessage, Event, ShowocaseUpdate modelli per vedere i campi.
     """
     serializer_class = MessageSerializer
     filterset_class = MessageFilter
@@ -69,7 +72,8 @@ class MessageListView(generics.ListAPIView,
     
     def get_queryset(self):
         return Message.objects.filter(showcase=self.get_showcase())\
-                              .select_related('text_message', 'event')
+                              .select_related('text_message', 'event', 'showcase_update')\
+                              .order_by("-updated_at")
                               
                               
     def set_message_visualize(self, messages):
@@ -91,10 +95,11 @@ class TextMessageCreateView(generics.CreateAPIView,
                             viewsets.GenericViewSet):
     """
     create:
-    Create un messaggio testuale
+    Create un messaggio testuale.
     
     Crea un nuovo messaggio testuale nella bacheca di cui è stato passato l'id.
     Soltato i partecipanti alla bacheca possono creare un messaggio.
+    Il creatore del messaggio viene già aggiunto fra quelli che hanno visualizzato il messaggio.
     """
     serializer_class = TextMessageSerializer
     permission_classes = [IsAuthenticated, MessageAccessPolicy]

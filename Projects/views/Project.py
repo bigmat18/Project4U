@@ -38,14 +38,15 @@ class ProjectsListCreateView(mixins.CreateModelMixin,
                             viewsets.GenericViewSet):
     """
     list:
-    Mostra una lista di progetti.
+    Mostra una lista di tutti i progetti.
     
-    Motra una lista di tutti i progetti salvati. 
+    Mostra una lista di tutti i progetti salvati nel database. 
+    Questo endpoints dovrebbe essere usato nella sezione di ricerca dei progetti. 
     
     create:
-    Aggiungi un progetto.
+    Crea un nuovo progetto.
     
-    Aggiungi un nuovo progetto con te come creatore.
+    Crea un nuovo progetto con te come creatore.
     """
     serializer_class = ProjectListSerializer
     queryset = Project.objects.all()
@@ -62,23 +63,28 @@ class ProjectsRUDView(generics.RetrieveUpdateDestroyAPIView,
                       viewsets.GenericViewSet):
     """
     retrieve:
-    Mostra un progetto
+    Mostra i dati di un progetto.
     
     Dato un id di un progetto mostra tutti i dati di quel progetto.
+    Da usare quando un utente va a vedere il "profilo" del progetto.
+    
+    ---- ERRORE NELLA DOC ---
+    Il campo tags è quello da utilizzare per aggiornamento/creazione di progetti,
+    nel GET non consideratelo, utilizzare invece in questo caso tags-list per la lista dei tags.
     
     destroy:
-    Elimina un progetto.
+    Elimina un progetto definitivamente.
     
-    Dato un id di un progetto è possibili eliminarlo soltato in caso si sia il creatore.
+    Dato un id di un progetto è possibili eliminarlo definitivamente soltato in caso si sia il creatore.
     
     update:
-    Aggiorna il progetto
+    Aggiorna dati di un progetto.
     
     Dato un id di un progetto puoi agiornare 1 o più suoi dati. E' possibile esseguire l'aggiornamento
     soltato se si è il creatore del progetto.
     
     partial_update:
-    Aggiorna il progetto
+    Aggiorna dati di un progetto.
     
     Dato un id di un progetto puoi agiornare 1 o più suoi dati. E' possibile esseguire l'aggiornamento
     soltato se si è il creatore del progetto. Vengono restituiti soltato i campi modificati.

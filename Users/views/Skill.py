@@ -52,9 +52,9 @@ class SkillListView(generics.ListAPIView,
     Lista delle skills
     
     Ritorna una lista di tutte le skills.
-    E' possibile fare una ricerca aggiungendo " /?name= " alla fine dell'endpoints (dove = inserire la stringa da cercare);
-    in questa ricerca se si manda una stringa vuota ritorernà la lista delle skills completa, inoltre questo fitro esclude di default
-    le skill già aggiunte all'untente che ha effetuato le richesta.
+    E' possibile fare una ricerca aggiungendo " /?name= " alla fine dell'endpoints (dopo '=' inserire la stringa da cercare);
+    in questa ricerca se si manda una stringa vuota ritorernà la lista delle skills completa senzza però le skill già aggiunte all'utente che ha fatto la richiesta, 
+    inoltre questo fitro esclude di default le skill già aggiunte all'untente che ha effetuato le richesta.
     La ricerca viene effetuata tramite triagrammi, quindi accetta errori di battituira maiuscole/minuscole differenti, caratteri speciali.
     
     create:

@@ -74,15 +74,17 @@ class ShowcaseListCreateView(generics.ListCreateAPIView,
     
     ---- ERRORE in "last_message" ----
     L'ultimo messaggio non è una stringa ma è un oggetto formattato in base al tipo del messaggio.
+    L'ultimo messaggio può essere un messaggio testuale, un aggiornameto della bacheca ma NON un evento
     
     create:
     Crea una nuova bacheca.
     
     Crea una nuova bacheca nel progetto di cui è stato passato l'id.
-    Soltato i partecipanti del progetto possono create le bacheche.
+    Soltato i partecipanti del progetto possono creare delle bacheche.
     
     ---- ERRORE in "last_message" ----
     L'ultimo messaggio non è una stringa ma è un oggetto formattato in base al tipo del messaggio.
+    L'ultimo messaggio può essere un messaggio testuale, un aggiornameto della bacheca ma NON un evento.
     """
     serializer_class = ShowcaseSerializer
     queryset = Showcase.objects.all()
@@ -114,6 +116,34 @@ class ShowcaseListCreateView(generics.ListCreateAPIView,
         
 class ShowcaseRUDView(generics.RetrieveUpdateDestroyAPIView,
                       viewsets.GenericViewSet):
+    """
+    retrieve:
+    Vedi i dati della bacheca.
+    
+    Vedi tutti i dati della bacheca di cui è stato passato l'id.
+    Soltato chi è all'interno della bacheca o il creatore del progetto può vedere 
+    questi dati. Endpoints da usare per esempio nella sezione dettagli del progetto.
+    
+    update:
+    Aggiorna i dati di una bacheca.
+    
+    Aggiorna i dati della bacheca di cui è stato passato l'id, soltato il creatore della bacheca
+    o il creatore del progetto può aggiornare i dati della bacheca.
+    Endpoints da usare per esempio nella sezione dettagli del progetto per modificare i dati.
+    
+    partial_update:
+    Aggiorna i dati di una bacheca.
+    
+    Aggiorna i dati della bacheca di cui è stato passato l'id, soltato il creatore della bacheca
+    o il creatore del progetto può aggiornare i dati della bacheca.
+    Endpoints da usare per esempio nella sezione dettagli del progetto per modificare i dati.
+    
+    destroy:
+    Elimana una bacheca.
+    
+    Elimna la bacheca di cui è stato passato l'id, soltato il creatore della bacheca
+    o il creatore del progetto può eliminare la bacheca.
+    """
     serializer_class = ShowcaseSerializer
     queryset = Showcase.objects.all()
     lookup_field = "id"

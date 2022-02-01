@@ -13,23 +13,29 @@ class UserEducationCUDView(mixins.CreateModelMixin,
     
     """
     create:
-    Aggiungi un tipo dell'educazione all'utente
+    Aggiungi un tipo di educazione all'utente.
     
-    Permette di aggiungere un tipo dell'educazione con il livello all'utente a cui è riferito lo slug nell'url.
+    Permette di aggiungere un tipo di educazione all'utente che ha fatto la richiesta.
     Puoi mandare una singola educazione oppure una lista di educazioni usando questo formato:
     [ { dati educazione }, { ... }, ... ]
     L'endponts non ritrona nessun valore.
     
     update:
-    Aggiorna i dati di un tipo dell'educazione
+    Aggiorna i dati di un tipo dell'educazione.
     
-    Aggiorna i dati dell'educazione, l'educazione da aggiornare viene decisa in base all'id della skill messo nell'url ({skill} = id skill).
+    Aggiorna i dati dell'educazione, l'educazione da aggiornare viene decisa in base all'id messo nell'url.
+    Nel caso di un'aggiornamento parziale (PATCH) ritornano solo i campo aggiornati.
+    
+    partial_update:
+    Aggiorna i dati di un tipo dell'educazione.
+    
+    Aggiorna i dati dell'educazione, l'educazione da aggiornare viene decisa in base all'id messo nell'url.
     Nel caso di un'aggiornamento parziale (PATCH) ritornano solo i campo aggiornati.
     
     destroy:
-    Rimuovi un tipo dell'educazione da un utente
+    Rimuovi un tipo dell'educazione da un utente.
     
-    Rimuovi un tipo dell'educazione da un utente, l'educazione da eliminare viene decisa in base all'id della skill messo nell'url ({skill} = id skill)
+    Rimuovi un tipo dell'educazione da un utente, l'educazione da eliminare viene decisa in base all'id messo nell'url.
     """
     serializer_class = UserEducationSerializer
     queryset = UserEducation.objects.all()

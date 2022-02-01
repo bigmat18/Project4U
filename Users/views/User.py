@@ -21,22 +21,23 @@ class UserRetrieveUpdateView(UserDetailsView,
                              viewsets.GenericViewSet):    
     """
     get:
-    Recupera i dati dell'utente loggato
+    Recupera i dati dell'utente loggato.
     
-    Recupera i dati dell'utente loggato
+    Recupera i dati dell'utente attualmente loggato, quindi i dati che vengono visti sono quelli di 
+    chi ha fatto la richiesa.
     
     put:
-    Aggiorna i dati dell'utente loggato
+    Aggiorna i dati dell'utente loggato.
     
-    Aggiorna (PUT, PATCH) i dati dell'utente loggato. E' possibili aggiornare si in modo parziale (PATCH) che totale (PUT).
-    Ritorna solo i dati aggiornati.
+    Aggiorna (PUT, PATCH) i dati dell'utente loggato, cioè di quello che ha fatto la richiesta. 
+    E' possibili aggiornare si in modo parziale (PATCH) che totale (PUT). Ritorna solo i dati aggiornati.
     ------ Anche se non mostrato è possibili aggiornare l'immagine profilo ------
     
     patch:
     Aggiorna i dati dell'utente loggato
     
-    Aggiorna (PUT, PATCH) i dati dell'utente loggato. E' possibili aggiornare si in modo parziale (PATCH) che totale (PUT).
-    Ritorna solo i dati aggiornati.
+    Aggiorna (PUT, PATCH) i dati dell'utente loggato, cioè di quello che ha fatto la richiesta. 
+    E' possibili aggiornare si in modo parziale (PATCH) che totale (PUT). Ritorna solo i dati aggiornati.
     ------ Anche se non mostrato è possibili aggiornare l'immagine profilo ------
     """
     
@@ -63,10 +64,11 @@ class UsersListView(generics.ListAPIView,
 
     """
     list:
-    Ritorna la lista degli utenti.
+    Ritorna la lista di tutti gli utente.
 
-    Ritorna una lista di utenti in un formato ridetto. E' necessario
-    essere autenticati per ricere una risposta.
+    Ritorna una lista di tutti gli utente salvati nel DB in un formato ridotto. E' necessario
+    essere autenticati per ricere una risposta. Questo endpotins servità quando ci sarà
+    la sezione dedica alla ricerca di persone da aggiungere a progetti.
     """
     serializer_class = UsersListSerializer
     queryset = User.objects.filter(active=True)
@@ -79,7 +81,8 @@ class UsersRetriveView(generics.RetrieveAPIView,
     retrieve:
     Ristituisce i dettagli di un'utente.
 
-    Ritorna tutti i dettagli di un utente di cui è stato passato lo secret_key nell'url.
+    Ritorna tutti i dettagli di un utente di cui è stato passato la secret_key nell'url.
+    Serve quando si entra per esempio nel profilo di un'utente
     """
     serializer_class = UsersDetailsSerializer
     queryset = User.objects.filter(active=True)
@@ -89,6 +92,13 @@ class UsersRetriveView(generics.RetrieveAPIView,
     
 class UserProjectsListView(generics.ListAPIView,
                            viewsets.GenericViewSet):
+    """
+    list:
+    Vedi la lista dei progetti dell'utente loggato.
+    
+    Vedi la lista dei progetti dell'utente loggato (cioè di quello che fa la richiesta), i progetti
+    che vede sono quelli o che ha creato o che è dentro come partecipante.
+    """
     serializer_class = ProjectListSerializer
     queryset = Project.objects.all()
     
@@ -106,20 +116,28 @@ class UserImageView(APIView):
 
     def get(self, request, *args, **kwargs):
         """
-        Restituisce l'immage dell'utente loggato
+        Restituisce l'immage dell'utente loggato.
         
-        Restituisce l'immage dell'utente loggato
+        Restituisce solo l'immage dell'utente loggato (cioè di quello che ha fatto la richesta).
+        Endpoints da utilizzare per l'ateprima dell'immage dell'utente per esempio in una navbar.
         """
         user = User.objects.get(id=request.user.id)
         serializer = CurrentUserImageSerializer(user)
         return Response(status=status.HTTP_200_OK,data=serializer.data)
 
 
-
-
+@method_decorator(name="get",decorator=swagger_auto_schema(
+                             responses={"200":CurrentUserImageSerializer}))
 class UserInfoView(APIView):
     
     def get(self, request, *args, **kwargs):
+        """
+        Restituisce dati utente loggato.
+        
+        Restituisce dati dell'utente loggato (cioè di quello che ha fatto la richesta) in un formato ridotto.
+        Questo endpoints serve per inserire i dati in picoli paragrafi come la navbar del sito o un'ateprima dell'account
+        quando l'utente naviga per l'app.
+        """
         user = get_object_or_404(User, id=request.user.id)
         serializer = CurrentUserInfoSerializer(instance=user)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
