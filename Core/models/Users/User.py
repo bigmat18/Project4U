@@ -123,7 +123,7 @@ class User(AbstractBaseUser, AbstractFile):
         ]
     
     @property
-    def full_name(self): return f"{self.first_name}-{self.last_name}"
+    def full_name(self): return f"{self.first_name} {self.last_name}"
     
     @property
     def is_staff(self): return self.admin

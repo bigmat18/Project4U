@@ -1,6 +1,8 @@
 from .BaseTestCase import BaseTestCase
 from .ConstraintsTestCase import ConstraintsTestCase
 from .AbstractFileTestCase import AbstractFileTestCase
+from .ProjectModelTestCase import ProjectModelTestCase
+from .ShowcaseModelTestCase import ShowcaseModelTestCase
 
 from Users.tests import (UserTestCase, SkillTestCase, UserSkillTestCase,
                          ExternalProjectTestCase, UserEducationTestCase,

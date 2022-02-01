@@ -1,7 +1,7 @@
 from django.db import models
 from ..serializers import ShowcaseSerializer
 from rest_framework import generics, viewsets
-from Core.models import Showcase, Project
+from Core.models import Showcase, Project, ShowcaseUpdate
 from rest_access_policy import AccessPolicy
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
@@ -9,7 +9,6 @@ from django.conf import settings
 from django.utils.decorators import method_decorator
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-
 
 
 
@@ -84,7 +83,30 @@ class ShowcaseListCreateView(generics.ListCreateAPIView,
         #                             .annotate(id=ArrayAgg('id')).values('id')\
         #                             [:1]))
         # print(query[0].last_message)
-        return Showcase.objects.filter(project__id=self.kwargs['id'])
+        return Showcase.objects.filter(project__id=self.kwargs['id']).order_by("created_at")
     
     def perform_create(self, serializer):
-        serializer.save(project=self.get_project(),creator=self.request.user)
+        instance = serializer.save(project=self.get_project(),creator=self.request.user)
+        instance.users.add(self.request.user)
+        
+        
+        
+# class ShowcaseRUDView(generics.RetrieveUpdateDestroyAPIView,
+#                       viewsets.GenericViewSet):
+#     serializer_class = ShowcaseSerializer
+#     queryset = Showcase.objects.all()
+#     lookup_field = "id"
+#     permission_classes = [IsAuthenticated, ShowcaseAccessPolicy]
+#     if not settings.DEBUG: permission_classes.append(HasAPIKey)
+    
+#     def perform_update(self, serializer):
+#         instance = super().perform_update
+#         self.add_creator_to_users(instance)
+            
+#     def partial_update(self, request, *args, **kwargs):
+#         instance = super().partial_update(request, *args, **kwargs)
+#         self.add_creator_to_users(instance)
+
+#     def add_creator_to_users(self, instance):
+#         if not instance.users.filter(id=instance.creator.id).exists():
+#             instance.users.add(instance.creator)

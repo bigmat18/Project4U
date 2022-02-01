@@ -8,6 +8,7 @@ router.register(r"projects", vw.ProjectsListCreateView)
 router.register(r"projects", vw.ProjectsRUDView)
 router.register(r"role", vw.RoleUpdateDestroyView)
 router.register(r"projects/users", vw.UserProjectUpdateDestroyView)
+#router.register(r"showcase", vw.ShowcaseRUDView)
 
 urlpatterns = router.urls
 

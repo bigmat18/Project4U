@@ -47,7 +47,7 @@ class ConstraintsTestCase(TestCase):
         user = User.objects.create_user(email="test@test.com",password="prova123456",
                                         first_name="prova",last_name="prova")
         project = Project.objects.create(name="test", creator=user)
-        showcase = Showcase.objects.get(project=project,name="Generali")
+        showcase = Showcase.objects.get(project=project,name="Generale")
         with self.assertRaises(IntegrityError):
             message = TextMessage.objects.create(text="test", author=user, showcase=showcase)
             message.created_at = timezone.now() + datetime.timedelta(days=1)

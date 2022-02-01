@@ -17,8 +17,9 @@ from .Projects.Project import Project
 from .Projects.Role import Role, UserProject
 from .Projects.SearchCard import SearchCard
 
-from .Projects.Showcase import Showcase
 from .Projects.Message import Message
+from .Projects.ShowcaseUpdate import ShowcaseUpdate
+from .Projects.Showcase import Showcase
 from .Projects.TextMessage import TextMessage
 from .Projects.Event import Event
 from .Projects.Poll import Poll

@@ -1,5 +1,5 @@
 from django.db import models
-from Core.models import Message, AbstractFile
+from Core.models import TextMessage, AbstractFile
 
 import uuid
 
@@ -10,7 +10,7 @@ def file_path(instace,filename):
 
 class MessageFile(AbstractFile):
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
-    message = models.ForeignKey(Message,
+    message = models.ForeignKey(TextMessage,
                                 on_delete=models.CASCADE,
                                 related_name="files",
                                 related_query_name="files")

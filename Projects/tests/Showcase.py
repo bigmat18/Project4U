@@ -39,7 +39,7 @@ class ShowcaseTestCase(BaseTestCase):
         data = {'name':'test', "users": [str(self.new_user.id)]}
         response = self.client.post(f'/api/projects/{self.project.id}/showcases/',data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['users'][0]['secret_key'], self.user.secret_key)
+        self.assertEqual(response.data['users_list'][0]['secret_key'], self.user.secret_key)
         
     @tag('post','unauth') 
     def test_showcase_create_unauth(self):
@@ -48,10 +48,10 @@ class ShowcaseTestCase(BaseTestCase):
         response = self.client.post(f'/api/projects/{self.project.id}/showcases/',data=data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
       
-    @tag('get', 'auth')  
+    @tag('get', 'auth', 'this')  
     def test_message_viewed_by_auth(self):
-        showcase = Showcase.objects.get(project=self.project,name="Generali")
-        TextMessage.objects.create(text='test',showcase=showcase,author=self.user)
+        showcase = Showcase.objects.get(project=self.project,name="Generale")
+        TextMessage.objects.create(text='test',showcase=showcase,author=self.new_user)
         response = self.client.get(f'/api/projects/{self.project.id}/showcases/')
         self.assertEqual(list(response.data)[0]["notify"], 1)
         
