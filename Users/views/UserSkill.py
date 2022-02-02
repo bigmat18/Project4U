@@ -31,22 +31,28 @@ class UserSkillCUDView(mixins.CreateModelMixin,mixins.UpdateModelMixin,
                         mixins.DestroyModelMixin,viewsets.GenericViewSet):
     """
     create:
-    Aggiungi una skill all'utente
+    Aggiungi una skill all'utente.
     
-    Permette di aggiungere una skill con il livello all'utente a cui è riferito lo slug nell'url.
+    Permette di aggiungere una skill con il livello all'utente che ha fatto la richiesta.
     Puoi mandare una singola skill oppure una lista di skills usando questo formato:
     [ { dati skill }, { ... }, ... ]
         
     update:
-    Aggiorna i dati di una skill  
+    Aggiorna i dati di una skill.  
+    
+    Aggiorna i dati della skill, la skill da aggiornare viene decisa in base all'id della skill messo nell'url ({skill} = id skill).
+    Nel caso di un'aggiornamento parziale (PATCH) ritornano solo i campo aggiornati.
+    
+    partial_update:
+    Aggiorna i dati di una skill.
     
     Aggiorna i dati della skill, la skill da aggiornare viene decisa in base all'id della skill messo nell'url ({skill} = id skill).
     Nel caso di un'aggiornamento parziale (PATCH) ritornano solo i campo aggiornati.
       
     destroy:
-    Rimuovi una skill da un utente
+    Rimuovi una skill da un utente.
     
-    Rimuovi una skill da un utente, la skill da eliminare viene decisa in base all'id della skill messo nell'url ({skill} = id skill)
+    Rimuovi una skill da un utente, la skill da eliminare viene decisa in base all'id della skill messo nell'url ({skill} = id skill).
     """
     serializer_class = UserSkillCreateSerializer
     queryset = UserSkill.objects.all()

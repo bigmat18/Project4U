@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from Core.models import AbstractCreateUpdate, Showcase
+from Core.models import AbstractCreateUpdate
 from django.conf import settings
 import uuid
 
@@ -10,9 +10,10 @@ class Message(AbstractCreateUpdate):
         TEXT = "TEXT"
         EVENT = "EVENT"
         IDEA = "IDEA"
+        UPDATE = "UPDATE"
         
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
-    showcase = models.ForeignKey(Showcase,
+    showcase = models.ForeignKey("Showcase",
                                  on_delete=models.CASCADE,
                                  related_name="messages",
                                  related_query_name="messages")
@@ -27,12 +28,16 @@ class Message(AbstractCreateUpdate):
                                        related_query_name="messages_visualize",
                                        blank=True)
     
-    class Meta:
+    class Meta(AbstractCreateUpdate.Meta):
         db_table = "message"
         verbose_name = _("Message")
         verbose_name_plural = _("Messages")
         
+    def save(self, *args, **kwargs):
+        message = super().save(*args,**kwargs)
+        if not self.viewed_by.filter(id=self.author.id).exists():
+            self.viewed_by.add(self.author)
+        return message
         
-    def __str__(self):
-        return f"{self.author} - {self.showcase}"
+    def __str__(self): return str(self.id)
     

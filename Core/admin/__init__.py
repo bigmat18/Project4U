@@ -6,7 +6,7 @@ from .Users.User import UserAdmin
 from .Users.Email import EmailImportExport
 
 from .Projects.MessageFile import MessageFileInline
-from .Projects.Showcase import ShowcaseInline
+from .Projects.Showcase import ShowcaseInline, ShowcaseAdmin
 from .Projects.TextMessage import TextMessageAdmin
 from .Projects.Event import Event
 

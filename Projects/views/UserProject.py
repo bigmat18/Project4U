@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import mixins, generics, viewsets
+from rest_framework import generics, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from Core.models import UserProject, Project
@@ -53,12 +53,14 @@ class UserProjectListCreateView(generics.ListCreateAPIView,
                                 viewsets.GenericViewSet):
     """
     list:
-    Vedi la lista degli utenti in un progetto
+    Vedi la lista degli utenti in un progetto.
     
     Vedi tutti gli utenti dentro il progetto del quale abbiamo passato l'id.
+    Endpoints da usare per esempio in un ipotetico form di creazione dei una bacheca per
+    vedere la lista degli utenti nel progetto, oppure semplicemente nelle impostazioni del progetto.
     
     create:
-    Aggiungi un utente ad il progetto
+    Aggiungi un utente al progetto.
     
     Aggiungi un utente al il proggetto del quale abbiamo passato l'id. 
     Soltato il creatore del progetto può aggiungere utenti.

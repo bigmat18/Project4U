@@ -1,4 +1,3 @@
-from unicodedata import name
 from Core.models import Project, ProjectTag
 from Core.tests import BaseTestCase
 from rest_framework import status
@@ -11,21 +10,19 @@ class ProjectTagTestCase(BaseTestCase):
     def setUp(self):
         self.baseSetup()
         self.project = Project.objects.create(name="test",creator=self.user)
-        self.tag = ProjectTag.objects.create(name="test")
+        self.tag = ProjectTag.objects.create(name="test1")
         
-    @tag('get','auth')
-    def test_projects_tags_list_auth(self):
-        response = self.client.get("/api/projects-tags/")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-    
-    @tag('post','auth')
-    def test_projects_tags_create_auth(self):
-        response = self.client.post("/api/projects-tags/",data={"name":"test"})
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-    
-    @tag('patch','auth')  
-    def test_add_tags_to_projects_auth(self):
-        data = {"tags":[str(self.tag.id)]}
-        response = self.client.patch(f"/api/projects/{self.project.id}/",data=data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(dict(response.data), data)
+        
+    def test_tags_list_create_auth(self):
+        data = [{'name':"test1"},{"name":"test2"}]
+        response = self.client.post(f'/api/projects/{self.project.id}/tags/',data=data,format='json')
+        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
+        self.assertEquals(self.project.tags.count(),2)
+        self.assertEquals(ProjectTag.objects.all().count(),2)
+        
+    def test_tags_single_create_auth(self):
+        data = {'name':"test2"}
+        response = self.client.post(f'/api/projects/{self.project.id}/tags/', data=data)
+        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
+        self.assertEquals(self.project.tags.count(),1)
+        self.assertEquals(ProjectTag.objects.all().count(),2)

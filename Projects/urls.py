@@ -8,6 +8,7 @@ router.register(r"projects", vw.ProjectsListCreateView)
 router.register(r"projects", vw.ProjectsRUDView)
 router.register(r"role", vw.RoleUpdateDestroyView)
 router.register(r"projects/users", vw.UserProjectUpdateDestroyView)
+router.register(r"showcase", vw.ShowcaseRUDView)
 
 urlpatterns = router.urls
 
@@ -17,6 +18,6 @@ urlpatterns += [
     path('projects/<uuid:id>/showcases/',vw.ShowcaseListCreateView.as_view({"get":"list","post":"create"}),name="showcases-list-create"),
     path('showcase/<uuid:id>/messages/',vw.MessageListView.as_view({'get':'list'}),name="messages-list"),
     path('showcase/<uuid:id>/messages/text/',vw.TextMessageCreateView.as_view({'post':'create'}),name="text-message-create"),
-    path('projects-tags/', vw.ProjectTagListCreateView.as_view({'get':'list','post':'create'}),name="project-tag-list-create")
+    path('projects/<uuid:id>/tags/', vw.ProjectTagCreateView.as_view({'post':'create'}),name="project-tag-create")
 ]
 

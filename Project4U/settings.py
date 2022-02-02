@@ -154,6 +154,7 @@ SITE_ID = 1
 # -------- django-contrib-sites ------
 
 
+
 # -------- django-allauth ------
 CSRF_COOKIE_SECURE = False
 ACCOUNT_EMAIL_VERIFICATION = "none"
@@ -165,7 +166,7 @@ ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_LOGOUT_ON_GET = True
 
 REST_AUTH_SERIALIZERS = {
-    'USER_DETAILS_SERIALIZER': 'Users.serializers.CurrentUserSerializer',
+    'USER_DETAILS_SERIALIZER': 'Users.serializers.CurrentUserDetailsSerializer',
     'LOGIN_SERIALIZER': 'Users.serializers.CustomLoginSerializer'
 }
 REST_AUTH_REGISTER_SERIALIZERS = {
@@ -188,18 +189,16 @@ CORS_ORIGIN_ALLOW_ALL = True
 # -------- django-rest-framework ------
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-
-        # for django and DRF admin pannels
-        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication'
     ],
 
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 
     'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated'],
-        
-    #'DATE_INPUT_FORMATS': ['iso-8601', '%d-%m-%Y']
 }
+
+if DEBUG:
+    REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'].append('rest_framework.authentication.SessionAuthentication')
 
 if not DEBUG:
     REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'] = ['rest_framework.renderers.JSONRenderer']
@@ -225,5 +224,3 @@ if not DEBUG:
 
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # -------- aws-s3-buckets ------
-
-

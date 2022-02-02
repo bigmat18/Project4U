@@ -1,5 +1,7 @@
+from array import array
 from rest_framework import response, status
 from Core.tests import BaseTestCase
+from Core.models import Project, UserProject
 from django.test import tag
 import PIL, tempfile
 
@@ -49,8 +51,24 @@ class UserTestCase(BaseTestCase):
         
     @tag('get','auth')
     def test_users_detail_auth(self):
-        response = self.client.get(f"/api/users/{self.user.slug}/")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)        
-    def test_user_image(self):
+        response = self.client.get(f"/api/users/{self.user.secret_key}/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)    
+        
+    @tag('get','auth')  
+    def test_user_image_auth(self):
         response = self.client.get('/api/user/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+    
+    @tag('get', 'auth')  
+    def test_user_projects_auth(self):
+        project = Project.objects.create(name='test', creator=self.new_user)
+        project.users.add(self.user)
+        response = self.client.get('/api/user/projects/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(list(response.data)[0]['name'],project.name)
+    
+    @tag('get', 'auth') 
+    def test_user_info_auth(self):
+        response = self.client.get('/api/user/info/')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(dict(response.data)['id'], str(self.user.id))

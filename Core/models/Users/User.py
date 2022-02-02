@@ -2,15 +2,11 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from Core.models import Skill, AbstractSlug
+from Core.models import Skill, AbstractFile
 
-from django.conf import settings
-
-from django.dispatch import receiver
-from django.db.models.signals import pre_save, pre_delete
-from storages.backends.s3boto3 import S3Boto3Storage
-
-from django.core.exceptions import ValidationError
+from ...management.scripts.generete_slug import generate_slug
+from django.db.models import CheckConstraint, Q
+from django.db.models.functions import Now
 
 import uuid
 
@@ -32,6 +28,7 @@ class UserManager(BaseUserManager):
         user.last_name = last_name
         user.date_birth = date_birth
         user.date_joined = timezone.now()
+        user.secret_key = generate_slug('')
         
         user.save(using=self._db)
         return user
@@ -47,10 +44,10 @@ def image_path(instance,path):
     return f"users/user-{instance.id}/user-image.jpg"
 
 
-class User(AbstractBaseUser, AbstractSlug):
-    blocked_help_text   = "Indica se un utente è stato bloccato."
-    main_role_help_text = "Indica il ruolo principale dell'utente (32 caratteri max)"
-    description_help_text = "Descrizione dell'utente (256 caratteri max)"
+class User(AbstractBaseUser, AbstractFile):
+    __blocked_help_text   = "Indica se un utente è stato bloccato."
+    __main_role_help_text = "Indica il ruolo principale dell'utente (32 caratteri max)"
+    __description_help_text = "Descrizione dell'utente (256 caratteri max)"
     
     class TypeUser(models.TextChoices):
         BASE = 'Base'
@@ -71,14 +68,14 @@ class User(AbstractBaseUser, AbstractSlug):
     username = models.CharField(max_length=64,blank=True,null=True,default=None)
     
     main_role = models.CharField(_('main role'), blank=True, null=True, max_length=32,
-                                 help_text=main_role_help_text)
+                                 help_text=__main_role_help_text)
     
     date_birth = models.DateField(_('date birth'), null=True,blank=True)
     date_joined = models.DateTimeField(_('date joined'),null=True)
 
     active = models.BooleanField(_("is active"), default=True)
     blocked = models.BooleanField(_("is blocked"), default=False,
-                                  help_text=blocked_help_text)
+                                  help_text=__blocked_help_text)
     
     admin = models.BooleanField(_("is admin"), default=False)
     type_user = models.CharField(_("type user"), choices=TypeUser.choices, 
@@ -97,7 +94,8 @@ class User(AbstractBaseUser, AbstractSlug):
                                            blank=True,)
     
     description = models.TextField(_("description"), blank=True, 
-                                   null=True,max_length=256)
+                                   null=True,max_length=256,
+                                   help_text=__description_help_text)
     
     location = models.CharField(_("location"),blank=True,null=True,
                                 max_length=32)
@@ -107,9 +105,8 @@ class User(AbstractBaseUser, AbstractSlug):
                                     through_fields=('user','skill'),
                                     related_name="users",
                                     related_query_name="users")
-    slug = models.SlugField(_("slug"), editable=False,
-                            db_column="secret_key",
-                            unique=True,null=True,blank=True)
+    secret_key = models.SlugField(_("secret key"), editable=False, 
+                                  unique=True,blank=True)
     
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
@@ -121,12 +118,12 @@ class User(AbstractBaseUser, AbstractSlug):
         db_table = 'user'
         verbose_name = _('User')
         verbose_name_plural = _('Users')
-        
-    def __str__(self):
-        return f"{self.email}"
+        constraints = [
+            CheckConstraint(check=Q(date_birth__lte=Now()),name="check_user_date_birth")
+        ]
     
     @property
-    def full_name(self): return f"{self.first_name}-{self.last_name}"
+    def full_name(self): return f"{self.first_name} {self.last_name}"
     
     @property
     def is_staff(self): return self.admin
@@ -136,21 +133,6 @@ class User(AbstractBaseUser, AbstractSlug):
     
     def has_perm(self, perm, obj=None): return True
 
-    def has_module_perms(self, app_label): return True
-    
-
-if not settings.DEBUG:
-    @receiver(pre_delete,sender=User)
-    def pre_delete_image(sender, instance, *args, **kwargs):
-        if instance.image:
-            storage = S3Boto3Storage()
-            storage.delete(str(instance.image))
-
-    @receiver(pre_save, sender=User)
-    def pre_save_image(sender, instance, *args, **kwargs):
-        user = User.objects.filter(id=instance.id)
-        if user.exists():
-            user = user.get(id=instance.id)
-            storage = S3Boto3Storage()
-            if not instance.image and user.image:
-                storage.delete(str(user.image))
+    def has_module_perms(self, app_label): return True        
+        
+    def __str__(self): return f"{self.email}"

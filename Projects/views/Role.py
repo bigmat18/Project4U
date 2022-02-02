@@ -51,13 +51,13 @@ class RoleListCreateView(mixins.ListModelMixin,
                          viewsets.GenericViewSet):
     """
     list:
-    Restituisce la lista di ruolo.
+    Restituisce la lista dei ruoli.
     
-    Restituisce una lista di ruolo per il progetto al quale è stato passato l'id.
+    Restituisce una lista dei ruoli del progetto al quale è stato passato l'id nell'url.
     Solamente colore che fanno parte del progetto possono visualizzare tutti i ruoli.
     
     create:
-    Crea un ruolo.
+    Crea un ruolo in un progetto.
     
     Crea un ruolo nel progetto a cui è stato passato l'id. Soltato il creatore del proggetto può
     creare un nuovo ruolo.
@@ -81,20 +81,23 @@ class RoleUpdateDestroyView(mixins.UpdateModelMixin,
                             viewsets.GenericViewSet):
     """
     update:
-    Aggiorna una regola.
+    Aggiorna una ruolo.
 
-    Aggiorna il dati di una regola. Soltato il creatore del progetto può aggiornare una regola.
+    Aggiorna il dati del ruolo di cui è stato passato l'id nell'url. 
+    Soltato il creatore del progetto può aggiornare un ruolo.
     
     partial_update:
-    Aggiorna una regola.
+    Aggiorna un ruolo.
 
-    Aggiorna il dati di una regola. Soltato il creatore del progetto può aggiornare una regola.
+    Aggiorna il dati del ruolo di cui è stato passato l'id nell'url. 
+    Soltato il creatore del progetto può aggiornare un ruolo.
     Vengono restituiti solo i campi modificati.
         
     destroy:
-    Elimina una regola.
+    Elimina una ruolo dal progetto.
     
-    Elimina una regola dal progetto. Soltato il creatore del progetto può eliminare una regola.
+    Elimina il ruolo dal progetto di cui è stato passato l'id nell'url. 
+    Soltato il creatore del progetto può eliminare una ruolo.
     """
     serializer_class = RoleSerializer
     queryset = Role.objects.all()
