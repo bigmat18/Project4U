@@ -71,14 +71,14 @@ class ShowcaseTestCase(BaseTestCase):
         response = self.client.get(f'/api/projects/{self.project.id}/showcases/')
         self.assertEqual(list(response.data)[0]["notify"], 0)
         
-    @tag('patch', 'auth', 'this') 
+    @tag('patch', 'auth') 
     def test_showcase_update_auth(self):
         data = {"description":"test"}
         response = self.client.patch(f"/api/showcase/{self.showcase.id}/", data=data)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         self.assertEquals(ShowcaseUpdate.objects.all().count(), 1)
         
-    @tag('patch', 'unauth', 'this') 
+    @tag('patch', 'unauth') 
     def test_showcase_update_unauth(self):
         self.client.force_authenticate(user=self.new_user)
         data = {"description":"test"}
@@ -89,12 +89,12 @@ class ShowcaseTestCase(BaseTestCase):
         response = self.client.patch(f"/api/showcase/{self.showcase.id}/", data=data)
         self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
     
-    @tag('delete', 'auth', 'this') 
+    @tag('delete', 'auth') 
     def test_showcase_delete_auth(self):
         response = self.client.delete(f"/api/showcase/{self.showcase.id}/")
         self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
     
-    @tag('delete', 'unauth', 'this') 
+    @tag('delete', 'unauth') 
     def test_showcase_delete_unauth(self):
         self.client.force_authenticate(user=self.new_user)
         response = self.client.delete(f"/api/showcase/{self.showcase.id}/")

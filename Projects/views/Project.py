@@ -1,6 +1,7 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, mixins
 from rest_framework import viewsets
-from Core.models import Project, Showcase
+from Core.models import Project, Showcase, ProjectTag
 from rest_framework.response import Response
 from Projects.serializers.Project import ProjectDetailSerializer
 from ..serializers import ProjectListSerializer
@@ -52,7 +53,23 @@ class ProjectsListCreateView(mixins.CreateModelMixin,
     queryset = Project.objects.all()
     permission_classes = [IsAuthenticated, ProjectsAccessPolicy]
     if not settings.DEBUG: permission_classes.append(HasAPIKey)
-
+    
+    def add_or_create_tag(self,tag_name,project):
+        tag = ProjectTag.objects.filter(name=tag_name)
+        if not tag.exists():
+            new_tag = ProjectTag.objects.create(name=tag_name)
+            project.tags.add(new_tag)
+        else: project.tags.add(tag[0])
+    
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        project = get_object_or_404(Project, id=response.data["id"])
+        if "tags" in request.data:
+            if isinstance(dict(request.data)['tags'], list):
+                for tag in dict(request.data)['tags']:
+                    self.add_or_create_tag(tag, project)
+            else: self.add_or_create_tag(dict(request.data)['tags'], project)
+        return response
     
     def perform_create(self, serializer):
         serializer.save(creator=self.request.user)

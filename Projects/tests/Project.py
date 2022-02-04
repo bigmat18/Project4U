@@ -1,5 +1,4 @@
-from django.http import request, response
-from Core.models import Project, User, Showcase
+from Core.models import Project, Showcase, ProjectTag
 from Core.tests import BaseTestCase
 from rest_framework import status
 from django.test import tag
@@ -25,8 +24,10 @@ class ProjectsTestCase(BaseTestCase):
     
     @tag('post','auth')  
     def test_projects_create_auth(self):
-        response = self.client.post('/api/projects/', data={"name": "test1"})
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        data = {"name": "test1", "tags": ["prova", "prova", "ciao"]}
+        response = self.client.post('/api/projects/', data=data)
+        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
+        self.assertEquals(ProjectTag.objects.all().count(), 2)
         
     @tag('post','auth')  
     def test_projects_create_showcases_auth(self):
