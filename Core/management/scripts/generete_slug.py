@@ -14,6 +14,6 @@ def generate_slug(string):
     random_string = generate_random_string()
     if string is not '':
         slug = slugify(string)
-        return str(slug + "-" + random_string)
+        return str(slug + random_string)
     else: return str(random_string)
 # --------------- GENERATION RANDOM SLUG STRING ----------------
