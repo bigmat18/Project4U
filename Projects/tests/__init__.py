@@ -6,3 +6,4 @@ from .Showcase import ShowcaseTestCase
 from .Message import MessageTestCase
 
 from .ProjectTag import ProjectTagTestCase
+from .Event import EventTestCase

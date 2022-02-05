@@ -11,4 +11,5 @@ from Users.tests import (UserTestCase, SkillTestCase, UserSkillTestCase,
 
 from Projects.tests import (ProjectsTestCase,UserProjectTestCase,
                             RoleTestCase, ShowcaseTestCase,
-                            MessageTestCase,ProjectTagTestCase)
+                            MessageTestCase,ProjectTagTestCase,
+                            EventTestCase)

@@ -46,13 +46,13 @@ class ShowcaseTestCase(BaseTestCase):
         data = {'name':'test', "users": [str(self.new_user.id)]}
         response = self.client.post(f'/api/projects/{self.project.id}/showcases/',data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['users_list'][0]['secret_key'], self.user.secret_key)
+        self.assertEqual(len(response.data['users']), 2)
         self.project.users.add(self.new_user)
         self.project.save()
         self.client.force_authenticate(user=self.new_user)
         response = self.client.post(f'/api/projects/{self.project.id}/showcases/',data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data['users_list'][0]['secret_key'], self.new_user.secret_key)
+        self.assertEqual(len(response.data['users']), 1)
 
     @tag('post','unauth') 
     def test_showcase_create_unauth(self):

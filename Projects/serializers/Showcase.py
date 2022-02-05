@@ -9,19 +9,25 @@ class UserShowcaseSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id","secret_key", "first_name", "last_name", "image"]
 
-class ShowcaseSerializer(serializers.ModelSerializer):
+
+
+class ShowcaseWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Showcase
+        fields = ["name", "users", "description", "color"]
+
+
+class ShowcaseReadSerializer(serializers.ModelSerializer):
     last_message = serializers.SerializerMethodField(read_only=True)
     last_event = serializers.SerializerMethodField(read_only=True)
-    users_list = UserShowcaseSerializer(many=True,source="users",read_only=True)
+    users = UserShowcaseSerializer(many=True,read_only=True)
     notify = serializers.SerializerMethodField(read_only=True)
     creator = UserShowcaseSerializer(read_only=True)
         
     class Meta:
         model = Showcase
         exclude = ["project"]
-        extra_kwargs = {
-            'users': {'write_only': True},
-        }
+
         
     def get_last_event(self, instance):
         last_event = Message.objects.filter(Q(showcase=instance) & Q(type_message="EVENT"))\

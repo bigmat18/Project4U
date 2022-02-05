@@ -6,3 +6,4 @@ from .Showcase import ShowcaseListCreateView, ShowcaseRUDView
 from .Message import MessageListView, TextMessageCreateView
 
 from .ProjectTag import ProjectTagCreateView
+from .Event import EventCreateView, EventUpdateDestroyView, EventTaskCreateView, EventTaskRUDView

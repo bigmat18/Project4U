@@ -1,6 +1,6 @@
 from Core.tests import BaseTestCase
 from rest_framework import status
-from Core.models import Project, Showcase, Event, TextMessage
+from Core.models import Project, Showcase, TextMessage
 from django.test import tag
 
 @tag('Showcases', 'messages-tests')
