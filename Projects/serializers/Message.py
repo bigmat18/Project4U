@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from Core.models import Message, User
 from .TextMessage import TextMessageSerializer
-from .Event import EventSerializer
+from .Event import EventReadSerializer
 from .ShowcaseUpdate import ShowcaseUpdateSerializer
 
 
@@ -23,6 +23,6 @@ class MessageSerializer(serializers.ModelSerializer):
         if instance.type_message == "TEXT":
             return TextMessageSerializer(instance=instance.text_message).data
         elif instance.type_message == "EVENT":
-            return EventSerializer(instance=instance.event).data
+            return EventReadSerializer(instance=instance.event).data
         elif instance.type_message == "UPDATE":
             return ShowcaseUpdateSerializer(instance=instance.showcase_update).data

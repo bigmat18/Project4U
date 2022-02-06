@@ -28,7 +28,7 @@ class UserManager(BaseUserManager):
         user.last_name = last_name
         user.date_birth = date_birth
         user.date_joined = timezone.now()
-        user.secret_key = generate_slug('')
+        user.secret_key = generate_slug(f"{user.first_name}_{user.last_name}#")
         
         user.save(using=self._db)
         return user

@@ -28,6 +28,13 @@ class ExternalProjectCUDView(mixins.CreateModelMixin,
     Nel caso di un'aggiornamento parziale (PATCH) ritornano solo i campo aggiornati.
     ------ Anche se non mostrato è possibili aggiornare anche un'immagine del progetto ------
     
+    partial_update:
+    Aggiorna i dati di un progetto esterno
+    
+    Aggiorna i dati del progetto esterno, il proggetto da aggiornare viene decisa in base all'id del progetto messo nell'url.
+    Nel caso di un'aggiornamento parziale (PATCH) ritornano solo i campo aggiornati.
+    ------ Anche se non mostrato è possibili aggiornare anche un'immagine del progetto ------
+    
     destroy:
     Rimuovi un progetto esterno da un utente
     

@@ -1,15 +1,10 @@
-from django.db import models
-from ..serializers import ShowcaseSerializer
+from ..serializers import ShowcaseReadSerializer, ShowcaseWriteSerializer
 from rest_framework import generics, viewsets
-from Core.models import Showcase, Project, ShowcaseUpdate
+from Core.models import Showcase, Project
 from rest_access_policy import AccessPolicy
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
 from django.conf import settings
-from django.utils.decorators import method_decorator
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
-
 
 
 class ShowcaseAccessPolicy(AccessPolicy):
@@ -49,20 +44,7 @@ class ShowcaseAccessPolicy(AccessPolicy):
                 showcase.users.filter(id=request.user.id).exists())
 
 
-@method_decorator(name="create",
-                  decorator=swagger_auto_schema(
-                      responses={"201": ShowcaseSerializer},
-                      request_body=openapi.Schema(type=openapi.TYPE_OBJECT,
-                                                  required=["name"],
-                                                  properties={"users":openapi.Schema(type=openapi.TYPE_ARRAY,
-                                                                                     items=openapi.Schema(
-                                                                                         type=openapi.TYPE_STRING,
-                                                                                         description="Mandare l'uuid dell'utente")),
-                                                           "name": openapi.Schema(type=openapi.TYPE_STRING,
-                                                                                  maxLength=64,
-                                                                                  minLength=1),
-                                                           "text":openapi.Schema(type=openapi.TYPE_STRING,
-                                                                                 maxLength=516)})))
+
 class ShowcaseListCreateView(generics.ListCreateAPIView,
                              viewsets.GenericViewSet):
     """
@@ -86,26 +68,21 @@ class ShowcaseListCreateView(generics.ListCreateAPIView,
     L'ultimo messaggio non è una stringa ma è un oggetto formattato in base al tipo del messaggio.
     L'ultimo messaggio può essere un messaggio testuale, un aggiornameto della bacheca ma NON un evento.
     """
-    serializer_class = ShowcaseSerializer
     queryset = Showcase.objects.all()
     permission_classes = [IsAuthenticated, ShowcaseAccessPolicy]
     if not settings.DEBUG: permission_classes.append(HasAPIKey)
+    
+    def get_serializer_class(self, *args, **kwargs):
+        if self.action == "list":
+            return ShowcaseReadSerializer
+        if self.action == "create":
+            return ShowcaseWriteSerializer
     
     def get_project(self):
         project_id = self.kwargs['id']
         return generics.get_object_or_404(Project, id=project_id)
     
     def get_queryset(self):
-        # ---- TEST DI SUBQUERY (DA RIPRENDERE) ---
-        # query = Showcase.objects.filter(project__id=self.kwargs['id'])\
-        #                         .annotate(last_message=Subquery(queryset=Message.objects\
-        #                             .filter(showcase__id=OuterRef('id'))\
-        #                             .order_by("-created_at")\
-        #                             .values('id')\
-        #                             .annotate(type_message=ArrayAgg('type_message')).values('type_message')\
-        #                             .annotate(id=ArrayAgg('id')).values('id')\
-        #                             [:1]))
-        # print(query[0].last_message)
         return Showcase.objects.filter(project__id=self.kwargs['id']).order_by("created_at")
     
     def perform_create(self, serializer):
@@ -144,11 +121,16 @@ class ShowcaseRUDView(generics.RetrieveUpdateDestroyAPIView,
     Elimna la bacheca di cui è stato passato l'id, soltato il creatore della bacheca
     o il creatore del progetto può eliminare la bacheca.
     """
-    serializer_class = ShowcaseSerializer
     queryset = Showcase.objects.all()
     lookup_field = "id"
     permission_classes = [IsAuthenticated, ShowcaseAccessPolicy]
     if not settings.DEBUG: permission_classes.append(HasAPIKey)
+    
+    def get_serializer_class(self, *args, **kwargs):
+        if self.action == "retrieve" or self.action == "destroy":
+            return ShowcaseReadSerializer
+        if self.action == "update" or self.action == "partial_update":
+            return ShowcaseWriteSerializer
     
     def perform_update(self, serializer):
         instance = serializer.save()
