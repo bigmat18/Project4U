@@ -39,6 +39,15 @@ class EventTestCase(BaseTestCase):
         data = [{"name": "test"}, {"name": "test2"}]
         response = self.client.post(f"/api/event/{self.event.id}/tasks/", format="json",data=data)
         self.assertEquals(response.status_code, status.HTTP_201_CREATED)
+        
+    @tag("post", "unauth")  
+    def test_event_task_create_unauth(self):
+        self.client.force_authenticate(user=self.new_user)
+        self.event.partecipants.add(self.new_user)
+        data = {"name": "test"}
+        response = self.client.post(f"/api/event/{self.event.id}/tasks/", data=data)
+        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+        
     
     @tag("patch", "auth")  
     def test_event_update_auth(self):
@@ -59,6 +68,18 @@ class EventTestCase(BaseTestCase):
         data = {"name": "test2"}
         response = self.client.patch(f"/api/task/{self.task.id}/", data=data)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
+        
+        self.client.force_authenticate(user=self.new_user)
+        self.event.partecipants.add(self.new_user)
+        response = self.client.patch(f"/api/task/{self.task.id}/", data=data)
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        
+    @tag("patch", "unauth")  
+    def test_event_task_update_unauth(self):
+        self.client.force_authenticate(user=self.new_user)
+        data = {"name": "test2"}
+        response = self.client.patch(f"/api/task/{self.task.id}/", data=data)
+        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
     
     @tag("delete", "auth")  
     def test_event_delete_auth(self):
@@ -76,3 +97,9 @@ class EventTestCase(BaseTestCase):
         response = self.client.delete(f"/api/task/{self.task}/")
         self.assertEquals(response.status_code, status.HTTP_204_NO_CONTENT)
 
+    @tag("delete", "unauth")  
+    def test_event_task_delete_unauth(self):
+        self.client.force_authenticate(user=self.new_user)
+        self.event.partecipants.add(self.new_user)
+        response = self.client.delete(f"/api/task/{self.task}/")
+        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)

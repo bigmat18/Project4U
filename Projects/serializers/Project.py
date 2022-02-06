@@ -12,7 +12,7 @@ class ProjectListSerializer(serializers.ModelSerializer):
 class ProjectDetailSerializer(serializers.ModelSerializer):
     num_swipe = serializers.IntegerField(read_only=True)
     creator = serializers.PrimaryKeyRelatedField(read_only=True)
-    tags = ProjectTagSerializer(many=True,read_only=True,source="tags")
+    tags = ProjectTagSerializer(many=True,read_only=True)
     
     class Meta:
         model = Project

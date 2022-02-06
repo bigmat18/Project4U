@@ -9,7 +9,7 @@ router.register(r"role", vw.RoleUpdateDestroyView)
 router.register(r"projects/users", vw.UserProjectUpdateDestroyView)
 router.register(r"showcase", vw.ShowcaseRUDView)
 router.register(r"event", vw.EventUpdateDestroyView)
-router.register(r"task", vw.EventTaskRUDView)
+router.register(r"task", vw.EventTaskUpdateDestroyView)
 
 urlpatterns = router.urls
 
