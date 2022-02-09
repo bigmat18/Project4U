@@ -57,7 +57,7 @@ class MessageListView(generics.ListAPIView,
     
     -----IMPORTANTE----
     Il campo 'content' non è una stringa ma restituisce un oggetto con i capi del messaggio, vedi in fondo
-    alla pagina TextMessage, Event, ShowocaseUpdate modelli per vedere i campi.
+    alla pagina TextMessage, EventRead, ShowocaseUpdate modelli per vedere i campi.
     """
     serializer_class = MessageSerializer
     filterset_class = MessageFilter

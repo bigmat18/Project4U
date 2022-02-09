@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, mixins
 from rest_framework import viewsets
-from Core.models import Project, Showcase, ProjectTag
+from Core.models import Project, ProjectTag
 from rest_framework.response import Response
 from Projects.serializers.Project import ProjectDetailSerializer
 from ..serializers import ProjectListSerializer
@@ -9,6 +9,9 @@ from rest_framework_api_key.permissions import HasAPIKey
 from rest_framework.permissions import IsAuthenticated
 from rest_access_policy.access_policy import AccessPolicy
 from django.conf import settings
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from django.utils.decorators import method_decorator
 
 
 
@@ -33,7 +36,16 @@ class ProjectsAccessPolicy(AccessPolicy):
 
 
 
-
+@method_decorator(name="create",decorator=swagger_auto_schema(
+                                request_body=openapi.Schema(
+                                    type=openapi.TYPE_OBJECT,
+                                    required=["name"],
+                                    properties={"name":openapi.Schema(type=openapi.TYPE_STRING,maxLength=64,mixLength=1),
+                                                "description":openapi.Schema(type=openapi.TYPE_STRING,maxLength=512), 
+                                                "link_site":openapi.Schema(type=openapi.TYPE_STRING,maxLength=512), 
+                                                "tags":openapi.Schema(type=openapi.TYPE_ARRAY,
+                                                                      items=openapi.Schema(type=openapi.TYPE_STRING,
+                                                                                           description="nome del tag"))})))
 class ProjectsListCreateView(mixins.CreateModelMixin,
                             mixins.ListModelMixin,
                             viewsets.GenericViewSet):
