@@ -4,8 +4,6 @@ from ..serializers import MessageSerializer, TextMessageSerializer
 import django_filters as filters
 from rest_access_policy import AccessPolicy
 from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
-
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
@@ -49,7 +47,7 @@ class MessageListView(generics.ListAPIView,
     
     Restituisce una lista con tutti i messaggi della bacheca di cui è stato passato l'id.
     E' possibile filtrare i tipi di messaggi scrivendo nell'url '?type_message=' ed accanto il tipo di messaggio
-    fra TEXT, IDEA, EVENT, UPDATE. La lista che ritorna ritorna in ordine dall'utlimo messaggio scritto inoltre è organizzata
+    fra TEXT, IDEA, EVENT, UPDATE, POLL. La lista che ritorna ritorna in ordine dall'utlimo messaggio scritto inoltre è organizzata
     in pagine da 25. Per cambiare pagina '?page=', per cambiare dimensioni pagine '?size='.
     Ogni volta che si richiede la lista delle pagine tutti i messaggi in quella pagina vengono segnati come visualizzati dall'utente
     che ha effetuato la richiesta
@@ -57,7 +55,7 @@ class MessageListView(generics.ListAPIView,
     
     -----IMPORTANTE----
     Il campo 'content' non è una stringa ma restituisce un oggetto con i capi del messaggio, vedi in fondo
-    alla pagina TextMessage, EventRead, ShowocaseUpdate modelli per vedere i campi.
+    alla pagina TextMessage, EventRead, ShowocaseUpdate, PollRead modelli per vedere i campi.
     """
     serializer_class = MessageSerializer
     filterset_class = MessageFilter
@@ -72,7 +70,7 @@ class MessageListView(generics.ListAPIView,
     
     def get_queryset(self):
         return Message.objects.filter(showcase=self.get_showcase())\
-                              .select_related('text_message', 'event', 'showcase_update')\
+                              .select_related('text_message','event','showcase_update','poll')\
                               .order_by("-updated_at")
                               
                               

@@ -9,7 +9,9 @@ router.register(r"role", vw.RoleUpdateDestroyView)
 router.register(r"projects/users", vw.UserProjectUpdateDestroyView)
 router.register(r"showcase", vw.ShowcaseRUDView)
 router.register(r"event", vw.EventUpdateDestroyView)
-router.register(r"task", vw.EventTaskUpdateDestroyView)
+router.register(r"event/task", vw.EventTaskUpdateDestroyView)
+router.register(r"poll", vw.PollUpdateDestroyView)
+router.register(r"poll/option", vw.PollOptionUpdateDestroyView)
 
 urlpatterns = router.urls
 
@@ -22,7 +24,9 @@ urlpatterns += [
     path('showcase/<uuid:id>/messages/',vw.MessageListView.as_view({'get':'list'}),name="messages-list"),
     path('showcase/<uuid:id>/messages/text/',vw.TextMessageCreateView.as_view({'post':'create'}),name="text-message-create"),
     path('showcase/<uuid:id>/messages/event/',vw.EventCreateView.as_view({'post':'create'}),name="event-create"),
+    path('showcase/<uuid:id>/messages/poll/',vw.PollCreateView.as_view({'post':'create'}),name="poll-create"),
     
-    path('event/<uuid:id>/tasks/',vw.EventTaskCreateView.as_view({'post':'create'}),name="event-create"),    
+    path('event/<uuid:id>/tasks/',vw.EventTaskCreateView.as_view({'post':'create'}),name="event-tasks-create"),
+    path('poll/<uuid:id>/options/',vw.PollOptionCreateView.as_view({'post':'create'}),name="poll-options-create"),
 ]
 

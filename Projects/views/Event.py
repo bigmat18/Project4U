@@ -163,6 +163,7 @@ class EventTaskCreateView(generics.CreateAPIView,
         serializer.save(event=self.get_object())
 
 
+
 class EventTaskUpdateDestroyView(generics.UpdateAPIView,
                                  generics.DestroyAPIView,
                                  viewsets.GenericViewSet):

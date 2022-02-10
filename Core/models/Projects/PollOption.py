@@ -16,6 +16,7 @@ class PollOption(models.Model):
     votes = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                    related_name="poll_option_votes",
                                    related_query_name="poll_option_votes",
+                                   blank=True,
                                    help_text=__votes_help_text)
     
     class Meta:

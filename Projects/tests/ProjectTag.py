@@ -1,7 +1,7 @@
 from Core.models import Project, ProjectTag
 from Core.tests import BaseTestCase
 from rest_framework import status
-from django.test import client, tag
+from django.test import tag
 
 
 @tag("Projects", "projects-tags-tests")

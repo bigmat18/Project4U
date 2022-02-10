@@ -11,6 +11,7 @@ class Message(AbstractCreateUpdate):
         EVENT = "EVENT"
         IDEA = "IDEA"
         UPDATE = "UPDATE"
+        POLL = "POLL"
         
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     showcase = models.ForeignKey("Showcase",
