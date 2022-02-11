@@ -8,4 +8,4 @@ from .Message import MessageListView, TextMessageCreateView
 
 from .ProjectTag import ProjectTagCreateView
 from .Event import EventCreateView, EventUpdateDestroyView, EventTaskCreateView, EventTaskUpdateDestroyView
-from .Poll import PollCreateView, PollUpdateDestroyView, PollOptionCreateView, PollOptionUpdateDestroyView
+from .Poll import PollCreateView, PollUpdateDestroyView, PollOptionCreateView, PollOptionUpdateDestroyView, PollOptionVotesAPIView

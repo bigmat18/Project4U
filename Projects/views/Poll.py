@@ -1,9 +1,11 @@
 from rest_framework import generics, viewsets
+from rest_framework.views import APIView
 from ..serializers import PollWriteSerializer, PollOptionSerializer
 from Core.models import Poll, PollOption, Showcase
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_access_policy import AccessPolicy
+from rest_framework.response import Response
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
@@ -166,3 +168,23 @@ class PollOptionUpdateDestroyView(generics.UpdateAPIView,
     lookup_field = "id"
     permission_classes = [IsAuthenticated, PollOptionAccessPolicy]
     if not settings.DEBUG: permission_classes.append(HasAPIKey)
+    
+    
+class PollOptionVotesAPIView(APIView):
+    
+    def post(self, request, *args, **kwargs):
+        """
+        Questo endpoints serve per quando un utente clicca per votare un opzione del sondaggio ad aggiunere
+        il voto dell'utente che manda la richiesta. Quando viene aggiunto il voto si controlla automanticamente se ci sono
+        voti già dati di quell'utente in quel sondaggio e nel caso lo rimuove.
+        Soltato colore che si trovano dentro la bacheca possono effetuare questa operazione.
+        """
+        option = self.kwargs['id']
+        option = get_object_or_404(PollOption, id=option)
+        if not (option.poll.showcase.users.filter(id=request.user.id).exists() or 
+                option.poll.showcase.creator == request.user):
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        if PollOption.objects.filter(votes=request.user, poll=option.poll).exists():
+            PollOption.objects.get(votes=request.user, poll=option.poll).votes.remove(request.user)    
+        option.votes.add(self.request.user)
+        return Response(status=status.HTTP_200_OK)

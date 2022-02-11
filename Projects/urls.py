@@ -28,5 +28,6 @@ urlpatterns += [
     
     path('event/<uuid:id>/tasks/',vw.EventTaskCreateView.as_view({'post':'create'}),name="event-tasks-create"),
     path('poll/<uuid:id>/options/',vw.PollOptionCreateView.as_view({'post':'create'}),name="poll-options-create"),
+    path('poll/option/<uuid:id>/vote/',vw.PollOptionVotesAPIView.as_view(),name="poll-options-create"),
 ]
 
