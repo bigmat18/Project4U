@@ -1,7 +1,8 @@
 from Core.tests import BaseTestCase
 from rest_framework import status
-from Core.models import Project, Showcase, TextMessage
+from Core.models import Project, Showcase, TextMessage, MessageFile
 from django.test import tag
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 @tag('Showcases', 'messages-tests')
 class MessageTestCase(BaseTestCase):
@@ -10,6 +11,7 @@ class MessageTestCase(BaseTestCase):
         self.baseSetup()
         self.project = Project.objects.create(name='test',creator=self.user)
         self.showcase = Showcase.objects.create(name='test',project=self.project,creator=self.user)
+        self.text_message = TextMessage.objects.create(text='test',showcase=self.showcase,author=self.user)
     
     @tag('get','auth')
     def test_message_list_auth(self):
@@ -47,3 +49,19 @@ class MessageTestCase(BaseTestCase):
         response = self.client.get(f'/api/showcase/{self.showcase.id}/messages/?size=1')
         self.assertIsNone(response.data['previous'])
         self.assertIsNotNone(response.data['next'])
+    
+    @tag('post','auth','file') 
+    def test_message_file_create_auth(self):
+        file = SimpleUploadedFile("file.txt", b"abc", content_type="text/plain")
+        data = {"file": file}
+        response = self.client.post(f'/api/text/{self.text_message.id}/files/', data=data, format="multipart")
+        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
+
+    @tag('post','auth','file') 
+    def test_message_file_create_list_auth(self):
+        file1 = SimpleUploadedFile("file.txt", b"abc", content_type="text/plain")
+        file2 = SimpleUploadedFile("file.txt", b"abc", content_type="text/plain")
+        data = {"file": [file1, file2]}
+        response = self.client.post(f'/api/text/{self.text_message.id}/files/', data=data, format="multipart")
+        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
+        self.assertEquals(MessageFile.objects.all().count(), 2)

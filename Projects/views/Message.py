@@ -1,9 +1,12 @@
-from Core.models import Message, Showcase
+from Core.models import Message, Showcase, TextMessage, MessageFile
 from rest_framework import generics, viewsets
-from ..serializers import MessageSerializer, TextMessageSerializer
+from ..serializers import MessageSerializer, TextMessageSerializer, MessageFileSerializer
 import django_filters as filters
 from rest_access_policy import AccessPolicy
 from django.shortcuts import get_object_or_404
+
+from rest_framework.response import Response
+from rest_framework import status
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
@@ -111,3 +114,24 @@ class TextMessageCreateView(generics.CreateAPIView,
                                    type_message="TEXT",
                                    author=self.request.user)
         instance.viewed_by.add(self.request.user)
+        
+        
+        
+class MessageFileCreateView(generics.CreateAPIView,
+                            viewsets.GenericViewSet):
+    serializer_class = MessageFileSerializer
+    
+    def get_object(self):
+        return get_object_or_404(TextMessage, id=self.kwargs['id'])
+    
+    def create(self, request, *args, **kwargs):
+        if len(dict(request.data)['file']) > 1:
+            response = []
+            for file in dict(request.data)['file']:
+                file = MessageFile.objects.create(message=self.get_object(),file=file)
+                response.append(str(file.file))
+            return Response(response, status=status.HTTP_201_CREATED)
+        else: return super().create(request, *args, **kwargs)
+    
+    def perform_create(self, serializer):
+        serializer.save(message=self.get_object())

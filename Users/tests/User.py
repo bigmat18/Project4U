@@ -1,4 +1,3 @@
-from array import array
 from rest_framework import response, status
 from Core.tests import BaseTestCase
 from Core.models import Project, UserProject

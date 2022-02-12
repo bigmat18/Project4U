@@ -26,6 +26,7 @@ urlpatterns += [
     path('showcase/<uuid:id>/messages/event/',vw.EventCreateView.as_view({'post':'create'}),name="event-create"),
     path('showcase/<uuid:id>/messages/poll/',vw.PollCreateView.as_view({'post':'create'}),name="poll-create"),
     
+    path('text/<uuid:id>/files/',vw.MessageFileCreateView.as_view({'post':'create'}),name="event-tasks-create"),
     path('event/<uuid:id>/tasks/',vw.EventTaskCreateView.as_view({'post':'create'}),name="event-tasks-create"),
     path('poll/<uuid:id>/options/',vw.PollOptionCreateView.as_view({'post':'create'}),name="poll-options-create"),
     path('poll/option/<uuid:id>/vote/',vw.PollOptionVotesAPIView.as_view(),name="poll-options-create"),
