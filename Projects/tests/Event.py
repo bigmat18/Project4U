@@ -1,9 +1,9 @@
-from urllib import response
 from django.utils import timezone
 from Core.tests import BaseTestCase
 from rest_framework import status
 from Core.models import Project, Showcase, Event, EventTask
 from django.test import tag
+import datetime
 
 @tag("Showcase", "events-tests")
 class EventTestCase(BaseTestCase):
@@ -12,13 +12,13 @@ class EventTestCase(BaseTestCase):
         self.baseSetup()
         self.project = Project.objects.create(name="test", creator=self.user)
         self.showcase = Showcase.objects.get(project=self.project, name="Generale")
-        self.event = Event.objects.create(date=timezone.now(), author=self.user, 
-                                          type_message="EVENT",showcase=self.showcase)
+        self.event = Event.objects.create(started_at=timezone.now(),ended_at=timezone.now() + datetime.timedelta(days=1),
+                                          author=self.user,type_message="EVENT",showcase=self.showcase)
         self.task = EventTask.objects.create(event=self.event, name="test0")
       
     @tag("post", "auth")  
     def test_event_create_auth(self):
-        data = {"date": timezone.now(), "partecipants": [str(self.new_user.id)]}
+        data = {"started_at": timezone.now(), "ended_at": timezone.now() + datetime.timedelta(days=1), "partecipants": [str(self.new_user.id)]}
         response = self.client.post(f"/api/showcase/{self.showcase.id}/messages/event/", data=data)
         self.assertEquals(response.status_code, status.HTTP_201_CREATED)
         self.assertEquals(len(response.data["partecipants"]), 2)
@@ -26,7 +26,7 @@ class EventTestCase(BaseTestCase):
     @tag("post", "unauth")  
     def test_event_create_unauth(self):
         self.client.force_authenticate(user=self.new_user)
-        data = {"date": timezone.now(), "partecipants": [str(self.new_user.id)]}
+        data = {"started_at": timezone.now(), "ended_at": timezone.now() + datetime.timedelta(days=1), "partecipants": [str(self.new_user.id)]}
         response = self.client.post(f"/api/showcase/{self.showcase.id}/messages/event/", data=data)
         self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
     

@@ -15,7 +15,7 @@ class AbstractComment(AbstractCreateUpdate):
        
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     author = models.ForeignKey(settings.AUTH_USER_MODEL,
-                               on_delete=models.CASCADE,
+                               on_delete=models.SET_NULL,
                                related_name=get_author_related_name.__func__(),
                                related_query_name=get_author_related_name.__func__())
     
