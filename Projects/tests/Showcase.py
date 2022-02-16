@@ -5,6 +5,7 @@ from rest_framework import status
 from Core.models import Project, TextMessage, Event
 from django.test import tag
 from django.utils import timezone
+import datetime
 
 @tag('Showcases', 'showcase-tests')
 class ShowcaseTestCase(BaseTestCase):
@@ -30,7 +31,8 @@ class ShowcaseTestCase(BaseTestCase):
         showcase = self.project.showcases.all()[0]
         message = TextMessage.objects.create(text="test", author=self.user,
                                             showcase=showcase)
-        Event.objects.create(author=self.user, date=timezone.now(),
+        Event.objects.create(author=self.user,started_at=timezone.now(),
+                             ended_at=timezone.now() + datetime.timedelta(days=1),
                              showcase=showcase)
         response = self.client.get(f'/api/projects/{self.project.id}/showcases/')
         self.assertEqual(list(response.data)[0]['last_message']['id'], str(message.id))

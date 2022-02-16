@@ -7,3 +7,4 @@ from .Message import MessageTestCase
 
 from .ProjectTag import ProjectTagTestCase
 from .Event import EventTestCase
+from .Poll import PollTestCase

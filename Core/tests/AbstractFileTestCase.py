@@ -16,7 +16,7 @@ class AbstractFileTestCase(TestCase):
         self.user = User.objects.create_user(email="ciao", password="ciao123456",
                                             first_name="ciao", last_name="ciao")
         self.project = Project.objects.create(name="ciao",creator=self.user,image=self.image)
-        self.user.image = SimpleUploadedFile("test.jpg", b"")
+        self.user.image = self.image
         self.user.save()
 
     def test_project_delete_queryset(self):

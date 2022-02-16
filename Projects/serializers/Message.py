@@ -3,6 +3,7 @@ from Core.models import Message, User
 from .TextMessage import TextMessageSerializer
 from .Event import EventReadSerializer
 from .ShowcaseUpdate import ShowcaseUpdateSerializer
+from .Poll import PollReadSerializer
 
 
 class AuthorMessageSerializer(serializers.ModelSerializer):
@@ -26,3 +27,5 @@ class MessageSerializer(serializers.ModelSerializer):
             return EventReadSerializer(instance=instance.event).data
         elif instance.type_message == "UPDATE":
             return ShowcaseUpdateSerializer(instance=instance.showcase_update).data
+        elif instance.type_message == "POLL":
+            return PollReadSerializer(instance=instance.poll).data

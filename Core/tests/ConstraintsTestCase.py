@@ -1,6 +1,6 @@
 from django.test.testcases import TestCase
 from django.test import tag
-from Core.models import User, UserEducation, Skill, UserSkill, TextMessage, UserProject
+from Core.models import User, UserEducation, Skill, UserSkill, TextMessage, UserProject, Event
 from django.db import IntegrityError
 from django.utils import timezone
 import datetime
@@ -70,3 +70,14 @@ class ConstraintsTestCase(TestCase):
         with self.assertRaises(IntegrityError):
             user.created_at = timezone.now() + datetime.timedelta(days=1)
             user.save()
+            
+            
+    def test_event_started_at_check(self):
+        user = User.objects.create_user(email="test@test.com",password="prova123456",
+                                        first_name="prova",last_name="prova")
+        project = Project.objects.create(name="test", creator=user)
+        showcase = Showcase.objects.get(project=project, name="Generale")
+        date = timezone.now() + datetime.timedelta(days=1)
+        with self.assertRaises(IntegrityError):
+            Event.objects.create(ended_at=timezone.now(), started_at=date, 
+                                 showcase=showcase, author=user)

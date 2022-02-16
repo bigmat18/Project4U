@@ -11,6 +11,7 @@ class Message(AbstractCreateUpdate):
         EVENT = "EVENT"
         IDEA = "IDEA"
         UPDATE = "UPDATE"
+        POLL = "POLL"
         
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     showcase = models.ForeignKey("Showcase",
@@ -18,7 +19,8 @@ class Message(AbstractCreateUpdate):
                                  related_name="messages",
                                  related_query_name="messages")
     author = models.ForeignKey(settings.AUTH_USER_MODEL,
-                               on_delete=models.CASCADE,
+                               on_delete=models.SET_NULL,
+                               null=True,
                                related_name="messages",
                                related_query_name="messages")
     type_message = models.CharField(max_length=32,

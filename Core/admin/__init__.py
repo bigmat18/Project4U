@@ -8,7 +8,8 @@ from .Users.Email import EmailImportExport
 from .Projects.MessageFile import MessageFileInline
 from .Projects.Showcase import ShowcaseInline, ShowcaseAdmin
 from .Projects.TextMessage import TextMessageAdmin
-from .Projects.Event import Event
+from .Projects.Event import EventAdmin
+from .Projects.Poll import PollAdmin
 
 from .Projects.Role import RoleInline
 from .Projects.UserProject import UserProjectInline
