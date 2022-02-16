@@ -71,8 +71,11 @@ class EventCreateView(generics.CreateAPIView,
     Crea un nuovo evento.
     
     Crea un nuovo evento all'iterno della bacheca della quale è stato passato l'id.
-    Soltato i coloro che sono dentro la bacheca possono creare un evento al suo interno.
+    Soltato coloro che sono dentro la bacheca possono creare un evento al suo interno.
     Una volta creato l'evento il creatore viene automaticamente aggiunto alla lista dei partecipanti.
+    E' inoltre possibile mandare insieme all'evento una lista "tasks": [...] con all'interno una lista di 
+    tasks da aggiungere all'evento in seguito alla creazione (con una lista di task si intende una lista di strighe che 
+    indentificano il testo della task)
     """
     queryset = Event.objects.all()
     permission_classes = [IsAuthenticated, EventAccessPolicy]
@@ -86,6 +89,14 @@ class EventCreateView(generics.CreateAPIView,
     
     def get_object(self):
         return get_object_or_404(Showcase, id=self.kwargs['id'])
+    
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        if response.status_code == status.HTTP_201_CREATED and "tasks" in request.data:
+            for task in dict(request.data)['tasks']:
+                event = get_object_or_404(Event, id=response.data['id'])
+                EventTask.objects.create(event=event, name=task)
+        return response
     
     def perform_create(self, serializer):
         instance = serializer.save(showcase=self.get_object(), 

@@ -103,3 +103,11 @@ class EventTestCase(BaseTestCase):
         self.event.partecipants.add(self.new_user)
         response = self.client.delete(f"/api/event/task/{self.task}/")
         self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+    
+    @tag('post', "auth")  
+    def test_event_task_create_in_event_auth(self):
+        data = {"started_at": timezone.now(), "ended_at": timezone.now() + datetime.timedelta(days=1), "partecipants": [str(self.new_user.id)],
+                "tasks": ["prova1", "prova2"]}
+        response = self.client.post(f"/api/showcase/{self.showcase.id}/messages/event/", data=data)
+        self.assertEquals(response.status_code, status.HTTP_201_CREATED)
+        self.assertEquals(EventTask.objects.all().count(),3)
