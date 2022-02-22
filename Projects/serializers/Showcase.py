@@ -1,4 +1,3 @@
-from tkinter.tix import Tree
 from Core.models import Showcase, Message,User
 from rest_framework import serializers
 from .Message import MessageSerializer
