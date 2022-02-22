@@ -1,3 +1,4 @@
+from tkinter.tix import Tree
 from Core.models import Showcase, Message,User
 from rest_framework import serializers
 from .Message import MessageSerializer
@@ -12,9 +13,14 @@ class UsersShowcaseSerializer(serializers.ModelSerializer):
 
 
 class ShowcaseWriteSerializer(serializers.ModelSerializer):
+    users_list = UsersShowcaseSerializer(source="users", many=True, read_only=True)
+    
     class Meta:
         model = Showcase
-        fields = ["name", "users", "description", "color"]
+        fields = ["name", "users", "description", "color", "users_list"]
+        extra_kwargs = {
+            'users': {'write_only': True}
+        }
 
 
 class ShowcaseReadSerializer(serializers.ModelSerializer):
