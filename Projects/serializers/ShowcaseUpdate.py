@@ -4,4 +4,4 @@ from Core.models import ShowcaseUpdate
 class ShowcaseUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShowcaseUpdate
-        fields = ["description", "type_update"]
+        fields = ["id","description", "type_update"]

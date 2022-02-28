@@ -1,4 +1,4 @@
-from Core.models import Project, Role, UserProject
+from Core.models import Project, Role, UserProject, Showcase
 from Core.tests import BaseTestCase
 from rest_framework import status
 from django.test import tag
@@ -63,3 +63,11 @@ class UserProjectTestCase(BaseTestCase):
         self.client.force_authenticate(user=self.new_user)
         response = self.client.delete(f"/api/projects/users/{self.user_project.id}/")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    @tag('get', 'auth')
+    def test_user_project_create_adding_showcase_auth(self):
+        response = self.client.post(f"/api/projects/{self.project.id}/users/", data={"user":str(self.new_user.id)})
+        general = Showcase.objects.get(project=self.project,name="Generale")
+        idea = Showcase.objects.get(project=self.project,name="Idee")
+        self.assertEquals(general.users.filter(id=self.new_user.id).exists(), True)
+        self.assertEquals(idea.users.filter(id=self.new_user.id).exists(), True)
