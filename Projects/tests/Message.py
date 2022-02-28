@@ -1,3 +1,4 @@
+import imp
 from Core.tests import BaseTestCase
 from rest_framework import status
 from Core.models import Project, Showcase, TextMessage, MessageFile
@@ -65,3 +66,10 @@ class MessageTestCase(BaseTestCase):
         response = self.client.post(f'/api/text/{self.text_message.id}/files/', data=data, format="multipart")
         self.assertEquals(response.status_code, status.HTTP_201_CREATED)
         self.assertEquals(MessageFile.objects.all().count(), 2)
+
+    @tag('get', 'auth')
+    def test_message_list_filter_gt_updated_at_auth(self):
+        message = TextMessage.objects.create(text='test2',showcase=self.showcase,author=self.user)
+        date = message.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%f")
+        response = self.client.get(f'/api/showcase/{self.showcase.id}/messages/?gt_updated_at={date}')
+        self.assertEquals(len(list(response.data['results'])), 0)
