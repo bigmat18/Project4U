@@ -48,13 +48,13 @@ class ShowcaseTestCase(BaseTestCase):
         data = {'name':'test', "users": [str(self.new_user.id)]}
         response = self.client.post(f'/api/projects/{self.project.id}/showcases/',data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(len(response.data['users']), 2)
+        self.assertEqual(len(response.data['users_list']), 2)
         self.project.users.add(self.new_user)
         self.project.save()
         self.client.force_authenticate(user=self.new_user)
         response = self.client.post(f'/api/projects/{self.project.id}/showcases/',data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(len(response.data['users']), 1)
+        self.assertEqual(len(response.data['users_list']), 1)
 
     @tag('post','unauth') 
     def test_showcase_create_unauth(self):
@@ -105,3 +105,9 @@ class ShowcaseTestCase(BaseTestCase):
         self.showcase.save()
         response = self.client.delete(f"/api/showcase/{self.showcase.id}/")
         self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+        
+    @tag('get', 'auth')   
+    def test_showcase_list_not_inside_auth(self):
+        showcase = Showcase.objects.create(project=self.project, creator=self.new_user, name="test")
+        response = self.client.get(f'/api/projects/{self.project.id}/showcases/')
+        self.assertEquals(len(response.data), 2)

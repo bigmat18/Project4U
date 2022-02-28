@@ -5,6 +5,7 @@ from rest_access_policy import AccessPolicy
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
 from django.conf import settings
+from django.db.models import Q
 
 
 class ShowcaseAccessPolicy(AccessPolicy):
@@ -83,7 +84,9 @@ class ShowcaseListCreateView(generics.ListCreateAPIView,
         return generics.get_object_or_404(Project, id=project_id)
     
     def get_queryset(self):
-        return Showcase.objects.filter(project__id=self.kwargs['id']).order_by("created_at")
+        user = self.request.user
+        return Showcase.objects.filter(Q(project__id=self.kwargs['id']) & Q(Q(users=user) | Q(creator=user)))\
+                               .order_by("created_at")
     
     def perform_create(self, serializer):
         instance = serializer.save(project=self.get_project(),creator=self.request.user)

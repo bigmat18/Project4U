@@ -16,10 +16,8 @@ class ShowcaseWriteSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Showcase
-        fields = ["name", "users", "description", "color", "users_list"]
-        extra_kwargs = {
-            'users': {'write_only': True}
-        }
+        fields = ["id","name", "users", "description", "color", "users_list"]
+        extra_kwargs = {'users': {'write_only': True}}
 
 
 class ShowcaseReadSerializer(serializers.ModelSerializer):

@@ -36,10 +36,15 @@ class MessageAccessPolicy(AccessPolicy):
 
 
 class MessageFilter(filters.FilterSet):
+    gt_updated_at = filters.DateTimeFilter(method='get_gt_updated_at')
+    
     
     class Meta:
         model = Message
-        fields = ["type_message"]
+        fields = ["type_message", "gt_updated_at"]
+        
+    def get_gt_updated_at(self, queryset, name, value):
+        return queryset.filter(updated_at__gt=value)
     
 
 class MessageListView(generics.ListAPIView,
@@ -52,6 +57,8 @@ class MessageListView(generics.ListAPIView,
     E' possibile filtrare i tipi di messaggi scrivendo nell'url '?type_message=' ed accanto il tipo di messaggio
     fra TEXT, IDEA, EVENT, UPDATE, POLL. La lista che ritorna ritorna in ordine dall'utlimo messaggio scritto inoltre è organizzata
     in pagine da 25. Per cambiare pagina '?page=', per cambiare dimensioni pagine '?size='.
+    E' possibile filtrare tutti i messagi in modo che vengano restituiti solato quelli con una data seguente a quella
+    inviata nell'url tramite '?gt_updated_at='. La data deve essere formattata con il formato in cui viene inviato nelle response del backend.
     Ogni volta che si richiede la lista delle pagine tutti i messaggi in quella pagina vengono segnati come visualizzati dall'utente
     che ha effetuato la richiesta
     Soltato i partecipanti alla bacheca possono vedere la lista dei messaggi.
