@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from Core.models import Project, ShowcaseUpdate, AbstractCreateUpdate
+from Core.models import Project, AbstractCreateUpdate
+from .ShowcaseUpdate import ShowcaseUpdate
 from django.conf import settings
 import uuid
 
@@ -53,8 +54,10 @@ class Showcase(AbstractCreateUpdate):
                                                type_update=type_update,type_message="UPDATE")
         update.viewed_by.add(self.creator)
         
+        
     def setup_creator(self):
         if not self.users.filter(id=self.creator.id).exists():
             self.users.add(self.creator)
+      
         
     def __str__(self): return f"{self.project}-{self.name}"

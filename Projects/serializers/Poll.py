@@ -37,4 +37,4 @@ class PollWriteSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Poll
-        fields = ["id","anonymus_voters", "name", "text"]
+        fields = ["id","anonymus_voters", "name", "text", "updated_at"]

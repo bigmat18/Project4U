@@ -4,14 +4,15 @@ from Core.models import AbstractCreateUpdate
 from django.conf import settings
 import uuid
 
+class TypeMessage(models.TextChoices):
+    TEXT = "TEXT"
+    EVENT = "EVENT"
+    IDEA = "IDEA"
+    UPDATE = "UPDATE"
+    POLL = "POLL"
+
+
 class Message(AbstractCreateUpdate):
-    
-    class TypeMessage(models.TextChoices):
-        TEXT = "TEXT"
-        EVENT = "EVENT"
-        IDEA = "IDEA"
-        UPDATE = "UPDATE"
-        POLL = "POLL"
         
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     showcase = models.ForeignKey("Showcase",

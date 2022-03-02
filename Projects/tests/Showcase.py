@@ -14,6 +14,7 @@ class ShowcaseTestCase(BaseTestCase):
         self.baseSetup()
         self.project = Project.objects.create(name="test", 
                                               creator=self.user)
+        self.project.users.add(self.new_user)
         self.showcase = Showcase.objects.get(project=self.project,name="Generale")
 
     @tag('get','auth') 
@@ -39,6 +40,7 @@ class ShowcaseTestCase(BaseTestCase):
         
     @tag('get','unauth') 
     def test_showcase_list_unauth(self):
+        self.project.users.remove(self.new_user)
         self.client.force_authenticate(user=self.new_user)
         response = self.client.get(f'/api/projects/{self.project.id}/showcases/')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -55,9 +57,17 @@ class ShowcaseTestCase(BaseTestCase):
         response = self.client.post(f'/api/projects/{self.project.id}/showcases/',data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(len(response.data['users_list']), 1)
+        
+    @tag('post','auth')
+    def test_showcase_create_no_user_project_auth(self):
+        data = {'name':'test', "users": [str(self.new_user.id)]}
+        self.project.users.remove(self.new_user)
+        response = self.client.post(f'/api/projects/{self.project.id}/showcases/',data=data)
+        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @tag('post','unauth') 
     def test_showcase_create_unauth(self):
+        self.project.users.remove(self.new_user)
         self.client.force_authenticate(user=self.new_user)
         data = {'name':'test'}
         response = self.client.post(f'/api/projects/{self.project.id}/showcases/',data=data)
@@ -79,6 +89,13 @@ class ShowcaseTestCase(BaseTestCase):
         response = self.client.patch(f"/api/showcase/{self.showcase.id}/", data=data)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         self.assertEquals(ShowcaseUpdate.objects.all().count(), 1)
+        
+    @tag('patch','auth')
+    def test_showcase_update_no_user_project_auth(self):
+        data = {'name':'test', "users": [str(self.new_user.id)]}
+        self.project.users.remove(self.new_user)
+        response = self.client.patch(f"/api/showcase/{self.showcase.id}/",data=data)
+        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
         
     @tag('patch', 'unauth') 
     def test_showcase_update_unauth(self):

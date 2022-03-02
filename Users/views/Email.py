@@ -20,4 +20,4 @@ class EmailCreateView(generics.CreateAPIView,
                       viewsets.GenericViewSet):
     queryset = Email.objects.all()
     serializer_class = EmailSerializer
-    permission_classes = [HasAPIKey]
+    permission_classes = []

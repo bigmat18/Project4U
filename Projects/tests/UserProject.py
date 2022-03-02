@@ -69,5 +69,5 @@ class UserProjectTestCase(BaseTestCase):
         response = self.client.post(f"/api/projects/{self.project.id}/users/", data={"user":str(self.new_user.id)})
         general = Showcase.objects.get(project=self.project,name="Generale")
         idea = Showcase.objects.get(project=self.project,name="Idee")
-        self.assertEquals(general.users.filter(id=self.new_user.id).exists(), True)
-        self.assertEquals(idea.users.filter(id=self.new_user.id).exists(), True)
+        self.assertListEqual(list(general.users.all()), list(self.project.users.all()))
+        self.assertListEqual(list(idea.users.all()), list(self.project.users.all()))

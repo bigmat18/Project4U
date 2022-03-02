@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from Core.models import Skill, AbstractFile
 
-from ...management.scripts.generete_slug import generate_slug
+from ...management.scripts.generete_slug import generate_random_string
 from django.db.models import CheckConstraint, Q
 from django.db.models.functions import Now
 
@@ -28,7 +28,7 @@ class UserManager(BaseUserManager):
         user.last_name = last_name
         user.date_birth = date_birth
         user.date_joined = timezone.now()
-        user.secret_key = generate_slug(f"{user.first_name}_{user.last_name}#")
+        user.secret_key = generate_random_string()
         
         user.save(using=self._db)
         return user
@@ -43,22 +43,21 @@ class UserManager(BaseUserManager):
 def image_path(instance,path):
     return f"users/user-{instance.id}/user-image.jpg"
 
+class TypeUser(models.TextChoices):
+    BASE = 'Base'
+    VERIFIED = 'Verified'
+    INNOVATOR = 'Innovator'
+    
+class TypeVip(models.TextChoices):
+    FREE = 'FREE'
+    LV1 = 'LV1'
+    LV2 = 'LV2'
+    LV3 = 'LV3'
 
 class User(AbstractBaseUser, AbstractFile):
     __blocked_help_text   = "Indica se un utente è stato bloccato."
     __main_role_help_text = "Indica il ruolo principale dell'utente (32 caratteri max)"
     __description_help_text = "Descrizione dell'utente (256 caratteri max)"
-    
-    class TypeUser(models.TextChoices):
-        BASE = 'Base'
-        VERIFIED = 'Verified'
-        INNOVATOR = 'Innovator'
-    
-    class TypeVip(models.TextChoices):
-        FREE = 'FREE'
-        LV1 = 'LV1'
-        LV2 = 'LV2'
-        LV3 = 'LV3'
     
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     email = models.EmailField(_('email address'), blank=True, unique=True)
