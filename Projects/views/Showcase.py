@@ -1,11 +1,15 @@
+from cgitb import reset
+from django.forms import ValidationError
 from ..serializers import ShowcaseReadSerializer, ShowcaseWriteSerializer
 from rest_framework import generics, viewsets
-from Core.models import Showcase, Project
+from Core.models import Showcase, Project, UserProject
 from rest_access_policy import AccessPolicy
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
 from django.conf import settings
 from django.db.models import Q
+from rest_framework.response import Response
+from rest_framework import status
 
 
 class ShowcaseAccessPolicy(AccessPolicy):
@@ -85,11 +89,20 @@ class ShowcaseListCreateView(generics.ListCreateAPIView,
     
     def get_queryset(self):
         user = self.request.user
-        return Showcase.objects.filter(Q(project__id=self.kwargs['id']) & Q(Q(users=user) | Q(creator=user)))\
+        return Showcase.objects.filter(Q(project__id=self.kwargs['id']) & Q(users=user))\
                                .order_by("created_at")
+                               
+    def create(self, request, *args, **kwargs):
+        if "users" in self.request.data:
+            for user in dict(self.request.data)['users']:
+                if not UserProject.objects.filter(Q(project__id=self.kwargs['id']) & Q(user=user)).exists():
+                    return Response(status=status.HTTP_400_BAD_REQUEST, 
+                                    data={"Error":"Uno o più utenti non fanno parte del progetto"})
+        return super().create(request, *args, **kwargs)
     
     def perform_create(self, serializer):
-        instance = serializer.save(project=self.get_project(),creator=self.request.user)
+        instance = serializer.save(project=self.get_project(),
+                                   creator=self.request.user)
         instance.users.add(self.request.user)
         
         
@@ -134,6 +147,24 @@ class ShowcaseRUDView(generics.RetrieveUpdateDestroyAPIView,
             return ShowcaseReadSerializer
         if self.action == "update" or self.action == "partial_update":
             return ShowcaseWriteSerializer
+        
+    def update(self, request, *args, **kwargs):
+        response = self.check_users_in_project(request)
+        if response is not None and response.status_code  == status.HTTP_400_BAD_REQUEST: return response
+        return super().update(request, *args, **kwargs)
+    
+    def partial_update(self, request, *args, **kwargs):
+        response = self.check_users_in_project(request)
+        if response is not None and response.status_code  == status.HTTP_400_BAD_REQUEST: return response
+        return super().partial_update(request, *args, **kwargs)
+    
+    
+    def check_users_in_project(self, request):
+        if "users" in request.data:
+            for user in dict(request.data)['users']:
+                if not UserProject.objects.filter(Q(project__id=self.kwargs['id']) & Q(user=user)).exists():
+                    return Response(status=status.HTTP_400_BAD_REQUEST, 
+                                    data={"Error":"Uno o più utenti non fanno parte del progetto"})
     
     def perform_update(self, serializer):
         instance = serializer.save()

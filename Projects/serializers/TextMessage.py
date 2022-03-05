@@ -13,4 +13,4 @@ class TextMessageSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = TextMessage
-        fields = ["id","text", "files"]
+        fields = ["id","text", "files", "updated_at"]

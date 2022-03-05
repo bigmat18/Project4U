@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from django.test import TestCase
 from Core.models import Project, User, Showcase, ShowcaseUpdate, TextMessage
 from django.test import tag
@@ -21,6 +22,8 @@ class ShowcaseModelTestCase(TestCase):
 
 
     def test_showcase_update(self):
+        self.project.users.add(self.new_user)
+        self.project.save()
         self.showcase.creator = self.new_user
         self.showcase.save()
         self.assertEqual(self.showcase.users\
@@ -37,3 +40,13 @@ class ShowcaseModelTestCase(TestCase):
         message = TextMessage.objects.create(text="test",author=self.user,
                                              showcase=self.showcase)
         self.assertEquals(message.viewed_by.all().count(), 1)
+        
+        
+    def test_message_creation_not_inside_showcase(self):
+        with self.assertRaises(IntegrityError):
+            TextMessage.objects.create(showcase=self.showcase,text="test",author=self.new_user)
+         
+         
+    def test_showcase_creation_not_inside_project(self):
+        with self.assertRaises(IntegrityError):
+            Showcase.objects.create(project=self.project, name="test3", creator=self.new_user)

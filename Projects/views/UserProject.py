@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import generics, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
-from Core.models import UserProject, Project, Showcase
+from Core.models import UserProject, Project
 from ..serializers import UserProjectUpdateSerializer, UserProjectListSerializer
 from django.db import IntegrityError
 from rest_framework import status
@@ -72,23 +72,16 @@ class UserProjectListCreateView(generics.ListCreateAPIView,
     
     def get_queryset(self):
         project_id = self.kwargs['id']
-        return UserProject.objects.filter(project=project_id)
+        return UserProject.objects.filter(project=project_id)\
+                                  .order_by("-updated_at")
     
     def perform_create(self, serializer):
         project_id = self.kwargs['id']
         project = get_object_or_404(Project, id=project_id)
-        try: 
-            instance = serializer.save(project=project)
-            self.update_defaults_showcase(project, instance.user)
+        try: serializer.save(project=project)
         except IntegrityError:
             raise ValidationError(code=status.HTTP_400_BAD_REQUEST, 
                                   detail={"Error":"Utente già aggiunto al progetto"})
-            
-    def update_defaults_showcase(self, project, user):
-        general = get_object_or_404(Showcase, project=project, name="Generale")
-        idea = get_object_or_404(Showcase, project=project, name="Idee")
-        general.users.add(user)
-        idea.users.add(user)
 
 
 

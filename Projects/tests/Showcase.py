@@ -14,14 +14,14 @@ class ShowcaseTestCase(BaseTestCase):
         self.baseSetup()
         self.project = Project.objects.create(name="test", 
                                               creator=self.user)
+        self.project.users.add(self.new_user)
+        self.project.save()
         self.showcase = Showcase.objects.get(project=self.project,name="Generale")
 
     @tag('get','auth') 
     def test_showcase_list_auth(self):
         response = self.client.get(f'/api/projects/{self.project.id}/showcases/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.project.users.add(self.new_user)
-        self.project.save()
         self.client.force_authenticate(user=self.new_user)
         response = self.client.get(f'/api/projects/{self.project.id}/showcases/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -39,6 +39,7 @@ class ShowcaseTestCase(BaseTestCase):
         
     @tag('get','unauth') 
     def test_showcase_list_unauth(self):
+        self.project.users.remove(self.new_user)
         self.client.force_authenticate(user=self.new_user)
         response = self.client.get(f'/api/projects/{self.project.id}/showcases/')
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -49,15 +50,21 @@ class ShowcaseTestCase(BaseTestCase):
         response = self.client.post(f'/api/projects/{self.project.id}/showcases/',data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(len(response.data['users_list']), 2)
-        self.project.users.add(self.new_user)
-        self.project.save()
         self.client.force_authenticate(user=self.new_user)
         response = self.client.post(f'/api/projects/{self.project.id}/showcases/',data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(len(response.data['users_list']), 1)
+        
+    @tag('post','auth')
+    def test_showcase_create_no_user_project_auth(self):
+        data = {'name':'test', "users": [str(self.new_user.id)]}
+        self.project.users.remove(self.new_user)
+        response = self.client.post(f'/api/projects/{self.project.id}/showcases/',data=data)
+        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     @tag('post','unauth') 
     def test_showcase_create_unauth(self):
+        self.project.users.remove(self.new_user)
         self.client.force_authenticate(user=self.new_user)
         data = {'name':'test'}
         response = self.client.post(f'/api/projects/{self.project.id}/showcases/',data=data)
@@ -65,6 +72,8 @@ class ShowcaseTestCase(BaseTestCase):
       
     @tag('get', 'auth')  
     def test_message_viewed_by_auth(self):
+        self.showcase.users.add(self.new_user), 
+        self.showcase.save()
         TextMessage.objects.create(text='test',showcase=self.showcase,author=self.new_user)
         response = self.client.get(f'/api/projects/{self.project.id}/showcases/')
         self.assertEqual(list(response.data)[0]["notify"], 1)
@@ -79,6 +88,13 @@ class ShowcaseTestCase(BaseTestCase):
         response = self.client.patch(f"/api/showcase/{self.showcase.id}/", data=data)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         self.assertEquals(ShowcaseUpdate.objects.all().count(), 1)
+        
+    @tag('patch','auth')
+    def test_showcase_update_no_user_project_auth(self):
+        data = {'name':'test', "users": [str(self.new_user.id)]}
+        self.project.users.remove(self.new_user)
+        response = self.client.patch(f"/api/showcase/{self.showcase.id}/",data=data)
+        self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
         
     @tag('patch', 'unauth') 
     def test_showcase_update_unauth(self):
@@ -108,6 +124,6 @@ class ShowcaseTestCase(BaseTestCase):
         
     @tag('get', 'auth')   
     def test_showcase_list_not_inside_auth(self):
-        showcase = Showcase.objects.create(project=self.project, creator=self.new_user, name="test")
+        Showcase.objects.create(project=self.project, creator=self.new_user, name="test")
         response = self.client.get(f'/api/projects/{self.project.id}/showcases/')
         self.assertEquals(len(response.data), 2)
