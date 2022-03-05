@@ -1,7 +1,8 @@
+from gc import get_objects
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, viewsets
 from ..serializers import EventWriteSerializer, EventReadSerializer, EventTaskSerializer
-from Core.models import Event, EventTask, Showcase
+from Core.models import Event, EventTask, Showcase, Project
 from rest_framework.response import Response
 from rest_framework import status
 from rest_access_policy import AccessPolicy
@@ -9,10 +10,17 @@ from rest_access_policy import AccessPolicy
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
 from django.conf import settings
+from django.db.models import Q
 
 
 class EventAccessPolicy(AccessPolicy):
     statements = [
+        {
+            "action": ["list"],
+            "principal": "*",
+            "effect": "allow",
+            "condition": "is_inside_project"
+        },
         {
             "action": ["create"],
             "principal": "*",
@@ -26,6 +34,11 @@ class EventAccessPolicy(AccessPolicy):
             "condition": ["is_author"]
         }
     ]
+    
+    def is_inside_project(self, request, view, action) -> bool:
+        project = view.get_object()
+        return (request.user == project.creator or 
+                project.users.filter(id=request.user.id).exists())
     
     def is_author(self, request, view, action) -> bool:
         event = view.get_object()
@@ -149,6 +162,7 @@ class EventTaskCreateView(generics.CreateAPIView,
     
     Crea una o più task legate all'evento di cui è stato passato l'id nell'url.
     Soltato si si è i creatori dell'evento si possono creare task.
+    E' possibile anche mandare una lista di task scrivendo [{dati task..},{....}]
     """
     serializer_class = EventTaskSerializer
     queryset = EventTask.objects.all()
@@ -202,3 +216,47 @@ class EventTaskUpdateDestroyView(generics.UpdateAPIView,
     lookup_field = "id"
     permission_classes = [IsAuthenticated, EventTaskAccessPolicy]
     if not settings.DEBUG: permission_classes.append(HasAPIKey)
+    
+    
+    
+class EventInProjectListView(generics.ListAPIView,
+                             viewsets.GenericViewSet):
+    """
+    list:
+    Restituisce liste eventi per progetto.
+    
+    Restituisce una lista di tutti gli eventi del proggetto per il quale è stato
+    passato l'id nell'url ed in cui l'utente che ha fatto la richiesta è fra i partecipanti oppure
+    è il creatore.
+    Soltato se si è dentro il progetto si può effettuare questa richiesta
+    """
+    serializer_class = EventReadSerializer
+    permission_classes = [IsAuthenticated, EventAccessPolicy]
+    if not settings.DEBUG: permission_classes.append(HasAPIKey)
+    
+    def get_object(self):
+        return get_object_or_404(Project, id=self.kwargs['id'])
+    
+    def get_queryset(self):
+        return Event.objects.filter(showcase__project__id=self.kwargs['id'])\
+                            .filter(Q(partecipants=self.request.user) | Q(author=self.request.user))\
+                            .order_by("started_at")
+    
+
+class EventForUserListView(generics.ListAPIView,
+                           viewsets.GenericViewSet):
+    """
+    list:
+    Restituisce una lista di tutti gli eventi di un utente.
+    
+    Restituisce una lista con tutti gli eventi di tutti i progetti dell'utente loggato (in cui l'utente
+    è o un partecipante dell'evento oppure è il creatore).
+    Per effettuare questa richiesta è sufficente essere loggato.
+    """
+    serializer_class = EventReadSerializer
+    permission_classes = [IsAuthenticated]
+    if not settings.DEBUG: permission_classes.append(HasAPIKey)
+    
+    def get_queryset(self):
+        return Event.objects.filter(Q(partecipants=self.request.user) | Q(author=self.request.user))\
+                            .order_by("started_at")

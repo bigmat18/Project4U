@@ -6,5 +6,9 @@ from .Showcase import ShowcaseListCreateView, ShowcaseRUDView
 from .Message import MessageListView, TextMessageCreateView, MessageFileCreateView
 
 from .ProjectTag import ProjectTagCreateView
-from .Event import EventCreateView, EventUpdateDestroyView, EventTaskCreateView, EventTaskUpdateDestroyView
-from .Poll import PollCreateView, PollUpdateDestroyView, PollOptionCreateView, PollOptionUpdateDestroyView, PollOptionVotesAPIView
+from .Event import (EventCreateView, EventUpdateDestroyView, 
+                    EventTaskCreateView, EventTaskUpdateDestroyView, 
+                    EventInProjectListView, EventForUserListView)
+from .Poll import (PollCreateView, PollUpdateDestroyView, 
+                   PollOptionCreateView, PollOptionUpdateDestroyView, 
+                   PollOptionVotesAPIView)
