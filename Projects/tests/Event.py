@@ -40,6 +40,8 @@ class EventTestCase(BaseTestCase):
     
     @tag("get", "auth")   
     def test_event_in_project_auth(self):
+        self.project.users.add(self.new_user), self.project.save()
+        self.showcase.users.add(self.new_user), self.showcase.save()
         Event.objects.create(started_at=timezone.now(),ended_at=timezone.now() + datetime.timedelta(days=1),
                             author=self.new_user,type_message="EVENT",showcase=self.showcase)
         event = Event.objects.create(started_at=timezone.now(),ended_at=timezone.now() + datetime.timedelta(days=1),
@@ -56,6 +58,8 @@ class EventTestCase(BaseTestCase):
     
     @tag("get", "auth")
     def test_event_for_user_auth(self):
+        self.project.users.add(self.new_user), self.project.save()
+        self.showcase.users.add(self.new_user), self.showcase.save()
         Event.objects.create(started_at=timezone.now(),ended_at=timezone.now() + datetime.timedelta(days=1),
                             author=self.new_user,type_message="EVENT",showcase=self.showcase)
         response = self.client.get(f"/api/user/events/")

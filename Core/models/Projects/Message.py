@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import IntegrityError, models
 from django.utils.translation import gettext_lazy as _
 from Core.models import AbstractCreateUpdate
 from django.conf import settings
@@ -13,7 +13,6 @@ class TypeMessage(models.TextChoices):
 
 
 class Message(AbstractCreateUpdate):
-        
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     showcase = models.ForeignKey("Showcase",
                                  on_delete=models.CASCADE,
@@ -37,6 +36,8 @@ class Message(AbstractCreateUpdate):
         verbose_name_plural = _("Messages")
         
     def save(self, *args, **kwargs):
+        if self.showcase.creator != self.author and not self.showcase.users.filter(id=self.author.id).exists():
+            raise IntegrityError("L'autore di un messaggio deve far parte della bacheca")
         message = super().save(*args,**kwargs)
         if not self.viewed_by.filter(id=self.author.id).exists():
             self.viewed_by.add(self.author)

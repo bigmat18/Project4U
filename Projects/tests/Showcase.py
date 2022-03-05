@@ -15,14 +15,13 @@ class ShowcaseTestCase(BaseTestCase):
         self.project = Project.objects.create(name="test", 
                                               creator=self.user)
         self.project.users.add(self.new_user)
+        self.project.save()
         self.showcase = Showcase.objects.get(project=self.project,name="Generale")
 
     @tag('get','auth') 
     def test_showcase_list_auth(self):
         response = self.client.get(f'/api/projects/{self.project.id}/showcases/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.project.users.add(self.new_user)
-        self.project.save()
         self.client.force_authenticate(user=self.new_user)
         response = self.client.get(f'/api/projects/{self.project.id}/showcases/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -51,8 +50,6 @@ class ShowcaseTestCase(BaseTestCase):
         response = self.client.post(f'/api/projects/{self.project.id}/showcases/',data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(len(response.data['users_list']), 2)
-        self.project.users.add(self.new_user)
-        self.project.save()
         self.client.force_authenticate(user=self.new_user)
         response = self.client.post(f'/api/projects/{self.project.id}/showcases/',data=data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -75,6 +72,8 @@ class ShowcaseTestCase(BaseTestCase):
       
     @tag('get', 'auth')  
     def test_message_viewed_by_auth(self):
+        self.showcase.users.add(self.new_user), 
+        self.showcase.save()
         TextMessage.objects.create(text='test',showcase=self.showcase,author=self.new_user)
         response = self.client.get(f'/api/projects/{self.project.id}/showcases/')
         self.assertEqual(list(response.data)[0]["notify"], 1)
@@ -125,6 +124,6 @@ class ShowcaseTestCase(BaseTestCase):
         
     @tag('get', 'auth')   
     def test_showcase_list_not_inside_auth(self):
-        showcase = Showcase.objects.create(project=self.project, creator=self.new_user, name="test")
+        Showcase.objects.create(project=self.project, creator=self.new_user, name="test")
         response = self.client.get(f'/api/projects/{self.project.id}/showcases/')
         self.assertEquals(len(response.data), 2)

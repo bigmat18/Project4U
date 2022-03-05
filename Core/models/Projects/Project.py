@@ -1,8 +1,8 @@
-from re import A
 from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from Core.models import (AbstractCreateUpdate, ProjectTag, AbstractFile)
+from .Showcase import Showcase
 
 from django.db.models import CheckConstraint, Q, F
 from django.db.models.functions import Now
@@ -72,7 +72,6 @@ class Project(AbstractFile,AbstractCreateUpdate):
         return project
     
     def setup_default_showcase(self):
-        from .Showcase import Showcase
         if not Showcase.objects.filter(project=self,name="Generale").exists():
             Showcase.objects.create(name="Generale",creator=self.creator,project=self)
         if not Showcase.objects.filter(project=self,name="Idee").exists():

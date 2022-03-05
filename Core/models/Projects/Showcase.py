@@ -1,6 +1,6 @@
-from django.db import models
+from django.db import IntegrityError, models
 from django.utils.translation import gettext_lazy as _
-from Core.models import Project, AbstractCreateUpdate
+from Core.models import AbstractCreateUpdate
 from .ShowcaseUpdate import ShowcaseUpdate
 from django.conf import settings
 import uuid
@@ -11,7 +11,7 @@ class Showcase(AbstractCreateUpdate):
     name = models.CharField(_("name"),max_length=64)
     description = models.TextField(_("description"),max_length=516,null=True,blank=True)
     color = models.CharField(max_length=16, blank=True, null=True)
-    project = models.ForeignKey(Project,
+    project = models.ForeignKey("Project",
                                 on_delete=models.CASCADE,
                                 related_name="showcases",
                                 related_query_name="showcases")
@@ -32,12 +32,16 @@ class Showcase(AbstractCreateUpdate):
         
         
     def save(self,*args, **kwargs):
-        if not self._state.adding:
-            self.check_showcase_update()
+        self.check_creator_inside_project()
+        if not self._state.adding: self.check_showcase_update()
         showcase = super().save(*args,**kwargs)
         self.setup_creator()
         return showcase
-            
+    
+    def check_creator_inside_project(self):
+        if (self.project.creator != self.creator and not self.project.users.filter(id=self.creator.id).exists()
+            and self.name != "Generale" and self.name != "Idee"):
+            raise IntegrityError("Il creatore della bacheca deve far parte del progetto")
             
     def check_showcase_update(self):
         pre_save_showcase = Showcase.objects.get(id=self.id)
