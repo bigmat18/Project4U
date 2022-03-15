@@ -103,8 +103,7 @@ class UserProjectsListView(generics.ListAPIView,
     queryset = Project.objects.all()
     
     def get_queryset(self):
-        return Project.objects.filter(Q(creator=self.request.user.id) | 
-                                      Q(users=self.request.user.id))
+        return Project.objects.filter(users=self.request.user.id)
     
 
 
