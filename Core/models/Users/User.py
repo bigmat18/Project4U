@@ -1,10 +1,11 @@
+from statistics import mode
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from Core.models import Skill, AbstractFile
 
-from ...management.scripts.generete_slug import generate_random_string
+from ...management.scripts.generete_slug import generate_random_string, generate_slug
 from django.db.models import CheckConstraint, Q
 from django.db.models.functions import Now
 
@@ -29,6 +30,7 @@ class UserManager(BaseUserManager):
         user.date_birth = date_birth
         user.date_joined = timezone.now()
         user.secret_key = generate_random_string()
+        user.slug = generate_slug(f"{user.first_name}-{user.last_name}-")
         
         user.save(using=self._db)
         return user
@@ -104,6 +106,7 @@ class User(AbstractBaseUser, AbstractFile):
                                     through_fields=('user','skill'),
                                     related_name="users",
                                     related_query_name="users")
+    slug = models.SlugField(blank=True, editable=False, unique=True)
     secret_key = models.SlugField(_("secret key"), editable=False, 
                                   unique=True,blank=True)
     
