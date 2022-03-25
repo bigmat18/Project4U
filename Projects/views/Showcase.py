@@ -1,6 +1,4 @@
-from cgitb import reset
-from django.forms import ValidationError
-from ..serializers import ShowcaseReadSerializer, ShowcaseWriteSerializer
+from ..serializers import ShowcaseReadSerializer, ShowcaseWriteSerializer, CustomShowcaseSerializer
 from rest_framework import generics, viewsets
 from Core.models import Showcase, Project, UserProject
 from rest_access_policy import AccessPolicy
@@ -74,7 +72,7 @@ class ShowcaseListCreateView(generics.ListCreateAPIView,
     L'ultimo messaggio può essere un messaggio testuale, un aggiornameto della bacheca ma NON un evento.
     """
     queryset = Showcase.objects.all()
-    permission_classes = [IsAuthenticated, ShowcaseAccessPolicy]
+    permission_classes = [IsAuthenticated]
     if not settings.DEBUG: permission_classes.append(HasAPIKey)
     
     def get_serializer_class(self, *args, **kwargs):
@@ -89,8 +87,15 @@ class ShowcaseListCreateView(generics.ListCreateAPIView,
     
     def get_queryset(self):
         user = self.request.user
-        return Showcase.objects.filter(Q(project__id=self.kwargs['id']) & Q(users=user))\
+        return Showcase.objects.select_related('project')\
+                               .prefetch_related('users')\
+                               .filter(Q(project__id=self.kwargs['id']) & Q(users=user))\
                                .order_by("created_at")
+                               
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = CustomShowcaseSerializer(queryset,request,many=True)
+        return Response(serializer.data)
                                
     def create(self, request, *args, **kwargs):
         if "users" in self.request.data:
@@ -147,6 +152,11 @@ class ShowcaseRUDView(generics.RetrieveUpdateDestroyAPIView,
             return ShowcaseReadSerializer
         if self.action == "update" or self.action == "partial_update":
             return ShowcaseWriteSerializer
+        
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = CustomShowcaseSerializer(instance=instance,request=request)
+        return Response(serializer.data)
         
     def update(self, request, *args, **kwargs):
         response = self.check_users_in_project(request)

@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from Core.models import Event, EventTask, User
 
-
 class EventPartecipantsSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -21,11 +20,13 @@ class EventReadSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Event
-        fields = ["id","started_at","ended_at","description","partecipants","tasks","image", "name"]
+        fields = ["id","started_at","ended_at","description",
+                  "partecipants","tasks","image", "name"]
         
       
 class EventWriteSerializer(serializers.ModelSerializer):    
     class Meta:
         model = Event
-        fields = ["started_at","ended_at","description","partecipants","id", "updated_at","image", "name"]
+        fields = ["started_at","ended_at","description",
+                  "partecipants","id", "updated_at","image", "name"]
         
