@@ -18,6 +18,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='user',
             name='slug',
-            field=models.SlugField(blank=True, editable=False, unique=True),
+            field=models.SlugField(blank=True, editable=False),
         ),
     ]
