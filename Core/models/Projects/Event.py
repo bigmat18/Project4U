@@ -28,6 +28,7 @@ class Event(Message, AbstractFile):
                                           related_query_name="events",
                                           help_text=__partecipants_help_text,
                                           blank=True)
+    name = models.CharField(_("name"),max_length=64,null=True,default=None)
     description = models.TextField(_("description"),null=True, blank=True)
     message = models.OneToOneField(Message, 
                                    on_delete=models.CASCADE,

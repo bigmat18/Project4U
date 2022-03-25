@@ -73,7 +73,6 @@ class MessageListView(generics.ListAPIView,
     permission_classes = [IsAuthenticated, MessageAccessPolicy]
     if not settings.DEBUG: permission_classes.append(HasAPIKey)
 
-    
     def get_showcase(self):
         showcase_id = self.kwargs['id']
         return generics.get_object_or_404(Showcase, id=showcase_id)
@@ -82,7 +81,6 @@ class MessageListView(generics.ListAPIView,
         return Message.objects.filter(showcase=self.get_showcase())\
                               .select_related('text_message','event','showcase_update','poll')\
                               .order_by("-updated_at")
-                              
                               
     def set_message_visualize(self, messages):
         for message in messages:

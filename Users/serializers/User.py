@@ -9,7 +9,7 @@ from Users.serializers import (UserSkillListSerializer,
 class UsersListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id","secret_key", "first_name", "last_name", "image"]
+        fields = ["id","slug", "first_name", "last_name", "image"]
 
 
 class UsersDetailsSerializer(serializers.ModelSerializer):
@@ -20,10 +20,10 @@ class UsersDetailsSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        read_only_fields = ["secret_key", "blocked"]
+        read_only_fields = ["blocked", "slug"]
         exclude = ["active", "password", "date_joined", 
-            "last_login","username","admin", "user_saved",
-            "project_saved","type_vip"]
+                   "last_login","username","admin", "user_saved",
+                   "project_saved","type_vip","secret_key"]
         
 
 class CurrentUserDetailsSerializer(UsersDetailsSerializer):
@@ -31,9 +31,9 @@ class CurrentUserDetailsSerializer(UsersDetailsSerializer):
     
     class Meta:
         model = User
-        read_only_fields = ["secret_key", "blocked"]
+        read_only_fields = ["secret_key", "blocked", "slug"]
         exclude = ["active", "password", "date_joined", 
-            "last_login","username","admin"]
+                   "last_login","username","admin"]
         
         
 class CurrentUserImageSerializer(serializers.ModelSerializer):
@@ -47,5 +47,5 @@ class CurrentUserInfoSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ["id", "secret_key", "image", "first_name", 
-                  "last_name", "date_birth", "type_vip", "type_user"]
+        fields = ["id","image", "first_name","last_name", 
+                  "date_birth", "type_vip", "type_user"]

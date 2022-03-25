@@ -5,7 +5,7 @@ from Core.models import Poll, PollOption, User
 class PollOptionVotesSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'id', 'secret_key', 'image']
+        fields = ['first_name', 'last_name', 'id', 'slug', 'image']
 
 
 class PollOptionSerializer(serializers.ModelSerializer):
