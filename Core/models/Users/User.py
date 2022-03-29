@@ -106,7 +106,7 @@ class User(AbstractBaseUser, AbstractFile):
                                     through_fields=('user','skill'),
                                     related_name="users",
                                     related_query_name="users")
-    slug = models.SlugField(blank=True, editable=False, unique=True)
+    slug = models.SlugField(blank=True, editable=False)
     secret_key = models.SlugField(_("secret key"), editable=False, 
                                   unique=True,blank=True)
     

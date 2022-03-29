@@ -157,6 +157,7 @@ class Migration(migrations.Migration):
             name='Event',
             fields=[
                 ('image', models.ImageField(blank=True, max_length=1000, null=True, upload_to=Core.models.Projects.Event.image_path, verbose_name='image')),
+                ('name', models.CharField(default=None, max_length=64, null=True, verbose_name='name')),
                 ('started_at', models.DateTimeField(help_text='Data inizio evento', verbose_name='started at')),
                 ('ended_at', models.DateTimeField(help_text='Data fine evento', verbose_name='ended at')),
                 ('description', models.TextField(blank=True, null=True, verbose_name='description')),
@@ -232,6 +233,7 @@ class Migration(migrations.Migration):
                 ('type_vip', models.CharField(choices=[('FREE', 'Free'), ('LV1', 'Lv1'), ('LV2', 'Lv2'), ('LV3', 'Lv3')], default='FREE', max_length=64, verbose_name='type vip')),
                 ('description', models.TextField(blank=True, help_text="Descrizione dell'utente (256 caratteri max)", max_length=256, null=True, verbose_name='description')),
                 ('location', models.CharField(blank=True, max_length=32, null=True, verbose_name='location')),
+                ('slug', models.SlugField(blank=True, editable=False)),
                 ('secret_key', models.SlugField(blank=True, editable=False, unique=True, verbose_name='secret key')),
                 ('project_saved', models.ManyToManyField(blank=True, related_name='saved_by', related_query_name='saved_by', to='Core.Project')),
                 ('skills', models.ManyToManyField(related_name='users', related_query_name='users', through='Core.UserSkill', to='Core.Skill')),

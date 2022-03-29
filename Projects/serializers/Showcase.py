@@ -87,7 +87,6 @@ class CustomShowcaseSerializer():
     def get_messages_queryset(self, showcase) -> QueryDict:
         return Message.objects.filter(Q(showcase=showcase))\
                               .select_related('author','text_message','event','showcase_update','poll')\
-                              .prefetch_related('event__tasks', 'text_message__files')\
                               .order_by("updated_at")
         
     def get_last_message_serializer(self, messages: QueryDict) -> MessageSerializer:
