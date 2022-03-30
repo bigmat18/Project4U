@@ -87,6 +87,9 @@ class UsersListView(generics.ListAPIView,
     Ritorna una lista di tutti gli utente salvati nel DB in un formato ridotto. E' necessario
     essere autenticati per ricere una risposta. Questo endpotins servità quando ci sarà
     la sezione dedica alla ricerca di persone da aggiungere a progetti.
+    E' possibile filtrare gli utenti per una o più skills aggiungendo in fondo all'url '?skills=id,lv-min,lv-ax' dove al
+    posto di id si inserisce l'id di una skill, al posto di lv-min il livello minimo che deve avere l'utente e al posto di lv-max
+    il livello massimo. E' possibile inoltre filtrare per più skills in questo caso inserire nell'url '?skills=id,lv-min,lv-ax&skills=id,lv-min,lv-max&...' 
     """
     serializer_class = UsersListSerializer
     filterset_class = UserFilter
