@@ -24,7 +24,7 @@ class SkillTestCase(BaseTestCase):
     def test_skill_create_auth(self):
          response = self.client.post("/api/skills/", data={"name":"prova"})
          self.assertEqual(response.status_code,status.HTTP_201_CREATED)
-        
+
 
 @tag('Users', 'user-skills-tests')
 class UserSkillTestCase(BaseTestCase):

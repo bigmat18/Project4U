@@ -72,7 +72,7 @@ class ShowcaseListCreateView(generics.ListCreateAPIView,
     L'ultimo messaggio può essere un messaggio testuale, un aggiornameto della bacheca ma NON un evento.
     """
     queryset = Showcase.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, ShowcaseAccessPolicy]
     if not settings.DEBUG: permission_classes.append(HasAPIKey)
     
     def get_serializer_class(self, *args, **kwargs):
@@ -87,8 +87,7 @@ class ShowcaseListCreateView(generics.ListCreateAPIView,
     
     def get_queryset(self):
         user = self.request.user
-        return Showcase.objects.select_related('project')\
-                               .prefetch_related('users')\
+        return Showcase.objects.prefetch_related('users')\
                                .filter(Q(project__id=self.kwargs['id']) & Q(users=user))\
                                .order_by("created_at")
                                

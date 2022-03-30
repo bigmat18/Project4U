@@ -7,10 +7,12 @@ import uuid
 
 
 class Showcase(AbstractCreateUpdate):
+    __default_help_text = _("Indica se una bacheca è default o meno")
     id = models.UUIDField(primary_key=True,default=uuid.uuid4,editable=False)
     name = models.CharField(_("name"),max_length=64)
     description = models.TextField(_("description"),max_length=516,null=True,blank=True)
     color = models.CharField(max_length=16, blank=True, null=True)
+    default = models.BooleanField(default=False,help_text=__default_help_text)
     project = models.ForeignKey("Project",
                                 on_delete=models.CASCADE,
                                 related_name="showcases",
@@ -39,8 +41,8 @@ class Showcase(AbstractCreateUpdate):
         return showcase
     
     def check_creator_inside_project(self):
-        if (self.project.creator != self.creator and not self.project.users.filter(id=self.creator.id).exists()
-            and self.name != "Generale" and self.name != "Idee"):
+        if (not self.project.users.filter(id=self.creator.id).exists()
+            and not self.default and self.project.creator != self.creator):
             raise IntegrityError("Il creatore della bacheca deve far parte del progetto")
             
     def check_showcase_update(self):

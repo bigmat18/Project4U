@@ -1,4 +1,5 @@
 from rest_framework import response, status
+from Core.models.Users.Skill import Skill, UserSkill
 from Core.tests import BaseTestCase
 from Core.models import Project, UserProject
 from django.test import tag
@@ -71,3 +72,23 @@ class UserTestCase(BaseTestCase):
         response = self.client.get('/api/user/info/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(dict(response.data)['id'], str(self.user.id))
+    
+    @tag('get', 'auth')
+    def test_user_filter(self):
+        skill1 = Skill.objects.create(name="test1")
+        UserSkill.objects.create(user=self.user, skill=skill1, level=2)
+        
+        skill2 = Skill.objects.create(name="test2")
+        UserSkill.objects.create(user=self.user, skill=skill2, level=4)
+        
+        skill3 = Skill.objects.create(name="test3")
+        UserSkill.objects.create(user=self.user, skill=skill3, level=1)
+        
+        response = self.client.get(f'/api/users/?skills={skill1.id},1,3')
+        self.assertEquals(len(list(response.data)),1)
+        
+        response = self.client.get(f'/api/users/?skills={skill1.id},1,3&skills={skill2.id},1,2')
+        self.assertEquals(len(list(response.data)),0)
+        
+        response = self.client.get(f'/api/users/?skills={skill1.id},1,3&skills={skill2.id},2,5')
+        self.assertEquals(len(list(response.data)),1)

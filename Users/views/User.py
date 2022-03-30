@@ -1,9 +1,9 @@
-import imp
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+from Core.models.Users.Skill import UserSkill
 from Users.serializers import (UsersDetailsSerializer, UsersListSerializer,
                                CurrentUserInfoSerializer, CurrentUserImageSerializer)
 from Projects.serializers import ProjectListSerializer
@@ -13,10 +13,28 @@ from Core.models import User, Project
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 from django.utils.decorators import method_decorator
-from django.db.models import Q
+from django.db.models import OuterRef, Subquery, Prefetch, Q, Value, IntegerField
+import django_filters as filters
 
 
-                    
+
+class UserFilter(filters.FilterSet):
+    skills = filters.CharFilter(method='get_skills')
+    
+    class Meta:
+        model = User
+        fields = ["skills"]
+        
+    def get_skills(self, queryset, name, value):
+        queryset = queryset.annotate(similarity=Value(0, output_field=IntegerField()))
+        for skill in dict(self.data)['skills']:
+            skill = skill.split(',')
+            queryset = queryset.filter(Q(skills__id=skill[0]) & 
+                                       Q(user_skill__level__gte=skill[1]) & 
+                                       Q(user_skill__level__lte=skill[2]))
+        return queryset
+
+
 class UserRetrieveUpdateView(UserDetailsView,
                              viewsets.GenericViewSet):    
     """
@@ -69,9 +87,21 @@ class UsersListView(generics.ListAPIView,
     Ritorna una lista di tutti gli utente salvati nel DB in un formato ridotto. E' necessario
     essere autenticati per ricere una risposta. Questo endpotins servità quando ci sarà
     la sezione dedica alla ricerca di persone da aggiungere a progetti.
+    E' possibile filtrare gli utenti per una o più skills aggiungendo in fondo all'url '?skills=id,lv-min,lv-ax' dove al
+    posto di id si inserisce l'id di una skill, al posto di lv-min il livello minimo che deve avere l'utente e al posto di lv-max
+    il livello massimo. E' possibile inoltre filtrare per più skills in questo caso inserire nell'url '?skills=id,lv-min,lv-ax&skills=id,lv-min,lv-max&...' 
     """
     serializer_class = UsersListSerializer
+    filterset_class = UserFilter
     queryset = User.objects.filter(active=True)
+    
+    def get_queryset(self):
+        query = Subquery(UserSkill.objects.filter(user_id=OuterRef("user_id")).order_by('-level').values_list('pk')[:3])
+        return User.objects.filter(Q(active=True) & Q(blocked=False))\
+                           .prefetch_related(Prefetch('user_skill', queryset=UserSkill.objects.filter(pk__in=query)\
+                                                                                              .select_related('skill')
+                                                                                              .order_by('-level')))
+    
 
 
 

@@ -64,10 +64,9 @@ class SkillListView(generics.ListAPIView,
     """
     serializer_class = SkillSerializer
     queryset = Skill.objects.all()
+    filterset_class = SkillFilter
     permission_classes = [SkillAccessPolicy]
     if not settings.DEBUG: permission_classes.append(HasAPIKey)
-    
-    filterset_class = SkillFilter
 
 
 
