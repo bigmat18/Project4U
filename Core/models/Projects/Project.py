@@ -1,3 +1,4 @@
+from email.policy import default
 from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
@@ -73,9 +74,11 @@ class Project(AbstractFile,AbstractCreateUpdate):
     
     def setup_default_showcase(self):
         if not Showcase.objects.filter(project=self,name="Generale").exists():
-            Showcase.objects.create(name="Generale",creator=self.creator,project=self)
+            Showcase.objects.create(name="Generale",creator=self.creator,
+                                    project=self,default=True)
         if not Showcase.objects.filter(project=self,name="Idee").exists():
-            Showcase.objects.create(name="Idee",creator=self.creator,project=self) 
+            Showcase.objects.create(name="Idee",creator=self.creator,
+                                    project=self,default=True) 
     
     def setup_creator(self):
         if not self.users.filter(id=self.creator.id).exists():

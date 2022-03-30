@@ -7,9 +7,10 @@ from Users.serializers import (UserSkillListSerializer,
 
 
 class UsersListSerializer(serializers.ModelSerializer):
+    skills = UserSkillListSerializer(source='user_skill',many=True,read_only=True)
     class Meta:
         model = User
-        fields = ["id","slug", "first_name", "last_name", "image"]
+        fields = ["id","slug", "first_name", "last_name", "image", "skills"]
 
 
 class UsersDetailsSerializer(serializers.ModelSerializer):
