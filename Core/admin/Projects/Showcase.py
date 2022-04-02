@@ -1,10 +1,6 @@
 from django.contrib import admin
 from Core.models import Showcase, ShowcaseUpdate
 
-class ShowcaseInline(admin.TabularInline):
-    model = Showcase
-    extra = 0
-    
 
 class ShowcaseUpdateInline(admin.TabularInline):
     model = ShowcaseUpdate

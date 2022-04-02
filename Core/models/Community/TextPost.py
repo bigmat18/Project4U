@@ -1,10 +1,10 @@
+from statistics import mode
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from Core.models import AbstractText
-import uuid
+from Core.models import Post
 
-class TextPost(AbstractText):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+class TextPost(Post):
+    text = models.TextField()
     
     class Meta:
         db_table = "text_post"

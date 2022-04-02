@@ -4,12 +4,10 @@ from Core.models import AbstractComment, Post
 
 class PostComment(AbstractComment):
     @staticmethod
-    def get_author_related_name():
-        return 'post_comments'
+    def get_author_related_name(): return 'post_comments'
     
     @staticmethod
-    def get_likes_related_name():
-        return 'likes_post_comments'
+    def get_likes_related_name(): return 'likes_post_comments'
     
     post = models.ForeignKey(Post,
                              on_delete=models.CASCADE,

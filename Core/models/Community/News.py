@@ -1,11 +1,13 @@
+from statistics import mode
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from Core.models import AbstractName, AbstractImage, AbstractSlug
+from Core.models import AbstractImage, Post
 
-class News(AbstractImage, AbstractName, AbstractSlug):
-    name = models.CharField(_("title"),
+class News(AbstractImage, Post):
+    title = models.CharField(_("title"),
                             db_column="title",
                             max_length=64)
+    slug = models.SlugField(blank=True, editable=False)
     intro = models.CharField(_("intro"),
                              max_length=516)
     content = models.TextField(_("content"))
