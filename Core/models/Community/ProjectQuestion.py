@@ -5,6 +5,12 @@ from Core.models import Post
 class ProjectQuestion(Post):
     slug = models.SlugField(blank=True, editable=False)
     question = models.TextField()
+    post = models.OneToOneField(Post, 
+                                on_delete=models.CASCADE,
+                                parent_link=True,
+                                primary_key=True,
+                                related_name="project_question",
+                                related_query_name="project_question")
     
     class Meta:
         db_table = "project_question"

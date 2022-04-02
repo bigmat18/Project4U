@@ -11,6 +11,12 @@ class News(AbstractImage, Post):
     intro = models.CharField(_("intro"),
                              max_length=516)
     content = models.TextField(_("content"))
+    post = models.OneToOneField(Post, 
+                                on_delete=models.CASCADE,
+                                parent_link=True,
+                                primary_key=True,
+                                related_name="news",
+                                related_query_name="news")
     
     class Meta:
         db_table = "news"

@@ -5,7 +5,14 @@ from Core.models import AbstractCreateUpdate, Project
 import uuid
 
 class Post(AbstractCreateUpdate):
+    
+    class TypePost(models.TextChoices):
+        TEXT = "TEXT"
+        NEWS = "NEWS"
+        QUESTION = "QUESTION"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    type_post = models.CharField(max_length=16, choices=TypePost.choices, default=TypePost.TEXT)
     author = models.ForeignKey(settings.AUTH_USER_MODEL,
                                on_delete=models.CASCADE,
                                related_name="posts",
