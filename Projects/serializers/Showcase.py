@@ -15,11 +15,15 @@ class UsersShowcaseSerializer(serializers.ModelSerializer):
 
 class ShowcaseWriteSerializer(serializers.ModelSerializer):
     users_list = UsersShowcaseSerializer(source="users", many=True, read_only=True)
-    
+    is_creator = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Showcase
-        fields = ["id","name", "users", "description", "color", "users_list"]
+        fields = ["id","name", "users", "description", "color", "users_list","is_creator"]
         extra_kwargs = {'users': {'write_only': True}}
+        
+    def get_is_creator(self, instance):
+        return instance.creator == self.context['request'].user
 
 
 class ShowcaseReadSerializer(serializers.ModelSerializer):
@@ -81,7 +85,8 @@ class CustomShowcaseSerializer():
             'color': showcase.color,
             'notify': self.get_notify(showcase),
             'last_message': self.get_last_message_serializer(messages),
-            'last_event': self.get_last_event_serializer(messages)
+            'last_event': self.get_last_event_serializer(messages),
+            'is_creator': self.get_is_creator(showcase)
         }
         
     def get_messages_queryset(self, showcase) -> QueryDict:
@@ -105,3 +110,6 @@ class CustomShowcaseSerializer():
         return Message.objects.filter(showcase=showcase)\
                               .exclude(viewed_by=self.request.user)\
                               .count()
+                              
+    def get_is_creator(self,showcase):
+        return self.request.user == showcase.creator

@@ -101,7 +101,7 @@ class EventTestCase(BaseTestCase):
     
     @tag("patch", "auth")  
     def test_event_task_update_auth(self):
-        data = {"name": "test2"}
+        data = {"name": "test2", "checked": True}
         response = self.client.patch(f"/api/event/task/{self.task.id}/", data=data)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         

@@ -1,7 +1,6 @@
-from rest_framework import response, status
-from Core.models.Users.Skill import Skill, UserSkill
+from rest_framework import status
 from Core.tests import BaseTestCase
-from Core.models import Project, UserProject
+from Core.models import Project, Skill, UserSkill
 from django.test import tag
 import PIL, tempfile
 
@@ -48,6 +47,23 @@ class UserTestCase(BaseTestCase):
     def test_users_list_auth(self):
         response = self.client.get("/api/users/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    @tag('get','auth')
+    def test_users_list_auth(self):
+        skill1 = Skill.objects.create(name="test1")
+        UserSkill.objects.create(user=self.user, skill=skill1, level=2)
+        
+        skill2 = Skill.objects.create(name="test2")
+        UserSkill.objects.create(user=self.user, skill=skill2, level=4)
+        
+        skill3 = Skill.objects.create(name="test3")
+        UserSkill.objects.create(user=self.user, skill=skill3, level=1)
+        
+        skill4 = Skill.objects.create(name="test4")
+        UserSkill.objects.create(user=self.user, skill=skill4, level=1)
+        
+        response = self.client.get("/api/users/")
+        self.assertEqual(len(list(response.data)[0]['skills']), 3)
         
     @tag('get','auth')
     def test_users_detail_auth(self):

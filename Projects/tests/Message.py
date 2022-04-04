@@ -1,7 +1,8 @@
 from Core.tests import BaseTestCase
 from rest_framework import status
-from Core.models import Project, Showcase, TextMessage, MessageFile
+from Core.models import Project, Showcase, TextMessage, MessageFile, Event
 from django.test import tag
+from django.utils import timezone
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 @tag('Showcases', 'messages-tests')
@@ -11,12 +12,26 @@ class MessageTestCase(BaseTestCase):
         self.baseSetup()
         self.project = Project.objects.create(name='test',creator=self.user)
         self.showcase = Showcase.objects.create(name='test',project=self.project,creator=self.user)
-        self.text_message = TextMessage.objects.create(text='test',showcase=self.showcase,author=self.user)
+        self.text_message = TextMessage.objects.create(text='test',showcase=self.showcase,
+                                                       author=self.user,type_message="TEXT")
     
     @tag('get','auth')
     def test_message_list_auth(self):
         response = self.client.get(f'/api/showcase/{self.showcase.id}/messages/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+    @tag('get','auth')
+    def test_message_type_message_filter_auth(self):
+        response = self.client.get(f'/api/showcase/{self.showcase.id}/messages/?type_message=EVENT')
+        self.assertEqual(len(list(response.data['results'])), 0)
+        
+        Event.objects.create(name="test", started_at=timezone.now(), ended_at=timezone.now(),
+                             author=self.user, showcase=self.showcase, type_message="EVENT")
+        response = self.client.get(f'/api/showcase/{self.showcase.id}/messages/?type_message=EVENT')
+        self.assertEqual(len(list(response.data['results'])), 1)
+        
+        response = self.client.get(f'/api/showcase/{self.showcase.id}/messages/?type_message=EVENT&type_message=TEXT')
+        self.assertEqual(len(list(response.data['results'])), 2)
         
     @tag('get','unauth')
     def test_message_list_unauth(self):
@@ -72,3 +87,5 @@ class MessageTestCase(BaseTestCase):
         date = message.updated_at.strftime("%Y-%m-%dT%H:%M:%S.%f")
         response = self.client.get(f'/api/showcase/{self.showcase.id}/messages/?gt_updated_at={date}')
         self.assertEquals(len(list(response.data['results'])), 0)
+        
+    
