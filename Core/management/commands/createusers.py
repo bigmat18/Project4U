@@ -8,13 +8,13 @@ class Command(BaseCommand):
     
     def add_arguments(self, parser):
         parser.add_argument('--num', type=int)
-        parser.add_argument('--create-skills', type=int)
+        parser.add_argument('--skills', type=int)
 
     def handle(self, *args, **options):
         if options["num"]: num_users = options["num"]
         else: num_users = 3 
         
-        if options["create_skills"]: num_skills = options["create_skills"]
+        if options["skills"]: num_skills = options["skills"]
         else: num_skills = 0
         
         for index in range(0,num_skills):
