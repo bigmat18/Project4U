@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,6 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.postgres',
+    'whitenoise.runserver_nostatic',
     
     'storages',
     
@@ -63,6 +65,7 @@ MIDDLEWARE = [
     
     'corsheaders.middleware.CorsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'Project4U.urls'
@@ -97,6 +100,9 @@ DATABASES = {
     }
 }
 
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -129,6 +135,7 @@ PROJECT_ROOT = os.path.join(os.path.abspath(__file__))
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "Core/statics")]
 
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -136,9 +143,7 @@ STATICFILES_FINDERS = [
     'sass_processor.finders.CssFinder',
 ]
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "Core/statics"),
-]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 SASS_PROCESSOR_ROOT = os.path.join(BASE_DIR,'Core/statics')
 
