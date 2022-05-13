@@ -1,6 +1,11 @@
-from ..serializers import ShowcaseReadSerializer, ShowcaseWriteSerializer, CustomShowcaseSerializer
+from ..serializers import (ShowcaseReadSerializer, 
+                           ShowcaseWriteSerializer, 
+                           CustomShowcaseSerializer,
+                           MessageSerializer)
+from Users.serializers import UsersListSerializer
 from rest_framework import generics, viewsets
-from Core.models import Showcase, Project, UserProject
+from rest_framework.views import APIView
+from Core.models import Showcase, Project, UserProject, Message, User
 from rest_access_policy import AccessPolicy
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
@@ -19,7 +24,7 @@ class ShowcaseAccessPolicy(AccessPolicy):
             "condition": "is_inside_project"
         },
         {
-            "action": ["retrieve"],
+            "action": ["retrieve","get"],
             "principal": "*",
             "effect": "allow",
             "condition": ["is_inside_showcase", "is_creator"]
@@ -57,19 +62,11 @@ class ShowcaseListCreateView(generics.ListCreateAPIView,
     Visualizza una lista di tutte le bacheche del progetto di cui è stato passato l'id.
     Soltato i partecipanti del progetto possono vedere le bacheche.
     
-    ---- ERRORE in "last_message" ----
-    L'ultimo messaggio non è una stringa ma è un oggetto formattato in base al tipo del messaggio.
-    L'ultimo messaggio può essere un messaggio testuale, un aggiornameto della bacheca ma NON un evento
-    
     create:
     Crea una nuova bacheca.
     
     Crea una nuova bacheca nel progetto di cui è stato passato l'id.
     Soltato i partecipanti del progetto possono creare delle bacheche.
-    
-    ---- ERRORE in "last_message" ----
-    L'ultimo messaggio non è una stringa ma è un oggetto formattato in base al tipo del messaggio.
-    L'ultimo messaggio può essere un messaggio testuale, un aggiornameto della bacheca ma NON un evento.
     """
     queryset = Showcase.objects.all()
     permission_classes = [IsAuthenticated, ShowcaseAccessPolicy]
@@ -87,8 +84,7 @@ class ShowcaseListCreateView(generics.ListCreateAPIView,
     
     def get_queryset(self):
         user = self.request.user
-        return Showcase.objects.prefetch_related('users')\
-                               .filter(Q(project__id=self.kwargs['id']) & Q(users=user))\
+        return Showcase.objects.filter(Q(project__id=self.kwargs['id']) & Q(users=user))\
                                .order_by("created_at")
                                
     def list(self, request, *args, **kwargs):
@@ -182,3 +178,79 @@ class ShowcaseRUDView(generics.RetrieveUpdateDestroyAPIView,
     def add_creator_to_users(self, instance):
         if not instance.users.filter(id=instance.creator.id).exists():
             instance.users.add(instance.creator)
+     
+
+
+class ShowcaseBaseAPIView(viewsets.GenericViewSet,
+                          APIView):
+    permission_classes = [IsAuthenticated, ShowcaseAccessPolicy]
+    if not settings.DEBUG: permission_classes.append(HasAPIKey)
+    
+    def get_object(self):
+        id = self.kwargs['id']
+        return Showcase.objects.get(id=id)    
+            
+      
+            
+class ShowcaseLastMessageAPIView(ShowcaseBaseAPIView):
+    """
+    get:
+    Ritorna ultimo messaggio.
+    
+    Ritorna l'utlimo messaggio della showcase.
+    """
+    
+    def get(self, request, id):
+        message = Message.objects.filter(Q(showcase=self.get_object()) & ~Q(type_message="EVENT"))\
+                                 .select_related("author")\
+                                 .order_by('updated_at')\
+                                 .first()
+        return Response(data=MessageSerializer(message).data, status=status.HTTP_200_OK)
+    
+    
+    
+class ShowcaseLastEventAPIView(ShowcaseBaseAPIView):
+    """
+    get:
+    Ritorna ultimo evento.
+    
+    Ritorna l'ultimo evento della showcase.
+    """
+    
+    def get(self, request, id):
+        message = Message.objects.filter(Q(showcase=self.get_object()) & Q(type_message="EVENT"))\
+                                 .select_related("author")\
+                                 .order_by('updated_at')\
+                                 .first()
+        return Response(data=MessageSerializer(message).data, status=status.HTTP_200_OK)
+    
+    
+    
+class ShowcaseNotifyAPIView(ShowcaseBaseAPIView):
+    """
+    get:
+    Ritorna notifiche non lette.
+    
+    Ritorna il numero di notifiche non lette dall'utente che ha effettuato la richiesta.
+    """
+    
+    def get(self, request, id):
+        notify = Message.objects.filter(showcase=self.get_object())\
+                              .exclude(viewed_by=self.request.user)\
+                              .count()
+        return Response(data={"notify": notify}, status=status.HTTP_200_OK)
+    
+    
+    
+class ShowcaseUsersAPIView(ShowcaseBaseAPIView):
+    """
+    get:
+    Ritorna lista utenti.
+    
+    Ritorna la lista degli utenti all'interno della showcase.
+    """
+    
+    def get(self,request, id):
+        users = User.objects.filter(showcases=self.get_object())
+        return Response(data={"users": UsersListSerializer(users, many=True).data}, 
+                        status=status.HTTP_200_OK)

@@ -27,15 +27,31 @@ class ShowcaseTestCase(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
     @tag('get', 'auth')
-    def test_showcase_list_last_message_auth(self):
+    def test_showcase_last_message_auth(self):
         showcase = self.project.showcases.all()[0]
         message = TextMessage.objects.create(text="test", author=self.user,
                                             showcase=showcase)
         Event.objects.create(author=self.user,started_at=timezone.now(),
                              ended_at=timezone.now() + datetime.timedelta(days=1),
-                             showcase=showcase)
-        response = self.client.get(f'/api/projects/{self.project.id}/showcases/')
-        self.assertEqual(list(response.data)[0]['last_message']['id'], str(message.id))
+                             showcase=showcase,type_message="EVENT")
+        response = self.client.get(f'/api/showcase/{showcase.id}/last-message/')
+        self.assertEqual(dict(response.data)['id'], str(message.id))
+        
+    @tag('get', 'auth','this')
+    def test_showcase_last_event_auth(self):
+        showcase = self.project.showcases.all()[0]
+        TextMessage.objects.create(text="test", author=self.user,
+                                            showcase=showcase)
+        event = Event.objects.create(author=self.user,started_at=timezone.now(),
+                             ended_at=timezone.now() + datetime.timedelta(days=1),
+                             showcase=showcase,type_message="EVENT")
+        response = self.client.get(f'/api/showcase/{showcase.id}/last-event/')
+        self.assertEqual(dict(response.data)['id'], str(event.id))
+        
+    @tag('get', 'auth')
+    def test_showcase_users_auth(self):
+        response = self.client.get(f'/api/showcase/{self.showcase.id}/users/')
+        self.assertEqual(len(dict(response.data)['users']), 1)
         
     @tag('get','unauth') 
     def test_showcase_list_unauth(self):
@@ -71,16 +87,16 @@ class ShowcaseTestCase(BaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
       
     @tag('get', 'auth')  
-    def test_message_viewed_by_auth(self):
+    def test_showcase_notify_auth(self):
         self.showcase.users.add(self.new_user), 
         self.showcase.save()
         TextMessage.objects.create(text='test',showcase=self.showcase,author=self.new_user)
-        response = self.client.get(f'/api/projects/{self.project.id}/showcases/')
-        self.assertEqual(list(response.data)[0]["notify"], 1)
+        response = self.client.get(f'/api/showcase/{self.showcase.id}/notify/')
+        self.assertEqual(dict(response.data)["notify"], 1)
         
         self.client.get(f'/api/showcase/{self.showcase.id}/messages/')
-        response = self.client.get(f'/api/projects/{self.project.id}/showcases/')
-        self.assertEqual(list(response.data)[0]["notify"], 0)
+        response = self.client.get(f'/api/showcase/{self.showcase.id}/notify/')
+        self.assertEqual(dict(response.data)["notify"], 0)
         
     @tag('patch', 'auth') 
     def test_showcase_update_auth(self):

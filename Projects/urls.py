@@ -24,6 +24,12 @@ urlpatterns += [
     path('projects/<uuid:id>/showcases/',vw.ShowcaseListCreateView.as_view({"get":"list", "post":"create"}),name="showcases-list-create"),
     path('projects/<uuid:id>/events/', vw.EventInProjectListView.as_view({"get":"list"}), name="event-in-project-list"),
     
+    
+    path('showcase/<uuid:id>/last-message/',vw.ShowcaseLastMessageAPIView.as_view({"get":"get"}),name="showcase-last-message"),
+    path('showcase/<uuid:id>/last-event/',vw.ShowcaseLastEventAPIView.as_view({"get":"get"}),name="showcase-last-event"),
+    path('showcase/<uuid:id>/notify/',vw.ShowcaseNotifyAPIView.as_view({"get":"get"}),name="showcase-notify"),
+    path('showcase/<uuid:id>/users/',vw.ShowcaseUsersAPIView.as_view({"get":"get"}),name="showcase-users"),
+
     path('showcase/<uuid:id>/messages/',vw.MessageListView.as_view({'get':'list'}),name="messages-list"),
     path('showcase/<uuid:id>/messages/text/',vw.TextMessageCreateView.as_view({'post':'create'}),name="text-message-create"),
     path('showcase/<uuid:id>/messages/event/',vw.EventCreateView.as_view({'post':'create'}),name="event-create"),
