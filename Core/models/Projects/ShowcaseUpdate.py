@@ -35,6 +35,7 @@ class ShowcaseUpdate(Message):
     
     
     def save(self, *args, **kwargs):
+        if self.type_message != "UPDATE": self.type_message = "UPDATE"
         if self.description is None:
             if self.type_update == self.TypeUpdate.DESC:
                 self.description = f"{self.__desc_default_message}{self.author.full_name}"

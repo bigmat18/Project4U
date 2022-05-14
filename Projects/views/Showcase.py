@@ -163,7 +163,6 @@ class ShowcaseRUDView(generics.RetrieveUpdateDestroyAPIView,
         if response is not None and response.status_code  == status.HTTP_400_BAD_REQUEST: return response
         return super().partial_update(request, *args, **kwargs)
     
-    
     def check_users_in_project(self, request):
         if "users" in request.data:
             for user in dict(request.data)['users']:
