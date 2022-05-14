@@ -16,10 +16,6 @@ class UsersListSerializer(serializers.ModelSerializer):
 
 
 class UsersDetailsSerializer(serializers.ModelSerializer):
-    skills = UserSkillListSerializer(source="userskill_set",many=True, 
-                                     required=False, read_only=True)
-    external_projects = ExternalProjectSerializer(many=True, read_only=True)
-    educations = UserEducationSerializer(many=True,read_only=True)
     
     class Meta:
         model = User
@@ -30,7 +26,6 @@ class UsersDetailsSerializer(serializers.ModelSerializer):
         
 
 class CurrentUserDetailsSerializer(UsersDetailsSerializer):
-    projects = ProjectListSerializer(read_only=True,many=True)
     
     class Meta:
         model = User

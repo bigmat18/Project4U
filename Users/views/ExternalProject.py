@@ -7,10 +7,11 @@ from rest_framework.response import Response
 
 
 
-class ExternalProjectCUDView(mixins.CreateModelMixin, 
-                            mixins.UpdateModelMixin,
-                            mixins.DestroyModelMixin,
-                            viewsets.GenericViewSet):
+class ExternalProjectLCUDView(mixins.CreateModelMixin, 
+                              mixins.ListModelMixin,
+                              mixins.UpdateModelMixin,
+                              mixins.DestroyModelMixin,
+                              viewsets.GenericViewSet):
     """
     create:
     Aggiungi un progetto esterno all'utente
@@ -49,7 +50,7 @@ class ExternalProjectCUDView(mixins.CreateModelMixin,
     
     def create(self, request, *args, **kwargs):
         if not isinstance(request.data, list):
-            return super(ExternalProjectCUDView, self).create(request, *args, **kwargs)
+            return super(ExternalProjectLCUDView, self).create(request, *args, **kwargs)
         serializer = self.get_serializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
