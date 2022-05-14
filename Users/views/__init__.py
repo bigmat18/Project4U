@@ -1,10 +1,13 @@
 from .Email import EmailCreateView
 from .User import (UsersListView, 
                    UsersRetriveView, 
-                   UserImageView, 
+                   UserImageAPIView, 
                    UserRetrieveUpdateView, 
                    UserProjectsListView,
-                   UserInfoView)
+                   UserInfoView,
+                   UsersEducationsListView,
+                   UsersExternalProjectsListView,
+                   UsersSkillsListView)
 from .Skill import SkillListView
 from .UserSkill import UserSkillLCUDView
 from .ExternalProject import ExternalProjectLCUDView

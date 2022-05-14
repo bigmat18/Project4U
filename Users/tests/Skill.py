@@ -35,6 +35,16 @@ class UserSkillTestCase(BaseTestCase):
         self.skill2 = Skill.objects.create(name="prova2")
         self.skill3 = Skill.objects.create(name="prova3")
         
+    @tag('get', 'auth')
+    def test_skills_of_user_list_auth(self):
+        response = self.client.get("/api/user/skills/")
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        
+    @tag('get', 'auth')
+    def test_skills_of_users_list_auth(self):
+        response = self.client.get(f"/api/users/{self.user.slug}/skills/")
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        
     @tag('post','auth')
     def test_user_skill_create_auth(self):
         response = self.client.post(f"/api/user/skills/", data={"level":1, "skill": self.skill1.id})

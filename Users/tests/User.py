@@ -67,7 +67,7 @@ class UserTestCase(BaseTestCase):
         
     @tag('get','auth')
     def test_users_detail_auth(self):
-        response = self.client.get(f"/api/users/{self.user.secret_key}/")
+        response = self.client.get(f"/api/users/{self.user.slug}/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)    
         
     @tag('get','auth')  

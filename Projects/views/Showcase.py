@@ -1,8 +1,8 @@
-from ..serializers import (ShowcaseReadSerializer, 
-                           ShowcaseWriteSerializer, 
-                           CustomShowcaseSerializer,
-                           MessageSerializer)
-from Users.serializers import UsersListSerializer
+from Projects.serializers import (ShowcaseReadSerializer, 
+                                  ShowcaseWriteSerializer, 
+                                  CustomShowcaseSerializer,
+                                  MessageSerializer,
+                                  UsersShowcaseSerializer)
 from rest_framework import generics, viewsets
 from rest_framework.views import APIView
 from Core.models import Showcase, Project, UserProject, Message, User
@@ -251,5 +251,5 @@ class ShowcaseUsersAPIView(ShowcaseBaseAPIView):
     
     def get(self,request, id):
         users = User.objects.filter(showcases=self.get_object())
-        return Response(data={"users": UsersListSerializer(users, many=True).data}, 
+        return Response(data={"users": UsersShowcaseSerializer(users, many=True).data}, 
                         status=status.HTTP_200_OK)

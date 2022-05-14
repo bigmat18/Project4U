@@ -114,12 +114,12 @@ class UsersRetriveView(generics.RetrieveAPIView,
     retrieve:
     Ristituisce i dettagli di un'utente.
 
-    Ritorna tutti i dettagli di un utente di cui è stato passato la secret_key nell'url.
+    Ritorna tutti i dettagli di un utente di cui è stato passato la slug nell'url.
     Serve quando si entra per esempio nel profilo di un'utente
     """
     serializer_class = UsersDetailsSerializer
     queryset = User.objects.filter(active=True)
-    lookup_field = "secret_key"
+    lookup_field = "slug"
 
 
 
@@ -145,7 +145,7 @@ class UserInfoView(APIView):
                              responses={"200":openapi.Schema(type=openapi.TYPE_OBJECT,
                                                             properties={"image":openapi.Schema(
                                                                         type=openapi.TYPE_STRING)})}))
-class UserImageView(APIView):
+class UserImageAPIView(APIView):
 
     def get(self, request, *args, **kwargs):
         """
@@ -174,3 +174,30 @@ class UserProjectsListView(generics.ListAPIView,
     
     def get_queryset(self):
         return Project.objects.filter(users=self.request.user.id)
+    
+    
+class UsersExternalProjectsListView(generics.ListAPIView,
+                                    viewsets.GenericViewSet):
+    serializer_class = ExternalProjectSerializer
+    
+    def get_queryset(self):
+        slug = self.kwargs['slug']
+        return ExternalProject.objects.filter(user__slug=slug)
+
+
+class UsersEducationsListView(generics.ListAPIView,
+                              viewsets.GenericViewSet):
+    serializer_class = UserEducationSerializer
+    
+    def get_queryset(self):
+        slug = self.kwargs['slug']
+        return UserEducation.objects.filter(user__slug=slug)
+
+
+class UsersSkillsListView(generics.ListAPIView,
+                          viewsets.GenericViewSet):
+    serializer_class = UserSkillListSerializer
+    
+    def get_queryset(self):
+        slug = self.kwargs['slug']
+        return UserSkill.objects.filter(user__slug=slug)
