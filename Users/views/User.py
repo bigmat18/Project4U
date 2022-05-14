@@ -178,6 +178,12 @@ class UserProjectsListView(generics.ListAPIView,
     
 class UsersExternalProjectsListView(generics.ListAPIView,
                                     viewsets.GenericViewSet):
+    """
+    list:
+    Vedi la lista dei progetti esterni dell'utente.
+    
+    Vedi la lista dei progetti esterni dell'utente di cui è stato passato lo slug.
+    """
     serializer_class = ExternalProjectSerializer
     
     def get_queryset(self):
@@ -187,6 +193,12 @@ class UsersExternalProjectsListView(generics.ListAPIView,
 
 class UsersEducationsListView(generics.ListAPIView,
                               viewsets.GenericViewSet):
+    """
+    list:
+    Vedi la lista delle educazioni dell'utente.
+    
+    Vedi la lista delle educazioni dell'utente di cui è stato passato lo slug.
+    """
     serializer_class = UserEducationSerializer
     
     def get_queryset(self):
@@ -196,6 +208,12 @@ class UsersEducationsListView(generics.ListAPIView,
 
 class UsersSkillsListView(generics.ListAPIView,
                           viewsets.GenericViewSet):
+    """
+    list:
+    Vedi la lista delle skills dell'utente.
+    
+    Vedi la lista delle skills dell'utente di cui è stato passato lo slug.
+    """
     serializer_class = UserSkillListSerializer
     
     def get_queryset(self):
