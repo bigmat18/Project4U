@@ -29,19 +29,28 @@ class UserProjectAccessPolicy(AccessPolicy):
         }
     ]
 
-    def get_project(self, view):
-        project_id = view.kwargs['id']
-        project = generics.get_object_or_404(Project, id=project_id)
-        return project
-
     def is_creator(self, request, view, action) -> bool:
-        if action != "create": 
+        if action not in ["create", "list"] : 
             user = view.get_object()
-            project = generics.get_object_or_404(Project, id=user.project.id)
-        else: project = self.get_project(view)
+            project = view.get_project(user.project.id)
+        else: project = view.get_project()
         return request.user == project.creator
 
 
+
+class UserProjectBaseView(viewsets.GenericViewSet):
+    permission_classes = [IsAuthenticated,UserProjectAccessPolicy]
+    if not settings.DEBUG: permission_classes.append(HasAPIKey)
+
+    def get_project(self, id=None):
+        if hasattr(self, "project"): return self.project
+        if not id: id = self.kwargs['id']
+        self.project = Project.objects.filter(id=id)\
+                                      .select_related('creator')\
+                                      .first()
+        return self.project
+    
+    
 
 @method_decorator(name="create", decorator=swagger_auto_schema(
     responses={"201":UserProjectListSerializer,
@@ -50,7 +59,7 @@ class UserProjectAccessPolicy(AccessPolicy):
                                         type=openapi.TYPE_STRING,
                                         description="Utente già aggiunto al progetto")})}))
 class UserProjectListCreateView(generics.ListCreateAPIView,
-                                viewsets.GenericViewSet):
+                                UserProjectBaseView):
     """
     list:
     Vedi la lista degli utenti in un progetto.
@@ -67,18 +76,15 @@ class UserProjectListCreateView(generics.ListCreateAPIView,
     """
     serializer_class = UserProjectListSerializer
     queryset = UserProject.objects.all()
-    permission_classes = [IsAuthenticated,UserProjectAccessPolicy]
-    if not settings.DEBUG: permission_classes.append(HasAPIKey)
     
     def get_queryset(self):
-        project_id = self.kwargs['id']
-        return UserProject.objects.filter(project=project_id)\
+        return UserProject.objects.filter(project=self.get_project())\
+                                  .select_related("user")\
+                                  .prefetch_related("role")\
                                   .order_by("-updated_at")
     
     def perform_create(self, serializer):
-        project_id = self.kwargs['id']
-        project = get_object_or_404(Project, id=project_id)
-        try: serializer.save(project=project)
+        try: serializer.save(project=self.get_project())
         except IntegrityError:
             raise ValidationError(code=status.HTTP_400_BAD_REQUEST, 
                                   detail={"Error":"Utente già aggiunto al progetto"})
@@ -87,7 +93,7 @@ class UserProjectListCreateView(generics.ListCreateAPIView,
 
 class UserProjectUpdateDestroyView(generics.UpdateAPIView,
                                    generics.DestroyAPIView,
-                                   viewsets.GenericViewSet):
+                                   UserProjectBaseView):
     """
     update:
     Aggiorna i ruoli di un utente.
@@ -110,5 +116,3 @@ class UserProjectUpdateDestroyView(generics.UpdateAPIView,
     serializer_class = UserProjectUpdateSerializer
     queryset = UserProject.objects.all()
     lookup_field = "id"
-    permission_classes = [IsAuthenticated,UserProjectAccessPolicy]
-    if not settings.DEBUG: permission_classes.append(HasAPIKey)

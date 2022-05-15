@@ -32,7 +32,7 @@ class MessageAccessPolicy(AccessPolicy):
     ]
     
     def is_inside_showcase(self, request, view, action) -> bool:
-        showcase = generics.get_object_or_404(Showcase, id=view.kwargs['id'])
+        showcase = view.get_showcase()
         return (request.user == showcase.creator or 
                 showcase.users.filter(id=request.user.id).exists())
 
@@ -79,12 +79,16 @@ class MessageListView(generics.ListAPIView,
     if not settings.DEBUG: permission_classes.append(HasAPIKey)
 
     def get_showcase(self):
-        showcase_id = self.kwargs['id']
-        return generics.get_object_or_404(Showcase, id=showcase_id)
+        if hasattr(self, "showcase"): return self.showcase
+        self.showcase = Showcase.objects.filter(id=self.kwargs['id'])\
+                                        .select_related("creator")\
+                                        .prefetch_related('users')\
+                                        .first()
+        return self.showcase
     
     def get_queryset(self):
         return Message.objects.filter(showcase=self.get_showcase())\
-                              .select_related('text_message','event','showcase_update','poll')\
+                              .select_related('text_message','event','showcase_update','poll',"author")\
                               .order_by("-updated_at")
                               
     def set_message_visualize(self, messages):
@@ -116,11 +120,16 @@ class TextMessageCreateView(generics.CreateAPIView,
     permission_classes = [IsAuthenticated, MessageAccessPolicy]
     if not settings.DEBUG: permission_classes.append(HasAPIKey)
     
-    def get_showcases(self):
-        return get_object_or_404(Showcase, id=self.kwargs['id'])
+    def get_showcase(self):
+        if hasattr(self, "showcase"): return self.showcase
+        self.showcase = Showcase.objects.filter(id=self.kwargs['id'])\
+                                        .select_related("creator")\
+                                        .prefetch_related('users')\
+                                        .first()
+        return self.showcase
     
     def perform_create(self, serializer):
-        instance = serializer.save(showcase=self.get_showcases(),
+        instance = serializer.save(showcase=self.get_showcase(),
                                    type_message="TEXT",
                                    author=self.request.user)
         instance.viewed_by.add(self.request.user)

@@ -18,7 +18,7 @@ from .Message import (MessageListView,
                       TextMessageCreateView,
                       MessageFileCreateView)
 
-from .ProjectTag import (ProjectTagCreateView)
+from .ProjectTag import (ProjectTagListCreateView)
 
 from .Event import (EventCreateView, 
                     EventUpdateDestroyView, 

@@ -55,7 +55,7 @@ class RoleTestCase(BaseTestCase):
         response = self.client.delete(f"/api/role/{self.role1.id}/")
         self.assertEqual(response.status_code,status.HTTP_204_NO_CONTENT)
         
-    @tag('delete', 'unauth')  
+    @tag('delete', 'unauth','this')  
     def test_role_delete_unauth(self):
         self.client.force_authenticate(user=self.new_user)
         response = self.client.delete(f"/api/role/{self.role1.id}/")
