@@ -1,4 +1,3 @@
-from urllib import response
 from django.utils import timezone
 from Core.tests import BaseTestCase
 from rest_framework import status
