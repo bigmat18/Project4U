@@ -37,7 +37,7 @@ class ShowcaseTestCase(BaseTestCase):
         response = self.client.get(f'/api/showcase/{showcase.id}/last-message/')
         self.assertEqual(dict(response.data)['id'], str(message.id))
         
-    @tag('get', 'auth','this')
+    @tag('get', 'auth')
     def test_showcase_last_event_auth(self):
         showcase = self.project.showcases.all()[0]
         TextMessage.objects.create(text="test", author=self.user,
@@ -78,7 +78,7 @@ class ShowcaseTestCase(BaseTestCase):
         response = self.client.post(f'/api/projects/{self.project.id}/showcases/',data=data)
         self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    @tag('post','unauth') 
+    @tag('post','unauth','this') 
     def test_showcase_create_unauth(self):
         self.project.users.remove(self.new_user)
         self.client.force_authenticate(user=self.new_user)

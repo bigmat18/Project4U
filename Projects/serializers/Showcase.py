@@ -26,11 +26,10 @@ class ShowcaseWriteSerializer(serializers.ModelSerializer):
 
 
 class ShowcaseReadSerializer(serializers.ModelSerializer):
-    creator = UsersShowcaseSerializer(read_only=True)
         
     class Meta:
         model = Showcase
-        exclude = ["project", "created_at"]
+        exclude = ["project", "created_at","users"]
                               
              
              

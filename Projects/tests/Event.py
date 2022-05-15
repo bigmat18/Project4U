@@ -6,7 +6,7 @@ from Core.models import Project, Showcase, Event, EventTask
 from django.test import tag
 import datetime
 
-@tag("Showcase", "events-tests")
+@tag("Showcases", "events-tests")
 class EventTestCase(BaseTestCase):
     
     def setUp(self):
