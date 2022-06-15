@@ -1,5 +1,4 @@
 from rest_framework import viewsets, generics
-from ..serializers import PostSerializer, PostCommentSerializer
 from Core.models import Post, PostComment
 
 

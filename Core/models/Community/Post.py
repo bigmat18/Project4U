@@ -17,10 +17,10 @@ class Post(AbstractCreateUpdate):
                                on_delete=models.CASCADE,
                                related_name="posts",
                                related_query_name="posts")
-    likes = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                    on_delete=models.CASCADE,
+    likes = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                     related_name="posts_likes",
-                                    related_query_name="posts_likes")
+                                    related_query_name="posts_likes",
+                                    blank=True)
     project = models.ForeignKey(Project,
                                 on_delete=models.CASCADE,
                                 related_name="posts",

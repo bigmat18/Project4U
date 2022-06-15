@@ -13,3 +13,5 @@ from Projects.tests import (ProjectsTestCase,UserProjectTestCase,
                             RoleTestCase, ShowcaseTestCase,
                             MessageTestCase,ProjectTagTestCase,
                             EventTestCase, PollTestCase)
+
+from Community.tests import (NewsTestCase)

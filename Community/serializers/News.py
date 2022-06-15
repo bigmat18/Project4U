@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from Core.models import News, NewsParagraph, NewsParagraphImage
-from ..serializers import PostCommentSerializer
 
 class NewsParagraphImageSerializer(serializers.ModelSerializer):
     
@@ -10,25 +9,16 @@ class NewsParagraphImageSerializer(serializers.ModelSerializer):
 
 
 class NewsParagraphSerializer(serializers.ModelSerializer):
-    images = NewsParagraphImageSerializer(many=True)
     
     class Meta:
         model = NewsParagraph
-        exclude = ["news"]
-
-
-class NewsDetailSerializer(serializers.ModelSerializer):
-    paragraphs = NewsParagraphSerializer(many=True)
-    comments = PostCommentSerializer(many=True)
-    
-    class Meta:
-        model = News
-        fields = ["title", "image", "slug", "content", "author", "updated_at",
-                  "likes", "comments"]
+        fields = "__all__"
+        read_only_fields = ('news',)
         
 
-class NewsListSerializer(serializers.ModelSerializer):
+class NewsSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = News
-        fields = ["title", "image", "slug", "content"]
+        exclude = ["type_post", "view_num", "created_at"]
+        read_only_fields = ('created_at', 'updated_at', 'author', 'project', "likes")
