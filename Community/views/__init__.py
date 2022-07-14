@@ -3,9 +3,10 @@ from .Post import (PostCommentCreateView,
                    PostCommentUpdateDestroyCreateView)
 
 from .News import (NewsCreateView, 
-                   NewsRUDView, 
-                   NewsParagraphUpdateDeleteView,
-                   NewsParagraphListCreateView)
+                   NewsRUDView)
+
+from .NewsParagraph import (NewsParagraphListCreateView,
+                            NewsParagraphUpdateDeleteView)
 
 from .QuestionAnswer import (ProjectQuestionCreateView,
                              ProjectAnswerCreateView, 

@@ -1,14 +1,58 @@
 from rest_framework import viewsets, generics
 from ..serializers import NewsSerializer, NewsParagraphSerializer, NewsParagraphImageSerializer
-from Core.models import News, NewsParagraphImage, NewsParagraph, Project
+from Core.models import News, Project
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_access_policy.access_policy import AccessPolicy
+from rest_framework_api_key.permissions import HasAPIKey
+from django.conf import settings
+
+
+class NewsAccessPolicy(AccessPolicy):
+    statements = [
+        {
+            "action": ["create"],
+            "principal": "*",
+            "effect": "allow",
+            "condition": "is_inside_project"
+        },
+        {
+            "action": ["retrieve"],
+            "principal": "*",
+            "effect": "allow",
+        },
+        {
+            "action": ["destroy", "update", "partial_update"],
+            "principal": "*",
+            "effect": "allow",
+            "condition": "is_author"
+        },
+    ]
+    
+    def is_inside_project(self, request, view, action) -> bool:
+        project = view.get_object()
+        return (request.user == project.creator or 
+                project.users.filter(id=request.user.id).exists())
+        
+    def is_author(self, request, view, action) -> bool:
+        news = view.get_object()
+        return request.user == news.author
+    
+
 
 class NewsCreateView(generics.CreateAPIView,
                      viewsets.GenericViewSet):
     serializer_class = NewsSerializer
     queryset = News.objects.all()
+    permission_classes = [IsAuthenticated, NewsAccessPolicy]
+    if not settings.DEBUG: permission_classes.append(HasAPIKey)
+    
+    def get_object(self):
+        if not hasattr(self, "project"): 
+            self.project = get_object_or_404(Project, id=self.kwargs['id'])
+        return self.project
     
     def create(self, request, *args, **kwargs):
         if "paragraphs" in request.data: 
@@ -68,22 +112,5 @@ class NewsRUDView(generics.RetrieveUpdateDestroyAPIView,
     serializer_class = NewsSerializer
     queryset = News.objects.all()
     lookup_field = "id"
-    
-    
-class NewsParagraphListCreateView(generics.ListCreateAPIView,
-                                  viewsets.GenericViewSet):
-    serializer_class = NewsParagraphSerializer
-    queryset = NewsParagraph.objects.all()
-    
-    def get_queryset(self):
-        return News.objects.filter(news__id=self.kwargs['id'])
-    
-    def perform_create(self, serializer):
-        serializer.save(news=get_object_or_404(News, id=self.kwargs['id']))
-
-
-class NewsParagraphUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView,
-                                    viewsets.GenericViewSet):
-    serializer_class = NewsParagraphSerializer
-    queryset = NewsParagraph.objects.all()
-    lookup_field = "id"
+    permission_classes = [IsAuthenticated, NewsAccessPolicy]
+    if not settings.DEBUG: permission_classes.append(HasAPIKey)
