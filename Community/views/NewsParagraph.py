@@ -31,12 +31,14 @@ class NewsParagraphAccessPolicy(AccessPolicy):
     
     def is_author(self, request, view, action) -> bool:
         news = view.get_object()
-        if not isinstance(news, News): news = news.news
+        if isinstance(news, NewsParagraph): news = news.news
+        elif isinstance(news, NewsParagraphImage): news = news.paragraph.news
         return (news.author == request.user)
     
     def is_project_creator(self, request, view, action) -> bool:
-        news = view.get_object().news
-        return (news.project.creator == request.user)
+        paragraph = view.get_object()
+        if not isinstance(paragraph, NewsParagraph): paragraph = paragraph.paragraph
+        return (paragraph.news.project.creator == request.user)
 
 
 class NewsParagraphListCreateView(generics.ListCreateAPIView,
@@ -62,6 +64,34 @@ class NewsParagraphUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView,
                                     viewsets.GenericViewSet):
     serializer_class = NewsParagraphSerializer
     queryset = NewsParagraph.objects.all()
+    lookup_field = "id"
+    permission_classes = [IsAuthenticated, NewsParagraphAccessPolicy]
+    if not settings.DEBUG: permission_classes.append(HasAPIKey)
+    
+
+
+class NewsParagraphImageCreateView(generics.CreateAPIView,
+                                   viewsets.GenericViewSet):
+    serializer_class = NewsParagraphImageSerializer
+    queryset = NewsParagraphImage.objects.all()
+    permission_classes = [IsAuthenticated, NewsParagraphAccessPolicy]
+    if not settings.DEBUG: permission_classes.append(HasAPIKey)
+    
+    def get_object(self):
+        if not hasattr(self, "paragraph"):
+            self.paragraph = get_object_or_404(NewsParagraph, id=self.kwargs['id'])
+        return self.paragraph
+    
+    def perform_create(self, serializer):
+        serializer.save(paragraph=self.paragraph)
+    
+    
+    
+class NewsParagraphImageUpdateDeleteView(generics.UpdateAPIView,
+                                        generics.DestroyAPIView,
+                                        viewsets.GenericViewSet):
+    serializer_class = NewsParagraphImageSerializer
+    queryset = NewsParagraphImage.objects.all()
     lookup_field = "id"
     permission_classes = [IsAuthenticated, NewsParagraphAccessPolicy]
     if not settings.DEBUG: permission_classes.append(HasAPIKey)

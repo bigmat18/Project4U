@@ -6,7 +6,9 @@ from .News import (NewsCreateView,
                    NewsRUDView)
 
 from .NewsParagraph import (NewsParagraphListCreateView,
-                            NewsParagraphUpdateDeleteView)
+                            NewsParagraphUpdateDeleteView,
+                            NewsParagraphImageCreateView,
+                            NewsParagraphImageUpdateDeleteView)
 
 from .QuestionAnswer import (ProjectQuestionCreateView,
                              ProjectAnswerCreateView, 
