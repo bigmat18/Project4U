@@ -45,5 +45,9 @@ class Event(Message, AbstractFile):
             CheckConstraint(check=Q(started_at__lte=F('ended_at')),
                             name='check_event_started_at_gte')
         ]
+        
+    def save(self, *args, **kwargs):
+        if self.type_message != "EVENT": self.type_message = "EVENT"
+        return super().save(*args, **kwargs)
     
     def __str__(self): return str(self.message)

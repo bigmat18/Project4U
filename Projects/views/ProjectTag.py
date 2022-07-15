@@ -6,9 +6,15 @@ from rest_framework import generics, viewsets
 from rest_framework.response import Response
 from rest_framework import status
 
-class ProjectTagCreateView(generics.CreateAPIView,
-                           viewsets.GenericViewSet):
+class ProjectTagListCreateView(generics.CreateAPIView,
+                               generics.ListAPIView,
+                               viewsets.GenericViewSet):
     """
+    list:
+    Visualizza la lista dei tags.
+    
+    Visualizza tutti i tags del progetto di cui è stato passato l'id
+    
     create:
     Crea/aggiungi tags ad un progetto
     
@@ -18,7 +24,9 @@ class ProjectTagCreateView(generics.CreateAPIView,
     e nel caso contrario viene creato e poi in qualsiasi caso viene aggiungo al progetto.
     """
     serializer_class = ProjectTagSerializer
-    queryset = ProjectTag.objects.all()
+    
+    def get_queryset(self):
+        return ProjectTag.objects.filter(projects__id=self.kwargs['id'])
     
     def add_or_create_tag(self,tag_name,project):
         tag = ProjectTag.objects.filter(name=tag_name)

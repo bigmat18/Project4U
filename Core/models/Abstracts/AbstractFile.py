@@ -79,6 +79,5 @@ class AbstractFile(models.Model,
             if file_value: self.delete_file(file_value)
         return super().delete(*args, **kwargs)
     
-    
     class Meta:
         abstract = True

@@ -14,5 +14,9 @@ class TextMessage(Message):
         db_table = "text_message"
         verbose_name = _("Text Message")
         verbose_name_plural = _("Text Messages")
+        
+    def save(self, *args, **kwargs):
+        if self.type_message != "TEXT": self.type_message = "TEXT"
+        return super().save(*args, **kwargs)
     
     def __str__(self): return str(self.author)

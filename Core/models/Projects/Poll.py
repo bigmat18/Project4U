@@ -18,5 +18,9 @@ class Poll(Message):
         db_table = "poll"
         verbose_name = _("Polls")
         verbose_name_plural = _("Polls")
+        
+    def save(self, *args, **kwargs):
+        if self.type_message != "POLL": self.type_message = "POLL"
+        return super().save(*args, **kwargs)
     
     def __str__(self): return str(self.id)

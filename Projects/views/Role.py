@@ -28,27 +28,37 @@ class RoleAccessPolicy(AccessPolicy):
         },
     ]
     
-    def get_project(self,view):
-        project_id = view.kwargs['id']
-        project = generics.get_object_or_404(Project, id=project_id)
-        return project
-    
     def is_creator(self, request, view, action) -> bool:
-        if action != "create": 
+        if action not in ["create", "list"]: 
             role = view.get_object()
-            project = generics.get_object_or_404(Project, id=role.project.id)
-        else: project = self.get_project(view)
+            project = view.get_project(role.project.id)        
+        else: project = view.get_project()
         return request.user == project.creator
     
     def is_inside_project(self, request, view, action) -> bool:
-        project = self.get_project(view)
+        project = view.get_project()
         return request.user == project.creator or project.users.filter(id=request.user.id).exists()
+
+
+
+class RoleBaseView(viewsets.GenericViewSet):
+    permission_classes = [IsAuthenticated, RoleAccessPolicy]
+    if not settings.DEBUG: permission_classes.append(HasAPIKey)
+
+    def get_project(self, id=None):
+        if hasattr(self, "project"): return self.project
+        if not id: id = self.kwargs['id']
+        self.project = Project.objects.filter(id=id)\
+                                      .select_related("creator")\
+                                      .prefetch_related("users")\
+                                      .first()
+        return self.project
 
 
 
 class RoleListCreateView(mixins.ListModelMixin,
                          mixins.CreateModelMixin,
-                         viewsets.GenericViewSet):
+                         RoleBaseView):
     """
     list:
     Restituisce la lista dei ruoli.
@@ -62,23 +72,17 @@ class RoleListCreateView(mixins.ListModelMixin,
     Crea un ruolo nel progetto a cui è stato passato l'id. Soltato il creatore del proggetto può
     creare un nuovo ruolo.
     """
-    serializer_class = RoleSerializer
     queryset = Role.objects.all()
-    lookup_field = "id"
-    permission_classes = [IsAuthenticated, RoleAccessPolicy]
-    if not settings.DEBUG: permission_classes.append(HasAPIKey)
-
+    serializer_class = RoleSerializer
     
     def perform_create(self, serializer):
-        id = self.kwargs['id']
-        project = generics.get_object_or_404(Project, id=id)
-        serializer.save(project=project)
+        serializer.save(project=self.get_project())
     
     
     
 class RoleUpdateDestroyView(mixins.UpdateModelMixin,
                             mixins.DestroyModelMixin,
-                            viewsets.GenericViewSet):
+                            RoleBaseView):
     """
     update:
     Aggiorna una ruolo.
@@ -99,12 +103,9 @@ class RoleUpdateDestroyView(mixins.UpdateModelMixin,
     Elimina il ruolo dal progetto di cui è stato passato l'id nell'url. 
     Soltato il creatore del progetto può eliminare una ruolo.
     """
-    serializer_class = RoleSerializer
-    queryset = Role.objects.all()
     lookup_field = "id"
-    permission_classes = [IsAuthenticated, RoleAccessPolicy]
-    if not settings.DEBUG: permission_classes.append(HasAPIKey)
-    
+    queryset = Role.objects.all()
+    serializer_class = RoleSerializer
     
     def update(self,request,*args, **kwargs):
         response = super().update(request,*args, **kwargs)

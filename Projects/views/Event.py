@@ -1,4 +1,3 @@
-from gc import get_objects
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, viewsets
 from ..serializers import EventWriteSerializer, EventReadSerializer, EventTaskSerializer

@@ -6,10 +6,11 @@ from rest_framework import status
 from rest_framework.response import Response
 
 
-class UserEducationCUDView(mixins.CreateModelMixin,
-                           mixins.UpdateModelMixin,
-                           mixins.DestroyModelMixin,
-                           viewsets.GenericViewSet):
+class UserEducationLCUDView(mixins.CreateModelMixin,
+                            mixins.ListModelMixin,
+                            mixins.UpdateModelMixin,
+                            mixins.DestroyModelMixin,
+                            viewsets.GenericViewSet):
     
     """
     create:
@@ -46,7 +47,7 @@ class UserEducationCUDView(mixins.CreateModelMixin,
     
     def create(self, request, *args, **kwargs):
         if not isinstance(request.data, list):
-            return super(UserEducationCUDView, self).create(request, *args, **kwargs)
+            return super(UserEducationLCUDView, self).create(request, *args, **kwargs)
         serializer = self.get_serializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)

@@ -1,4 +1,3 @@
-from urllib import response
 from django.utils import timezone
 from Core.tests import BaseTestCase
 from rest_framework import status
@@ -6,7 +5,7 @@ from Core.models import Project, Showcase, Event, EventTask
 from django.test import tag
 import datetime
 
-@tag("Showcase", "events-tests")
+@tag("Showcases", "events-tests")
 class EventTestCase(BaseTestCase):
     
     def setUp(self):
@@ -101,7 +100,7 @@ class EventTestCase(BaseTestCase):
     
     @tag("patch", "auth")  
     def test_event_task_update_auth(self):
-        data = {"name": "test2"}
+        data = {"name": "test2", "checked": True}
         response = self.client.patch(f"/api/event/task/{self.task.id}/", data=data)
         self.assertEquals(response.status_code, status.HTTP_200_OK)
         

@@ -145,7 +145,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('level', models.PositiveIntegerField(default=1, help_text="Livello di competenza della skill dell'utente")),
-                ('skill', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='skill', related_query_name='skill', to='Core.skill')),
+                ('skill', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='user_skill', related_query_name='user_skill', to='Core.skill')),
             ],
             options={
                 'verbose_name': 'User Skill',
@@ -249,7 +249,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='userskill',
             name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='user_skill', related_query_name='user_skill', to=settings.AUTH_USER_MODEL),
         ),
         migrations.CreateModel(
             name='UserProject',
@@ -298,6 +298,7 @@ class Migration(migrations.Migration):
                 ('creator', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='showcases_created', related_query_name='showcases_created', to=settings.AUTH_USER_MODEL)),
                 ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='showcases', related_query_name='showcases', to='Core.project')),
                 ('users', models.ManyToManyField(blank=True, related_name='showcases', related_query_name='showcases', to=settings.AUTH_USER_MODEL)),
+                ('default', models.BooleanField(default=False, help_text='Indica se una bacheca è default o meno'),),
             ],
             options={
                 'verbose_name': 'Showcase',

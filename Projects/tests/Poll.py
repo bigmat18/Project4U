@@ -3,7 +3,7 @@ from Core.tests import BaseTestCase
 from rest_framework import status
 from django.test import tag
 
-@tag("showcase", "polls-tests")
+@tag("Showcases", "polls-tests")
 class PollTestCase(BaseTestCase):
     
     def setUp(self):

@@ -1,3 +1,4 @@
+from random import choice, choices
 from Core.models import Message, Showcase, TextMessage, MessageFile
 from rest_framework import generics, viewsets
 from ..serializers import MessageSerializer, TextMessageSerializer, MessageFileSerializer
@@ -12,6 +13,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
 from django.conf import settings
 from rest_framework.pagination import PageNumberPagination
+from Core.models.Projects.Message import TypeMessage
 
 
 class MessagePagintation(PageNumberPagination):
@@ -30,14 +32,15 @@ class MessageAccessPolicy(AccessPolicy):
     ]
     
     def is_inside_showcase(self, request, view, action) -> bool:
-        showcase = generics.get_object_or_404(Showcase, id=view.kwargs['id'])
+        showcase = view.get_showcase()
         return (request.user == showcase.creator or 
                 showcase.users.filter(id=request.user.id).exists())
 
 
 class MessageFilter(filters.FilterSet):
     gt_updated_at = filters.DateTimeFilter(method='get_gt_updated_at')
-    
+    type_message = filters.ChoiceFilter(method="get_type_message",
+                                        choices=TypeMessage.choices)
     
     class Meta:
         model = Message
@@ -45,6 +48,9 @@ class MessageFilter(filters.FilterSet):
         
     def get_gt_updated_at(self, queryset, name, value):
         return queryset.filter(updated_at__gt=value)
+    
+    def get_type_message(self, queryset, name, value):
+        return queryset.filter(type_message__in=dict(self.data)['type_message'])
     
 
 class MessageListView(generics.ListAPIView,
@@ -55,13 +61,12 @@ class MessageListView(generics.ListAPIView,
     
     Restituisce una lista con tutti i messaggi della bacheca di cui è stato passato l'id.
     E' possibile filtrare i tipi di messaggi scrivendo nell'url '?type_message=' ed accanto il tipo di messaggio
-    fra TEXT, IDEA, EVENT, UPDATE, POLL. La lista che ritorna ritorna in ordine dall'utlimo messaggio scritto inoltre è organizzata
-    in pagine da 25. Per cambiare pagina '?page=', per cambiare dimensioni pagine '?size='.
-    E' possibile filtrare tutti i messagi in modo che vengano restituiti solato quelli con una data seguente a quella
-    inviata nell'url tramite '?gt_updated_at='. La data deve essere formattata con il formato in cui viene inviato nelle response del backend.
+    fra TEXT, IDEA, EVENT, UPDATE, POLL, si possono invaire anche più tipi per filtrare scrivendo '?type_message=...&type_message=...' ed al posto di ... la stringa. 
+    La lista che ritorna ritorna in ordine dall'utlimo messaggio scritto inoltre è organizzata in pagine da 25. Per cambiare pagina '?page=', per cambiare dimensioni pagine '?size='.
+    E' possibile filtrare tutti i messagi in modo che vengano restituiti solato quelli con una data seguente a quella inviata nell'url tramite '?gt_updated_at='. 
+    La data deve essere formattata con il formato in cui viene inviato nelle response del backend.
     Ogni volta che si richiede la lista delle pagine tutti i messaggi in quella pagina vengono segnati come visualizzati dall'utente
-    che ha effetuato la richiesta
-    Soltato i partecipanti alla bacheca possono vedere la lista dei messaggi.
+    che ha effetuato la richiesta. Soltato i partecipanti alla bacheca possono vedere la lista dei messaggi.
     
     -----IMPORTANTE----
     Il campo 'content' non è una stringa ma restituisce un oggetto con i capi del messaggio, vedi in fondo
@@ -74,12 +79,16 @@ class MessageListView(generics.ListAPIView,
     if not settings.DEBUG: permission_classes.append(HasAPIKey)
 
     def get_showcase(self):
-        showcase_id = self.kwargs['id']
-        return generics.get_object_or_404(Showcase, id=showcase_id)
+        if hasattr(self, "showcase"): return self.showcase
+        self.showcase = Showcase.objects.filter(id=self.kwargs['id'])\
+                                        .select_related("creator")\
+                                        .prefetch_related('users')\
+                                        .first()
+        return self.showcase
     
     def get_queryset(self):
         return Message.objects.filter(showcase=self.get_showcase())\
-                              .select_related('text_message','event','showcase_update','poll')\
+                              .select_related('text_message','event','showcase_update','poll',"author")\
                               .order_by("-updated_at")
                               
     def set_message_visualize(self, messages):
@@ -111,11 +120,16 @@ class TextMessageCreateView(generics.CreateAPIView,
     permission_classes = [IsAuthenticated, MessageAccessPolicy]
     if not settings.DEBUG: permission_classes.append(HasAPIKey)
     
-    def get_showcases(self):
-        return get_object_or_404(Showcase, id=self.kwargs['id'])
+    def get_showcase(self):
+        if hasattr(self, "showcase"): return self.showcase
+        self.showcase = Showcase.objects.filter(id=self.kwargs['id'])\
+                                        .select_related("creator")\
+                                        .prefetch_related('users')\
+                                        .first()
+        return self.showcase
     
     def perform_create(self, serializer):
-        instance = serializer.save(showcase=self.get_showcases(),
+        instance = serializer.save(showcase=self.get_showcase(),
                                    type_message="TEXT",
                                    author=self.request.user)
         instance.viewed_by.add(self.request.user)

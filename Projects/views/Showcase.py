@@ -1,6 +1,12 @@
-from ..serializers import ShowcaseReadSerializer, ShowcaseWriteSerializer, CustomShowcaseSerializer
+from django.shortcuts import get_object_or_404
+from Projects.serializers import (ShowcaseReadSerializer, 
+                                  ShowcaseWriteSerializer, 
+                                  CustomShowcaseSerializer,
+                                  MessageSerializer,
+                                  UsersShowcaseSerializer)
 from rest_framework import generics, viewsets
-from Core.models import Showcase, Project, UserProject
+from rest_framework.views import APIView
+from Core.models import Showcase, Project, UserProject, Message, User
 from rest_access_policy import AccessPolicy
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_api_key.permissions import HasAPIKey
@@ -19,7 +25,7 @@ class ShowcaseAccessPolicy(AccessPolicy):
             "condition": "is_inside_project"
         },
         {
-            "action": ["retrieve"],
+            "action": ["retrieve","get"],
             "principal": "*",
             "effect": "allow",
             "condition": ["is_inside_showcase", "is_creator"]
@@ -37,7 +43,7 @@ class ShowcaseAccessPolicy(AccessPolicy):
         return request.user == showcase.creator or request.user == showcase.project.creator
     
     def is_inside_project(self, request, view, action) -> bool:
-        project = generics.get_object_or_404(Project, id=view.kwargs['id'])
+        project = view.get_project()
         return (request.user == project.creator or 
                 project.users.filter(id=request.user.id).exists())
         
@@ -48,8 +54,21 @@ class ShowcaseAccessPolicy(AccessPolicy):
 
 
 
+class ShowcaseBaseView(viewsets.GenericViewSet):
+    permission_classes = [IsAuthenticated, ShowcaseAccessPolicy]
+    if not settings.DEBUG: permission_classes.append(HasAPIKey)
+    
+    def get_object(self):
+        if hasattr(self,"showcase"): return self.showcase
+        self.showcase = Showcase.objects.filter(id=self.kwargs['id'])\
+                                        .select_related('creator')\
+                                        .first()
+        return self.showcase
+
+
+
 class ShowcaseListCreateView(generics.ListCreateAPIView,
-                             viewsets.GenericViewSet):
+                             ShowcaseBaseView):
     """
     list:
     Visualizza la lista delle bacheche.
@@ -57,23 +76,13 @@ class ShowcaseListCreateView(generics.ListCreateAPIView,
     Visualizza una lista di tutte le bacheche del progetto di cui è stato passato l'id.
     Soltato i partecipanti del progetto possono vedere le bacheche.
     
-    ---- ERRORE in "last_message" ----
-    L'ultimo messaggio non è una stringa ma è un oggetto formattato in base al tipo del messaggio.
-    L'ultimo messaggio può essere un messaggio testuale, un aggiornameto della bacheca ma NON un evento
-    
     create:
     Crea una nuova bacheca.
     
     Crea una nuova bacheca nel progetto di cui è stato passato l'id.
     Soltato i partecipanti del progetto possono creare delle bacheche.
-    
-    ---- ERRORE in "last_message" ----
-    L'ultimo messaggio non è una stringa ma è un oggetto formattato in base al tipo del messaggio.
-    L'ultimo messaggio può essere un messaggio testuale, un aggiornameto della bacheca ma NON un evento.
     """
     queryset = Showcase.objects.all()
-    permission_classes = [IsAuthenticated, ShowcaseAccessPolicy]
-    if not settings.DEBUG: permission_classes.append(HasAPIKey)
     
     def get_serializer_class(self, *args, **kwargs):
         if self.action == "list":
@@ -82,19 +91,22 @@ class ShowcaseListCreateView(generics.ListCreateAPIView,
             return ShowcaseWriteSerializer
     
     def get_project(self):
-        project_id = self.kwargs['id']
-        return generics.get_object_or_404(Project, id=project_id)
+        if hasattr(self, "project"): return self.project
+        self.project = Project.objects.filter(id=self.kwargs['id'])\
+                                      .select_related("creator")\
+                                      .first()
+        return self.project
     
     def get_queryset(self):
         user = self.request.user
-        return Showcase.objects.prefetch_related('users')\
-                               .filter(Q(project__id=self.kwargs['id']) & Q(users=user))\
+        return Showcase.objects.filter(Q(project__id=self.kwargs['id']) & Q(users=user))\
+                               .select_related("creator")\
                                .order_by("created_at")
                                
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
+        queryset = self.get_queryset()
         serializer = CustomShowcaseSerializer(queryset,request,many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
                                
     def create(self, request, *args, **kwargs):
         if "users" in self.request.data:
@@ -112,7 +124,7 @@ class ShowcaseListCreateView(generics.ListCreateAPIView,
         
         
 class ShowcaseRUDView(generics.RetrieveUpdateDestroyAPIView,
-                      viewsets.GenericViewSet):
+                      ShowcaseBaseView):
     """
     retrieve:
     Vedi i dati della bacheca.
@@ -143,8 +155,6 @@ class ShowcaseRUDView(generics.RetrieveUpdateDestroyAPIView,
     """
     queryset = Showcase.objects.all()
     lookup_field = "id"
-    permission_classes = [IsAuthenticated, ShowcaseAccessPolicy]
-    if not settings.DEBUG: permission_classes.append(HasAPIKey)
     
     def get_serializer_class(self, *args, **kwargs):
         if self.action == "retrieve" or self.action == "destroy":
@@ -153,8 +163,8 @@ class ShowcaseRUDView(generics.RetrieveUpdateDestroyAPIView,
             return ShowcaseWriteSerializer
         
     def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = CustomShowcaseSerializer(instance=instance,request=request)
+        showcase = self.get_object()
+        serializer = CustomShowcaseSerializer(instance=showcase,request=request)
         return Response(serializer.data)
         
     def update(self, request, *args, **kwargs):
@@ -166,7 +176,6 @@ class ShowcaseRUDView(generics.RetrieveUpdateDestroyAPIView,
         response = self.check_users_in_project(request)
         if response is not None and response.status_code  == status.HTTP_400_BAD_REQUEST: return response
         return super().partial_update(request, *args, **kwargs)
-    
     
     def check_users_in_project(self, request):
         if "users" in request.data:
@@ -182,3 +191,73 @@ class ShowcaseRUDView(generics.RetrieveUpdateDestroyAPIView,
     def add_creator_to_users(self, instance):
         if not instance.users.filter(id=instance.creator.id).exists():
             instance.users.add(instance.creator)
+            
+      
+            
+class ShowcaseLastMessageAPIView(ShowcaseBaseView,
+                                 APIView):
+    """
+    get:
+    Ritorna ultimo messaggio.
+    
+    Ritorna l'utlimo messaggio della showcase.
+    """
+    
+    def get(self, request, id):
+        message = Message.objects.filter(Q(showcase=self.get_object()) & ~Q(type_message="EVENT"))\
+                                 .select_related("author", "text_message", "poll", "showcase_update")\
+                                 .order_by('updated_at')\
+                                 .first()
+        return Response(data=MessageSerializer(message).data, status=status.HTTP_200_OK)
+    
+    
+    
+class ShowcaseLastEventAPIView(ShowcaseBaseView,
+                               APIView):
+    """
+    get:
+    Ritorna ultimo evento.
+    
+    Ritorna l'ultimo evento della showcase.
+    """
+    
+    def get(self, request, id):
+        message = Message.objects.filter(Q(showcase=self.get_object()) & Q(type_message="EVENT"))\
+                                 .select_related("author", "event")\
+                                 .prefetch_related("event__tasks", "event__partecipants")\
+                                 .order_by('updated_at')\
+                                 .first()
+        return Response(data=MessageSerializer(message).data, status=status.HTTP_200_OK)
+    
+    
+    
+class ShowcaseNotifyAPIView(ShowcaseBaseView,
+                            APIView):
+    """
+    get:
+    Ritorna notifiche non lette.
+    
+    Ritorna il numero di notifiche non lette dall'utente che ha effettuato la richiesta.
+    """
+    
+    def get(self, request, id):
+        notify = Message.objects.filter(showcase=self.showcase)\
+                                .exclude(viewed_by=self.request.user)\
+                                .count()
+        return Response(data={"notify": notify}, status=status.HTTP_200_OK)
+    
+    
+    
+class ShowcaseUsersAPIView(ShowcaseBaseView,
+                           APIView):
+    """
+    get:
+    Ritorna lista utenti.
+    
+    Ritorna la lista degli utenti all'interno della showcase.
+    """
+    
+    def get(self,request, id):
+        users = User.objects.filter(showcases=self.get_object())
+        return Response(data={"users": UsersShowcaseSerializer(users, many=True).data}, 
+                        status=status.HTTP_200_OK)

@@ -3,12 +3,16 @@ from rest_framework import generics, viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from Core.models.Users.Skill import UserSkill
-from Users.serializers import (UsersDetailsSerializer, UsersListSerializer,
-                               CurrentUserInfoSerializer, CurrentUserImageSerializer)
+from Users.serializers import (UsersDetailsSerializer, 
+                               UsersListSerializer,
+                               CurrentUserInfoSerializer, 
+                               CurrentUserImageSerializer,
+                               ExternalProjectSerializer,
+                               UserSkillListSerializer,
+                               UserEducationSerializer)
 from Projects.serializers import ProjectListSerializer
 from rest_auth.views import UserDetailsView
-from Core.models import User, Project
+from Core.models import User, Project, ExternalProject, UserEducation, UserSkill
 
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
@@ -33,6 +37,7 @@ class UserFilter(filters.FilterSet):
                                        Q(user_skill__level__gte=skill[1]) & 
                                        Q(user_skill__level__lte=skill[2]))
         return queryset
+
 
 
 class UserRetrieveUpdateView(UserDetailsView,
@@ -101,8 +106,6 @@ class UsersListView(generics.ListAPIView,
                            .prefetch_related(Prefetch('user_skill', queryset=UserSkill.objects.filter(pk__in=query)\
                                                                                               .select_related('skill')
                                                                                               .order_by('-level')))
-    
-
 
 
 class UsersRetriveView(generics.RetrieveAPIView,
@@ -111,48 +114,13 @@ class UsersRetriveView(generics.RetrieveAPIView,
     retrieve:
     Ristituisce i dettagli di un'utente.
 
-    Ritorna tutti i dettagli di un utente di cui è stato passato la secret_key nell'url.
+    Ritorna tutti i dettagli di un utente di cui è stato passato la slug nell'url.
     Serve quando si entra per esempio nel profilo di un'utente
     """
     serializer_class = UsersDetailsSerializer
     queryset = User.objects.filter(active=True)
-    lookup_field = "secret_key"
-    
-    
-    
-class UserProjectsListView(generics.ListAPIView,
-                           viewsets.GenericViewSet):
-    """
-    list:
-    Vedi la lista dei progetti dell'utente loggato.
-    
-    Vedi la lista dei progetti dell'utente loggato (cioè di quello che fa la richiesta), i progetti
-    che vede sono quelli o che ha creato o che è dentro come partecipante.
-    """
-    serializer_class = ProjectListSerializer
-    queryset = Project.objects.all()
-    
-    def get_queryset(self):
-        return Project.objects.filter(users=self.request.user.id)
-    
+    lookup_field = "slug"
 
-
-@method_decorator(name="get",decorator=swagger_auto_schema(
-                             responses={"200":openapi.Schema(type=openapi.TYPE_OBJECT,
-                                                            properties={"image":openapi.Schema(
-                                                                        type=openapi.TYPE_STRING)})}))
-class UserImageView(APIView):
-
-    def get(self, request, *args, **kwargs):
-        """
-        Restituisce l'immage dell'utente loggato.
-        
-        Restituisce solo l'immage dell'utente loggato (cioè di quello che ha fatto la richesta).
-        Endpoints da utilizzare per l'ateprima dell'immage dell'utente per esempio in una navbar.
-        """
-        user = User.objects.get(id=request.user.id)
-        serializer = CurrentUserImageSerializer(user)
-        return Response(status=status.HTTP_200_OK,data=serializer.data)
 
 
 @method_decorator(name="get",decorator=swagger_auto_schema(
@@ -170,3 +138,84 @@ class UserInfoView(APIView):
         user = get_object_or_404(User, id=request.user.id)
         serializer = CurrentUserInfoSerializer(instance=user)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+  
+    
+    
+@method_decorator(name="get",decorator=swagger_auto_schema(
+                             responses={"200":openapi.Schema(type=openapi.TYPE_OBJECT,
+                                                            properties={"image":openapi.Schema(
+                                                                        type=openapi.TYPE_STRING)})}))
+class UserImageAPIView(APIView):
+
+    def get(self, request, *args, **kwargs):
+        """
+        Restituisce l'immage dell'utente loggato.
+        
+        Restituisce solo l'immage dell'utente loggato (cioè di quello che ha fatto la richesta).
+        Endpoints da utilizzare per l'ateprima dell'immage dell'utente per esempio in una navbar.
+        """
+        user = User.objects.get(id=request.user.id)
+        serializer = CurrentUserImageSerializer(user)
+        return Response(status=status.HTTP_200_OK,data=serializer.data)
+    
+    
+
+class UserProjectsListView(generics.ListAPIView,
+                           viewsets.GenericViewSet):
+    """
+    list:
+    Vedi la lista dei progetti dell'utente loggato.
+    
+    Vedi la lista dei progetti dell'utente loggato (cioè di quello che fa la richiesta), i progetti
+    che vede sono quelli o che ha creato o che è dentro come partecipante.
+    """
+    serializer_class = ProjectListSerializer
+    queryset = Project.objects.all()
+    
+    def get_queryset(self):
+        return Project.objects.filter(users=self.request.user.id)
+    
+    
+class UsersExternalProjectsListView(generics.ListAPIView,
+                                    viewsets.GenericViewSet):
+    """
+    list:
+    Vedi la lista dei progetti esterni dell'utente.
+    
+    Vedi la lista dei progetti esterni dell'utente di cui è stato passato lo slug.
+    """
+    serializer_class = ExternalProjectSerializer
+    
+    def get_queryset(self):
+        slug = self.kwargs['slug']
+        return ExternalProject.objects.filter(user__slug=slug)
+
+
+class UsersEducationsListView(generics.ListAPIView,
+                              viewsets.GenericViewSet):
+    """
+    list:
+    Vedi la lista delle educazioni dell'utente.
+    
+    Vedi la lista delle educazioni dell'utente di cui è stato passato lo slug.
+    """
+    serializer_class = UserEducationSerializer
+    
+    def get_queryset(self):
+        slug = self.kwargs['slug']
+        return UserEducation.objects.filter(user__slug=slug)
+
+
+class UsersSkillsListView(generics.ListAPIView,
+                          viewsets.GenericViewSet):
+    """
+    list:
+    Vedi la lista delle skills dell'utente.
+    
+    Vedi la lista delle skills dell'utente di cui è stato passato lo slug.
+    """
+    serializer_class = UserSkillListSerializer
+    
+    def get_queryset(self):
+        slug = self.kwargs['slug']
+        return UserSkill.objects.filter(user__slug=slug)

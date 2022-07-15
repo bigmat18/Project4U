@@ -11,6 +11,17 @@ class UserEducationTestCase(BaseTestCase):
         self.baseSetup()
         self.education = UserEducation.objects.create(description="prova",user=self.user,
                                                       started_at=timezone.now())
+    
+    @tag('get', 'auth')
+    def test_educations_user_list_auth(self):
+        response = self.client.get("/api/user/educations/")
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        
+    @tag('get', 'auth')
+    def test_educations_users_list_auth(self):
+        response = self.client.get(f"/api/users/{self.user.slug}/educations/")
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        
     @tag('post','auth')
     def test_education_create_auth(self):
         response = self.client.post("/api/user/educations/", data={"description":self.education.description, 

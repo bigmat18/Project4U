@@ -11,7 +11,6 @@ class EventTaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventTask
         fields = ["checked", "name", "id"]
-        read_only_fields = ["checked"]
 
 
 class EventReadSerializer(serializers.ModelSerializer):

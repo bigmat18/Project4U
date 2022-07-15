@@ -27,8 +27,11 @@ create_responses = {"201": openapi.Response(description="In caso di aggiunta di 
 @method_decorator(name="create",
                   decorator=swagger_auto_schema(responses=create_responses,
                                                 request_body=UserSkillCreateSerializer(many=True)))
-class UserSkillCUDView(mixins.CreateModelMixin,mixins.UpdateModelMixin,
-                        mixins.DestroyModelMixin,viewsets.GenericViewSet):
+class UserSkillLCUDView(mixins.CreateModelMixin,
+                        mixins.ListModelMixin,
+                        mixins.UpdateModelMixin,
+                        mixins.DestroyModelMixin,
+                        viewsets.GenericViewSet):
     """
     create:
     Aggiungi una skill all'utente.
@@ -59,12 +62,11 @@ class UserSkillCUDView(mixins.CreateModelMixin,mixins.UpdateModelMixin,
     lookup_field = "skill"
     
     def get_queryset(self):
-        skill = self.kwargs.get("skill")
-        return UserSkill.objects.filter(skill=skill).filter(user=self.request.user)
+        return UserSkill.objects.filter(user=self.request.user)
     
     def create(self, request, *args, **kwargs):
         if not isinstance(request.data, list):
-            return super(UserSkillCUDView, self).create(request, *args, **kwargs)
+            return super(UserSkillLCUDView, self).create(request, *args, **kwargs)
         serializer = self.get_serializer(data=request.data, many=True)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)

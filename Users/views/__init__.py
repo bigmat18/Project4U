@@ -1,10 +1,14 @@
-from Core.models.Users.UserEducation import UserEducation
-from Users.views.UserEducation import UserEducationCUDView
 from .Email import EmailCreateView
-from .User import (UsersListView, UsersRetriveView, UserImageView, 
-                   UserRetrieveUpdateView, UserProjectsListView,
-                   UserInfoView)
+from .User import (UsersListView, 
+                   UsersRetriveView, 
+                   UserImageAPIView, 
+                   UserRetrieveUpdateView, 
+                   UserProjectsListView,
+                   UserInfoView,
+                   UsersEducationsListView,
+                   UsersExternalProjectsListView,
+                   UsersSkillsListView)
 from .Skill import SkillListView
-from .UserSkill import UserSkillCUDView
-from .ExternalProject import ExternalProjectCUDView
-from .UserEducation import UserEducationCUDView
+from .UserSkill import UserSkillLCUDView
+from .ExternalProject import ExternalProjectLCUDView
+from .UserEducation import UserEducationLCUDView

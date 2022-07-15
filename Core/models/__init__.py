@@ -26,3 +26,14 @@ from .Projects.Poll import Poll
 from .Projects.PollOption import PollOption
 from .Projects.EventTask import EventTask
 from .Projects.MessageFile import MessageFile
+
+from .Community.Post import Post
+from .Community.PostComment import PostComment
+from .Community.TextPost import TextPost
+
+from .Community.News import News
+from .Community.NewsParagraph import NewsParagraph
+from .Community.NewsParagraphImage import NewsParagraphImage
+
+from .Community.ProjectQuestion import ProjectQuestion
+from .Community.ProjectAnswer import ProjectAnswer

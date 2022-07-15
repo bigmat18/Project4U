@@ -46,7 +46,7 @@ class ShowcaseModelTestCase(TestCase):
         with self.assertRaises(IntegrityError):
             TextMessage.objects.create(showcase=self.showcase,text="test",author=self.new_user)
          
-         
+    @tag('this')
     def test_showcase_creation_not_inside_project(self):
         with self.assertRaises(IntegrityError):
             Showcase.objects.create(project=self.project, name="test3", creator=self.new_user)

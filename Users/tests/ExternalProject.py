@@ -12,6 +12,16 @@ class ExternalProjectTestCase(BaseTestCase):
     def setUp(self):
         self.baseSetup()
         self.project = ExternalProject.objects.create(user=self.user,name="prova")
+        
+    @tag('get', 'auth')
+    def test_external_projects_user_list_auth(self):
+        response = self.client.get("/api/user/external-projects/")
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
+        
+    @tag('get', 'auth')
+    def test_external_projects_users_list_auth(self):
+        response = self.client.get(f"/api/users/{self.user.slug}/external-projects/")
+        self.assertEquals(response.status_code, status.HTTP_200_OK)
     
     @tag('post','auth') 
     def test_external_project_create_auth(self):

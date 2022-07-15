@@ -8,16 +8,14 @@ from Users.serializers import (UserSkillListSerializer,
 
 class UsersListSerializer(serializers.ModelSerializer):
     skills = UserSkillListSerializer(source='user_skill',many=True,read_only=True)
+    
     class Meta:
         model = User
-        fields = ["id","slug", "first_name", "last_name", "image", "skills"]
+        fields = ["id","slug", "first_name", "last_name",
+                  "image", "skills", "main_role"]
 
 
 class UsersDetailsSerializer(serializers.ModelSerializer):
-    skills = UserSkillListSerializer(source="userskill_set",many=True, 
-                                     required=False, read_only=True)
-    external_projects = ExternalProjectSerializer(many=True, read_only=True)
-    educations = UserEducationSerializer(many=True,read_only=True)
     
     class Meta:
         model = User
@@ -28,7 +26,6 @@ class UsersDetailsSerializer(serializers.ModelSerializer):
         
 
 class CurrentUserDetailsSerializer(UsersDetailsSerializer):
-    projects = ProjectListSerializer(read_only=True,many=True)
     
     class Meta:
         model = User

@@ -54,16 +54,13 @@ class Showcase(AbstractCreateUpdate):
         if pre_save_showcase.name != self.name:
             self.create_showcase_update("NAME")
             
-            
     def create_showcase_update(self, type_update):
         update = ShowcaseUpdate.objects.create(author=self.creator,showcase=self,
                                                type_update=type_update,type_message="UPDATE")
         update.viewed_by.add(self.creator)
         
-        
     def setup_creator(self):
         if not self.users.filter(id=self.creator.id).exists():
             self.users.add(self.creator)
       
-        
     def __str__(self): return f"{self.project}-{self.name}"
