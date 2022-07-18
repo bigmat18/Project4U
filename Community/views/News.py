@@ -44,6 +44,26 @@ class NewsAccessPolicy(AccessPolicy):
 
 class NewsCreateView(generics.CreateAPIView,
                      viewsets.GenericViewSet):
+    """
+    create:
+    Crea nuove news all'interno di un progetto.
+    
+    Crea news all'interno di un progetto a cui partecipi. E' possibile oltre i dati della news mandare anche
+    una lista chiamata 'paragraphs' contentente i dati dei paragrafi da aggiungere alla news. All'interno di questa lista si
+    può anche inserire 'images' per mandare i dati delle immagini legati al paragrafo. Esempio:
+    {
+        "dati news": ....
+        "paragraphs": [
+            {"dati paragrafo1"},
+            {
+                "dati paragrafo2",
+                "images": [
+                    {"dati immagine 1"}
+                ]
+            }
+        ]
+    }
+    """
     serializer_class = NewsSerializer
     queryset = News.objects.all()
     permission_classes = [IsAuthenticated, NewsAccessPolicy]
@@ -109,6 +129,27 @@ class NewsCreateView(generics.CreateAPIView,
 
 class NewsRUDView(generics.RetrieveUpdateDestroyAPIView,
                   viewsets.GenericViewSet):
+    """
+    retrieve:
+    Vedi dati news.
+    
+    Dato un id vedi tutti i dati di una news.
+    
+    update:
+    Aggiorna una news.
+    
+    Aggiorna tutti i dati di una news. Solo l'autore può farlo.
+    
+    partial_update:
+    Aggiorna una news parzialmente.
+    
+    Aggiorna parzialmente tutti i dati di una news. Solo l'autore può farlo.
+    
+    destroy:
+    Elimina una news.
+    
+    Elimina una news. Solo l'autore della news ed il creatore del progetto possono farlo.
+    """
     serializer_class = NewsSerializer
     queryset = News.objects.all()
     lookup_field = "id"
