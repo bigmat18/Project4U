@@ -7,7 +7,7 @@ from django.test.utils import override_settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 
-@tag('Community', 'news-paragraph-tests')
+@tag('Community', 'news-paragraph-tests', 'file')
 class NewsParagraphTestCase(BaseTestCase):
     
     def setUp(self):
