@@ -122,8 +122,7 @@ class NewsCreateView(generics.CreateAPIView,
     
     def perform_create(self, serializer):
         instance = serializer.save(author=self.request.user,
-                                   project=get_object_or_404(Project, 
-                                                             id=self.kwargs['id']))
+                                   project=self.get_object())
         return instance
 
 
