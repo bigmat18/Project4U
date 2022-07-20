@@ -24,10 +24,16 @@ class NewsAccessPolicy(AccessPolicy):
             "effect": "allow",
         },
         {
-            "action": ["destroy", "update", "partial_update"],
+            "action": ["destroy"],
             "principal": "*",
             "effect": "allow",
-            "condition": "is_author"
+            "condition": ["is_author", "is_project_creator"]
+        },
+        {
+            "action": ["update", "partial_update"],
+            "principal": "*",
+            "effect": "allow",
+            "condition": ["is_author"]
         },
     ]
     
@@ -40,6 +46,9 @@ class NewsAccessPolicy(AccessPolicy):
         news = view.get_object()
         return request.user == news.author
     
+    def is_project_creator(self, request, view, action) -> bool:
+        news = view.get_object()
+        return (news.project.creator == request.user)
 
 
 class NewsCreateView(generics.CreateAPIView,

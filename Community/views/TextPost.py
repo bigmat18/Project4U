@@ -3,13 +3,56 @@ from ..serializers import TextPostSerializer
 from Core.models import TextPost, Project
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
+from rest_access_policy.access_policy import AccessPolicy
+
+
+class TextPostAccessPolicy(AccessPolicy):
+    statements = [
+        {
+            "action": ["create"],
+            "principal": "*",
+            "effect": "allow",
+            "condition": "is_inside_project"
+        },
+        {
+            "action": ["retrieve"],
+            "principal": "*",
+            "effect": "allow",
+        },
+        {
+            "action": ["destroy"],
+            "principal": "*",
+            "effect": "allow",
+            "condition": ["is_author", "is_project_creator"]
+        },
+        {
+            "action": ["destroy", "update", "partial_update"],
+            "principal": "*",
+            "effect": "allow",
+            "condition": ["is_author"]
+        },
+    ]
+    
+    def is_inside_project(self, request, view, action) -> bool:
+        project = view.get_object()
+        return (request.user == project.creator or 
+                project.users.filter(id=request.user.id).exists())
+        
+    def is_author(self, request, view, action) -> bool:
+        news = view.get_object()
+        return request.user == news.author
+    
+    def is_project_creator(self, request, view, action) -> bool:
+        post = view.get_object()
+        return (post.project.creator == request.user)
+    
     
     
 class TextPostCreateView(generics.CreateAPIView,
                          viewsets.GenericViewSet):
     serializer_class = TextPostSerializer
     queryset = TextPost.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, TextPostAccessPolicy]
     
     def get_object(self):
         if not hasattr(self, "project"): 
@@ -27,5 +70,5 @@ class TextPostUpdateDestroyView(generics.UpdateAPIView,
                                 viewsets.GenericViewSet):
     serializer_class = TextPostSerializer
     queryset = TextPost.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, TextPostAccessPolicy]
     lookup_field = "id"

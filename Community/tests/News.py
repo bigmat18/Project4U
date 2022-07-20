@@ -66,3 +66,9 @@ class NewsTestCase(BaseTestCase):
         response = self.client.patch(f'/api/news/{self.news.id}/', data={"title": "titolo1"})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['title'], "titolo1")
+        
+    @tag("patch", "unauth")
+    def test_update_news_unauth(self):
+        self.client.force_authenticate(user=self.new_user)
+        response = self.client.patch(f'/api/news/{self.news.id}/', data={"title": "titolo1"})
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
