@@ -50,6 +50,12 @@ class TextPostAccessPolicy(AccessPolicy):
     
 class TextPostCreateView(generics.CreateAPIView,
                          viewsets.GenericViewSet):
+    """
+    create:
+    Crea un post testuale.
+    
+    Crea un post testuale all'interno del progetto a cui è stato messo l'id nell'url.
+    """
     serializer_class = TextPostSerializer
     queryset = TextPost.objects.all()
     permission_classes = [IsAuthenticated, TextPostAccessPolicy]
@@ -68,6 +74,22 @@ class TextPostCreateView(generics.CreateAPIView,
 class TextPostUpdateDestroyView(generics.UpdateAPIView,
                                 generics.DestroyAPIView,
                                 viewsets.GenericViewSet):
+    """
+    update:
+    Aggiorna post testuale.
+    
+    Aggiorna post testuale. Soltato il creatore del post può eseguire questa operazione.
+    
+    partial_update:
+    Aggiorna parzialmente post testuale.
+    
+    Aggiorna parzialmente post testuale. Soltato il creatore del post può eseguire questa operazione.
+    
+    destroy:
+    Elimina post testuale.
+    
+    Elimina post testuale. Soltato il creatore del post ed il creatore del progetto possono eseguire questa operazione.
+    """
     serializer_class = TextPostSerializer
     queryset = TextPost.objects.all()
     permission_classes = [IsAuthenticated, TextPostAccessPolicy]
