@@ -78,7 +78,7 @@ class ShowcaseTestCase(BaseTestCase):
         response = self.client.post(f'/api/projects/{self.project.id}/showcases/',data=data)
         self.assertEquals(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    @tag('post','unauth','this') 
+    @tag('post','unauth') 
     def test_showcase_create_unauth(self):
         self.project.users.remove(self.new_user)
         self.client.force_authenticate(user=self.new_user)

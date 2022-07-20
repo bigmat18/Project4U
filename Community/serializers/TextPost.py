@@ -5,4 +5,4 @@ class TextPostSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = TextPost
-        fields = ["text"]
+        fields = ["text","file"]

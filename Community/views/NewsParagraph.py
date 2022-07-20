@@ -25,7 +25,7 @@ class NewsParagraphAccessPolicy(AccessPolicy):
             "action": ["destroy"],
             "principal": "*",
             "effect": "allow",
-            "condition": ["is_project_creator","is_author"]
+            "condition": ["is_author"]
         }
     ]
     
@@ -34,11 +34,6 @@ class NewsParagraphAccessPolicy(AccessPolicy):
         if isinstance(news, NewsParagraph): news = news.news
         elif isinstance(news, NewsParagraphImage): news = news.paragraph.news
         return (news.author == request.user)
-    
-    def is_project_creator(self, request, view, action) -> bool:
-        paragraph = view.get_object()
-        if not isinstance(paragraph, NewsParagraph): paragraph = paragraph.paragraph
-        return (paragraph.news.project.creator == request.user)
 
 
 class NewsParagraphListCreateView(generics.ListCreateAPIView,

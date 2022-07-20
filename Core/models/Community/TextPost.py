@@ -9,7 +9,9 @@ def file_path(instace,filename):
 class TextPost(Post, AbstractFile):
     text = models.TextField()
     file = models.FileField(upload_to=file_path,
-                            max_length=1000)
+                            max_length=1000,
+                            blank=True,
+                            null=True)
     post = models.OneToOneField(Post, 
                                 on_delete=models.CASCADE,
                                 parent_link=True,
@@ -21,3 +23,7 @@ class TextPost(Post, AbstractFile):
         db_table = "text_post"
         verbose_name = _("Text Post")
         verbose_name_plural = _("Text Posts")
+        
+    def save(self, *args, **kwargs):
+        if self.type_post != "TEXT": self.type_post = "TEXT" 
+        return super().save(*args, **kwargs)

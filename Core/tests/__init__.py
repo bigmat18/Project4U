@@ -22,4 +22,5 @@ from Projects.tests import (ProjectsTestCase,
                             PollTestCase)
 
 from Community.tests import (NewsTestCase,
-                             NewsParagraphTestCase)
+                             NewsParagraphTestCase,
+                             PostTestCase)
