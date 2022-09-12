@@ -23,4 +23,6 @@ from Projects.tests import (ProjectsTestCase,
 
 from Community.tests import (NewsTestCase,
                              NewsParagraphTestCase,
-                             PostTestCase)
+                             PostTestCase,
+                             QuestionTestCase,
+                             AnswerTestCase)

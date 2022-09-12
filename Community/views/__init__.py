@@ -17,3 +17,9 @@ from .QuestionAnswer import (ProjectQuestionCreateView,
 
 from .TextPost import (TextPostCreateView, 
                        TextPostUpdateDestroyView)
+
+
+from .QuestionAnswer import (ProjectQuestionCreateView,
+                             ProjectQuestionUpdateDestroyView,
+                             ProjectAnswerCreateView,
+                             ProjectAnswerUpdateDestroyView)

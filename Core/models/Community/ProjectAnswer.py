@@ -14,7 +14,7 @@ class ProjectAnswer(AbstractCreateUpdate):
                                  on_delete=models.CASCADE,
                                  related_name="answers",
                                  related_query_name="answers")
-    answer = models.TextField()
+    content = models.TextField()
     
     class Meta:
         db_table = "project_answer"

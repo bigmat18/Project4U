@@ -6,11 +6,11 @@ class ProjectQuestionSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = ProjectQuestion
-        fields = ["slug", "question"]
+        fields = ["slug", "content"]
 
 
 class ProjectAnswerSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = ProjectAnswer
-        fields = ["author", "answer", "updated_at"]
+        fields = ["author", "content", "updated_at"]

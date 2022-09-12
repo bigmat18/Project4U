@@ -9,5 +9,5 @@ class ProjectAnswerInline(admin.TabularInline):
 
 @admin.register(ProjectQuestion)
 class ProjectQuestionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'project', 'created_at', 'updated_at', 'question', 'author')
+    list_display = ('id', 'project', 'created_at', 'updated_at', 'content', 'author')
     inlines = [ProjectAnswerInline]
