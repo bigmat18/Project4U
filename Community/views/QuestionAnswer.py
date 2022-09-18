@@ -28,8 +28,15 @@ class QuestionAnswerAccessPolicy(AccessPolicy):
         return request.user == object.author
 
 
+
 class ProjectQuestionCreateView(generics.CreateAPIView,
                                 viewsets.GenericViewSet):
+    """
+    create:
+    Crea una domanda.
+    
+    Crea una domanda per il progetto di cui è stato passato l'id.
+    """
     serializer_class = ProjectQuestionSerializer
     queryset = ProjectQuestion.objects.all()
     permission_classes = [IsAuthenticated, QuestionAnswerAccessPolicy]
@@ -40,9 +47,28 @@ class ProjectQuestionCreateView(generics.CreateAPIView,
                         author=self.request.user)
 
 
+
 class ProjectQuestionUpdateDestroyView(generics.UpdateAPIView,
                                        generics.DestroyAPIView,
                                        viewsets.GenericViewSet):
+    """
+    update:
+    Aggionrna una domanda.
+    
+    Aggiorna tutti dati della domanda di cui è stato passato l'slug. Soltato il creatore della domanda può eseguire questa
+    operazioni.
+    
+    partial_update:
+    Aggiorna una domanda.
+    
+    Aggiorna alcuni dati della domanda di cui è stato passato l'slug. Soltato il creatore della domanda può eseguire questa
+    operazioni.
+    
+    detroy:
+    Elimina una domanda.
+    
+    Elimina la domanda di cui è stato passato lo slug. Solato il creatore della domanda può eseguire questa operazione.
+    """
     serializer_class = ProjectQuestionSerializer
     queryset = ProjectQuestion.objects.all()
     lookup_field = "slug"
@@ -50,8 +76,15 @@ class ProjectQuestionUpdateDestroyView(generics.UpdateAPIView,
     if not settings.DEBUG: permission_classes.append(HasAPIKey)
 
 
+
 class ProjectAnswerCreateView(generics.CreateAPIView,
                               viewsets.GenericViewSet):
+    """
+    create:
+    Crea una risposta ad una domanda.
+    
+    Crea una risposta alla domanda di cui è stato passato l'id.
+    """
     serializer_class = ProjectAnswerSerializer
     queryset = ProjectAnswer.objects.all()
     permission_classes = [IsAuthenticated, QuestionAnswerAccessPolicy]
@@ -65,6 +98,24 @@ class ProjectAnswerCreateView(generics.CreateAPIView,
 class ProjectAnswerUpdateDestroyView(generics.UpdateAPIView,
                                      generics.DestroyAPIView,
                                      viewsets.GenericViewSet):
+    """
+    update:
+    Aggiorna una risposta.
+    
+    Aggiorna tutti dati della risposta di cui è stato passato l'id. Soltato il creatore della risposta può eseguire questa
+    operazioni.
+    
+    partial_update:
+    Aggiorna una risposta.
+    
+    Aggiorna alcuni dati della risposta di cui è stato passato l'id. Soltato il creatore della risposta può eseguire questa
+    operazioni.
+    
+    detroy:
+    Elimina una risposta.
+    
+    Elimina la risposta di cui è stato passato lo id. Solato il creatore della risposta può eseguire questa operazione.
+    """
     serializer_class = ProjectQuestionSerializer
     queryset = ProjectQuestion.objects.all()
     lookup_field = "id"

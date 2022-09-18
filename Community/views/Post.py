@@ -34,6 +34,12 @@ class PostCommentAccessPolicy(AccessPolicy):
 
 class PostListView(generics.ListAPIView,
                    viewsets.GenericViewSet):
+    """
+    list:
+    Ritorna una lista completa di post.
+    
+    Ritorna una lista completa di tutti i post filtrati per updated_at.
+    """
     serializer_class = PostSerializer
     queryset = Post.objects.all()
     permission_classes = [IsAuthenticated]
@@ -48,6 +54,17 @@ class PostListView(generics.ListAPIView,
 
 class PostCommentListCreateView(generics.ListCreateAPIView,
                                 viewsets.GenericViewSet):
+    """
+    list:
+    Vedi la lista dei commenti.
+    
+    Vedi la lista dei commenti del post di cui è stato passato l'id.
+    
+    create:
+    Crea un commento.
+    
+    Aggiungi un commento ad il post di cui è stato inserito l'id.
+    """
     serializer_class = PostCommentSerializer
     queryset = PostComment.objects.all()
     permission_classes = [IsAuthenticated, PostCommentAccessPolicy]
@@ -65,6 +82,12 @@ class PostCommentListCreateView(generics.ListCreateAPIView,
 class PostCommentLikeAPIView(APIView):
     
     def post(self, request, id):
+        """
+        Aggiungi un like.
+        
+        Aggiungi un like al commento di cui è stato inserito l'id. Se si prova ad aggiungere un like ad un commento
+        di cui è stato già aggiunto dall'utente che manda la richiesta restituisce un errore.
+        """
         comment = get_object_or_404(PostComment, id=id)
         if comment.likes.filter(id=request.user.id).exists():
             return Response(data={"msg": "Like già inserito"}, 
@@ -76,6 +99,12 @@ class PostCommentLikeAPIView(APIView):
         
         
     def delete(self, request, id):
+        """
+        Rimuovi un like.
+        
+        Rimuovi un like al commento di cui è stato inserito l'id. Se si prova ad eliminare un like ad un commento
+        nel quale non esiste un like dall'utente che manda la richiesta restituisce un errore.
+        """
         comment = get_object_or_404(PostComment, id=id)
         if not comment.likes.filter(id=request.user.id).exists():
             return Response(data={"msg": "Like non inserito"}, 
@@ -90,6 +119,22 @@ class PostCommentLikeAPIView(APIView):
 class PostCommentUpdateDestroyView(generics.UpdateAPIView,
                                    generics.DestroyAPIView,
                                    viewsets.GenericViewSet):
+    """
+    update:
+    Aggiorna un commento.
+    
+    Aggiorna completamento un commento di cui è stato pasato l'id. Soltato l'autore può farlo.
+    
+    partial_update:
+    Aggiorna un commento.
+    
+    Aggiorna parzialmente un commento di cui è stato pasato l'id. Soltato l'autore può farlo.
+    
+    destroy:
+    Elimina un commento.
+    
+    Elimina un commento di cui è stato pasato l'id. Soltato l'autore può farlo.
+    """
     serializer_class = PostCommentSerializer
     queryset = PostComment.objects.all()
     lookup_field = "id"
