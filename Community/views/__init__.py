@@ -1,6 +1,6 @@
-from .Post import (PostCommentCreateView, 
+from .Post import (PostCommentListCreateView, 
                    PostListView,
-                   PostCommentUpdateDestroyCreateView)
+                   PostCommentUpdateDestroyView)
 
 from .News import (NewsCreateView, 
                    NewsRUDView)
@@ -23,3 +23,7 @@ from .QuestionAnswer import (ProjectQuestionCreateView,
                              ProjectQuestionUpdateDestroyView,
                              ProjectAnswerCreateView,
                              ProjectAnswerUpdateDestroyView)
+
+from .Post import (PostListView,
+                   PostCommentListCreateView,
+                   PostCommentLikeAPIView)

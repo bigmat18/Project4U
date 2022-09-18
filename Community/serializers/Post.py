@@ -1,35 +1,42 @@
 from rest_framework import serializers
-from Core.models import Post, PostComment
-# from Community.serializers import NewsListSerializer, ProjectQuestionSerializer, TextPostSerializer
+from Core.models import Post, PostComment, User
+from Community.serializers import NewsSerializer, ProjectQuestionSerializer, TextPostSerializer
 
 
-# class PostCommentSerializer(serializers.ModelSerializer):
-#     likes = serializers.SerializerMethodField(read_only=True)
+class UserPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id","slug", "first_name", "last_name", "image"]
+
+
+class PostCommentSerializer(serializers.ModelSerializer):
+    likes = serializers.SerializerMethodField(read_only=True)
+    author = UserPostSerializer(read_only=True)
     
-#     class Meta:
-#         model = PostComment
-#         exclude = ["post"]
+    class Meta:
+        model = PostComment
+        exclude = ["post", "created_at"]
         
-#     def get_likes(self,instance):
-#         return instance.likes.all().count()
+    def get_likes(self,instance):
+        return instance.likes.all().count()
 
 
-# class PostSerializer(serializers.ModelSerializer):
-#     content = serializers.SerializerMethodField(read_only=True)
-#     likes = serializers.SerializerMethodField(read_only=True)
-#     comments = PostCommentSerializer(many=True)
+class PostSerializer(serializers.ModelSerializer):
+    content = serializers.SerializerMethodField(read_only=True)
+    likes = serializers.SerializerMethodField(read_only=True)
+    author = UserPostSerializer()
     
-#     class Meta:
-#         model = Post
-#         exclude = ["views_num", "created_at"]
+    class Meta:
+        model = Post
+        exclude = ["view_num", "created_at"]
         
-#     def get_content(self, instance):
-#         if instance.type_message == "NEWS":
-#             return NewsListSerializer(instance=instance.news).data
-#         elif instance.type_message == "QUESTION":
-#             return ProjectQuestionSerializer(instance=instance.question).data
-#         elif instance.type_message == "TEXT":
-#             return TextPostSerializer(instance=instance.text_post).data
+    def get_content(self, instance):
+        if instance.type_post == "NEWS":
+            return NewsSerializer(instance=instance.news).data
+        elif instance.type_post == "QUESTION":
+            return ProjectQuestionSerializer(instance=instance.project_question).data
+        elif instance.type_post == "TEXT":
+            return TextPostSerializer(instance=instance.text_post).data
         
-#     def get_likes(self,instance):
-#         return instance.likes.all().count()
+    def get_likes(self,instance):
+        return instance.likes.all().count()

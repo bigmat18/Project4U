@@ -25,4 +25,5 @@ from Community.tests import (NewsTestCase,
                              NewsParagraphTestCase,
                              PostTestCase,
                              QuestionTestCase,
-                             AnswerTestCase)
+                             AnswerTestCase,
+                             PostCommentTestCase)
